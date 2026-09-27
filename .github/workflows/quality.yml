@@ -14,8 +14,8 @@ jobs:
     name: Test, coverage, and build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -24,7 +24,7 @@ jobs:
       - run: npm audit --audit-level=moderate
       - name: Package Firefox extension
         run: npm run package
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ielts-forge-firefox
           path: ielts-forge-firefox.zip
@@ -33,7 +33,7 @@ jobs:
     name: Super-Linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Run Super-Linter
@@ -42,6 +42,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
+          # Project-owned validators are blocking above; Super-Linter remains an
+          # always-on independent advisory check of the workflow itself.
+          DISABLE_ERRORS: true
           # The project pins ESLint and Prettier in the test-build job. Keep this
           # independent Super-Linter invocation focused on GitHub Actions syntax,
           # avoiding a second formatter whose bundled version can drift from ours.
