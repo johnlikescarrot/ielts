@@ -44,29 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
-          # Project-owned validators are blocking above; Super-Linter remains an
-          # always-on independent advisory check of the workflow itself.
-          DISABLE_ERRORS: true
-          # The project pins ESLint and Prettier in the test-build job. Keep this
-          # independent Super-Linter invocation focused on GitHub Actions syntax,
-          # avoiding a second formatter whose bundled version can drift from ours.
-          VALIDATE_BASH: false
-          VALIDATE_CSS: false
-          VALIDATE_CSS_PRETTIER: false
+          # Include mode: setting only this validator to true makes every other
+          # bundled validator opt out. Project-owned ESLint and Prettier stay
+          # pinned and blocking in the test-build job above.
           VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_HTML: false
-          VALIDATE_HTML_PRETTIER: false
-          VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_JAVASCRIPT_PRETTIER: false
-          VALIDATE_JSON: false
-          VALIDATE_JSON_PRETTIER: false
-          VALIDATE_MARKDOWN: false
-          VALIDATE_MARKDOWN_PRETTIER: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_TYPESCRIPT_PRETTIER: false
-          VALIDATE_TSX: false
-          VALIDATE_TSX_PRETTIER: false
-          VALIDATE_YAML: false
-          VALIDATE_YAML_PRETTIER: false
-          VALIDATE_JSCPD: false
