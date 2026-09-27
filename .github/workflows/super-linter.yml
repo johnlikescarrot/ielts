@@ -34,6 +34,16 @@ jobs:
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true
           VALIDATE_HTML: true
+          # The project standardizes on ESLint and dedicated project configs;
+          # formatting is intentionally not enforced by Prettier in this repository.
+          VALIDATE_TYPESCRIPT_PRETTIER: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_JSON_PRETTIER: false
+          VALIDATE_CSS_PRETTIER: false
+          VALIDATE_HTML_PRETTIER: false
+          VALIDATE_MARKDOWN_PRETTIER: false
+          VALIDATE_YAML_PRETTIER: false
+          MARKDOWN_CONFIG_FILE: .markdown-lint.yml
           LINTER_RULES_PATH: /
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
           TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
