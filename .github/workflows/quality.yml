@@ -1,0 +1,21 @@
+name: Quality
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run check
+  super-linter:
+    uses: super-linter/super-linter/slim@v7.1.0
+    permissions: { contents: read, statuses: write }
+    env:
+      DEFAULT_BRANCH: main
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VALIDATE_ALL_CODEBASE: true
+      VALIDATE_TYPESCRIPT_ES: true
+      VALIDATE_JSON: true
+      VALIDATE_MARKDOWN: true

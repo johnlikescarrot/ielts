@@ -1,0 +1,22 @@
+{
+  "name": "ielts-sprint-firefox",
+  "version": "0.1.0",
+  "description": "A free, private, keyboard-first IELTS practice companion for Firefox.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && cp manifest.json popup.html popup.css dist/ && mkdir -p dist/icons && cp icons/icon.svg dist/icons/", 
+    "test": "vitest run --coverage",
+    "lint": "eslint . --ext .ts",
+    "check": "npm run lint && npm run test && npm run build",
+    "package": "npm run build && cd dist && zip -r ../ielts-sprint-firefox.zip ."
+  },
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^120.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.9"
+  }
+}
