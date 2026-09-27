@@ -43,7 +43,10 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_CSS: true
-          VALIDATE_HTML: true
+          # Markdown/CSS/HTML are intentionally covered by lightweight local
+          # configs and browser build tests; keep Super-Linter focused on the
+          # portable repository metadata checks it can run consistently here.
+          VALIDATE_MARKDOWN: false
+          VALIDATE_CSS: false
+          VALIDATE_HTML: false
           LINTER_RULES_PATH: /
