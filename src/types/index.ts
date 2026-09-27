@@ -1,6 +1,6 @@
 export type Language = 'en' | 'vi';
 
-export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'mock-test' | 'analytics';
+export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'video-lab' | 'mock-test' | 'analytics';
 
 export type ExamType = 'academic' | 'general';
 

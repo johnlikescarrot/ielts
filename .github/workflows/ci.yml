@@ -33,8 +33,14 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: Run Test Suite with Coverage (100% Target)
+      - name: Run full test suite with coverage ratchet
         run: npm run test:coverage
+
+      - name: Enforce 100% Video Lab coverage
+        run: npm run test:coverage:video
+
+      - name: Run Astryx design-system diagnostics
+        run: npm run astryx -- doctor
 
       - name: Build Firefox WebExtension
         run: npm run build

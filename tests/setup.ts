@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -49,6 +49,7 @@ Object.defineProperty(window, 'speechSynthesis', {
 
 // Polyfill navigator.clipboard
 Object.defineProperty(navigator, 'clipboard', {
+  configurable: true,
   value: {
     writeText: async () => {},
   },
@@ -94,6 +95,10 @@ Object.defineProperty(navigator, 'mediaDevices', {
     }),
   },
 });
+
+// Keep download and extension-navigation tests inside jsdom.
+window.open = () => null;
+HTMLAnchorElement.prototype.click = () => {};
 
 // Polyfill URL.createObjectURL and revokeObjectURL
 window.URL.createObjectURL = () => 'blob:mock-url';

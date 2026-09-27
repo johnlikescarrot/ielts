@@ -336,9 +336,10 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     const quickSkills = [
       'Academic & GT',
       'Audio Player',
-      'AST Astryx Heuristic',
+      'Local AST Analysis',
       'Voice Recorder',
       'SM-2 Algorithm',
+      'Private Caption Lab',
       'Full 4 Skills',
     ];
 
@@ -442,6 +443,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
       'Writing',
       'Speaking',
       'Vocabulary',
+      'Video Lab',
       'Full Mock Exam',
       'Analytics & Progress',
       'Settings',
