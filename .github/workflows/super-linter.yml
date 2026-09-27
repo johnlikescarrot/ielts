@@ -35,4 +35,6 @@ jobs:
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true
           VALIDATE_HTML: true
-          LINTER_RULES_PATH: /
+          # Keep the repository's flat ESLint configuration active inside the linter container.
+          LINTER_RULES_PATH: .
+          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
