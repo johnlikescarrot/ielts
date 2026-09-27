@@ -8,6 +8,10 @@ on:
 
 permissions:
   contents: read
+  packages: read
+  issues: write
+  pull-requests: write
+  statuses: write
 
 jobs:
   test-build:
