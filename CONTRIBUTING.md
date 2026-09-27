@@ -30,7 +30,7 @@ npm run validate
 npm run package
 ```
 
-`npm run validate` checks formatting, type-aware lint rules, strict TypeScript, 100% test coverage, the production build, and Mozilla's extension linter. CI additionally runs the pinned Super-Linter action.
+`npm run validate` checks formatting, type-aware linter rules, strict TypeScript, 100% test coverage, the production build, and Mozilla's extension linter. CI additionally runs the pinned Super-Linter action.
 
 ## Tests
 

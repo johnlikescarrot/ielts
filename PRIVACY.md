@@ -10,7 +10,7 @@ Bandcraft does not collect, transmit, sell, or share personal data, browsing act
 - Imported audio and transcript files remain in the current browser session.
 - Bandcraft has no analytics, advertising, account system, remote API, or tracking code.
 - Exporting a backup creates a file chosen and controlled by the user.
-- Removing the extension normally removes its Firefox-managed local storage.
+- Removing the extension normally removes its Firefox-managed extension data.
 
 The manifest declares `data_collection_permissions.required: ["none"]`.
 

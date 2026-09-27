@@ -29,7 +29,7 @@ Most exam tools ask for an account, upload private writing or voice recordings, 
 - **Local-first:** study history stays in Firefox extension storage.
 - **No AI dependency:** no token cost, waiting, hallucinated band score, or opaque pronunciation grade.
 - **English by default, Vietnamese included:** change language at any time in Settings.
-- **Low-permission:** no blanket access to every website. Page text is read only after an explicit toolbar or context-menu action.
+- **Low-permission:** no blanket access to every site. Page text is read only after an explicit toolbar or context-menu action.
 
 ## What you can do
 

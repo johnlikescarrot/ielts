@@ -17,7 +17,7 @@ The upstream project is a local IELTS training system built around original-medi
 | Keyboard-first operation | Blind-operable review and shadowing shortcuts                       | Global vocabulary shortcuts plus semantic focusable controls                             | Preserves speed without overriding keys while the learner is typing                    |
 | Subtitle-aligned media   | Server imports YouTube/local media and extracts cue clips           | The learner imports local audio and SRT/VTT for the current session                      | Avoids copyright redistribution, platform scraping, a native helper, and server cost   |
 | Dual-track shadowing     | Original and learner recordings are alternated and compared         | Native reference/attempt audio controls, A–B cue loop, timing guidance, and self-review  | Keeps the useful perception loop without presenting an unvalidated pronunciation score |
-| Local-first philosophy   | Self-hosted services and local media                                | Firefox-managed local storage and in-session Blob URLs                                   | “Install and practise” instead of operating Go, PostgreSQL, Redis, and FFmpeg          |
+| Local-first philosophy   | Self-hosted services and local media                                | Firefox-managed extension data and in-session Blob URLs                                  | “Install and practise” instead of operating Go, PostgreSQL, Redis, and FFmpeg          |
 | No-AI main path          | Learner compares performance directly                               | No AI, remote model, fabricated band score, or token cost anywhere                       | Predictable privacy, latency, reproducibility, and accessibility                       |
 
 Bandcraft does not copy upstream source or visual assets. It adapts learning mechanics to a materially different WebExtension architecture.
@@ -47,7 +47,7 @@ Bandcraft is designed around testable hypotheses rather than score promises:
 1. **Lower activation energy:** no login and a toolbar capture should reduce the time between encountering useful language and saving it.
 2. **Context preservation:** source text and URL should make vocabulary review more meaningful than isolated word lists.
 3. **Short feedback loops:** keyboard review and immediate playback should permit more deliberate attempts in a fixed session.
-4. **Data agency:** local storage, readable export, and no telemetry should make the tool acceptable for sensitive writing and voice practice.
+4. **Data agency:** on-device persistence, readable export, and no telemetry should make the tool acceptable for sensitive writing and voice practice.
 5. **Criterion visibility:** persistent official assessment lenses should encourage planning and self-review without pretending to automate assessment.
 
 A future evaluation should pre-register outcomes such as delayed vocabulary recall, completed practice sessions, writing revision behavior, and speaking-attempt count. Exam band changes should not be attributed to Bandcraft without an appropriate comparison design.
