@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: IELTS Forge
+type: software
+message: "If IELTS Forge informs research, teaching, or evaluation, cite the version you used."
+authors:
+  - name: IELTS Forge contributors
+version: 1.0.0
+date-released: 2026-09-27
+repository-code: "https://github.com/johnlikescarrot/ielts"
+license: MIT
+keywords:
+  - IELTS
+  - language learning
+  - retrieval practice
+  - spaced repetition
+  - Firefox extension

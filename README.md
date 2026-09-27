@@ -112,11 +112,15 @@ Firefox popup / options page
               browser.storage.local
 ```
 
-The production extension is Manifest V3 and contains no remotely hosted code.
+The production extension is Manifest V3 and contains no remotely hosted code. See [Architecture and product boundaries](docs/ARCHITECTURE.md) for the scheduler, test boundary, and security model.
 
 ## Contributing
 
-Issues and pull requests are welcome. Please keep the product free, login-free, local-first, bilingual, and accessible. New domain logic must include tests that preserve all four 100% coverage thresholds. Run `npm run check` before submitting a change.
+Issues and pull requests are welcome. Please keep the product free, login-free, local-first, bilingual, and accessible. New domain logic must include tests that preserve all four 100% coverage thresholds. Run `npm run check` before submitting a change and read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Citation
+
+If IELTS Forge informs research, teaching, or product evaluation, cite the version used. Machine-readable metadata is available in [`CITATION.cff`](CITATION.cff), and the scholarly basis is documented in [Research notes](docs/RESEARCH.md).
 
 ## License
 
