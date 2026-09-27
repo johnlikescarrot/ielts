@@ -3,6 +3,7 @@ import { UserSettings } from '../../types';
 import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
 import { useI18n } from '../../i18n/i18nContext';
 import { Settings, CheckCircle, ShieldCheck, Cpu } from 'lucide-react';
+import { getPrivacySummary, isPrivacyFirst } from '../../privacy/privacyPolicy';
 
 export const SettingsView: React.FC = () => {
   const { language, setLanguage, t } = useI18n();
@@ -151,11 +152,11 @@ export const SettingsView: React.FC = () => {
       <div className="p-5 bg-slate-100 dark:bg-slate-800/60 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs text-slate-600 dark:text-slate-400">
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>100% Free & Privacy-First Architecture</span>
+          <span>{isPrivacyFirst() ? '100% Free & Privacy-First Architecture' : 'Review privacy settings'}</span>
         </div>
-        <p className="leading-relaxed">
-          IELTS Slayer operates 100% locally on your machine. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain encrypted in local browser storage.
-        </p>
+        <ul className="leading-relaxed list-disc list-inside space-y-1">
+          {getPrivacySummary().map(statement => <li key={statement}>{statement}</li>)}
+        </ul>
 
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200 pt-2">
           <Cpu className="w-4 h-4 text-indigo-500" />

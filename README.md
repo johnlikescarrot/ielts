@@ -77,3 +77,13 @@ The compiled extension artifacts will be generated in `dist/`.
 
 ## 📄 License
 MIT License. Free for all learners worldwide.
+
+## 🔒 Product principles & inspiration
+
+The project was reviewed alongside [IELTS Video Assistant](https://github.com/Libailin222/ielts-video-assistant), whose YouTube/Bilibili-to-practice workflow is a useful product reference. IELTS Slayer intentionally keeps the experience different: it is a Firefox-first, offline product, so it does not proxy video content through a server or require an API key, account, or payment. This preserves learner privacy while keeping the core Reading, Listening, Writing, Speaking, and vocabulary workflows available without a network connection.
+
+Essay feedback uses a local, typed AST heuristic layer inspired by [Facebook Astryx](https://github.com/facebook/astryx). It is guidance rather than an official IELTS score; learners should use official examiner feedback for high-stakes decisions.
+
+### Quality gates
+
+Every pull request runs TypeScript type checking, ESLint, the Vitest suite, V8 coverage, the Firefox production build, and [Super-Linter](https://github.com/super-linter/super-linter). The test suite includes a regression-tested privacy contract: no login, no telemetry, no advertising, and local-only learning data with export support.

@@ -1,3 +1,7 @@
+/**
+ * Local AST analysis layer inspired by Facebook Astryx's typed AST tooling.
+ * It intentionally performs no network calls: essays never leave Firefox.
+ */
 import { EssayAST, ParagraphNode, SentenceNode, ClauseNode, TokenNode, SentenceType, ClauseType } from './types';
 import { ACADEMIC_WORD_LIST, DISCOURSE_TRANSITIONS } from './awlList';
 
