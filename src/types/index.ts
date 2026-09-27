@@ -9,6 +9,7 @@ export type SkillType =
   | "video"
   | "mock-test"
   | "analytics";
+export type AppTab = SkillType | "video-lab" | "dashboard" | "settings";
 
 export type ExamType = "academic" | "general";
 

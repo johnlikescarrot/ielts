@@ -15,10 +15,10 @@ describe("VideoStudyView", () => {
       </I18nProvider>,
     );
     expect(
-      screen.getByRole("heading", { name: "Video-to-IELTS Studio" }),
+      screen.getByRole("heading", { name: "IELTS Video Practice Lab" }),
     ).toBeInTheDocument();
     await userEvent.click(
-      screen.getByRole("button", { name: "Create my lesson" }),
+      screen.getByRole("button", { name: "Generate IELTS Video Drills" }),
     );
     expect(screen.getByRole("alert")).toHaveTextContent("at least 40 words");
     await userEvent.type(
@@ -26,11 +26,11 @@ describe("VideoStudyView", () => {
       "Climate action",
     );
     await userEvent.type(
-      screen.getByPlaceholderText(/at least 40 words/i),
+      screen.getByPlaceholderText(/captions/i),
       transcript,
     );
     await userEvent.click(
-      screen.getByRole("button", { name: "Create my lesson" }),
+      screen.getByRole("button", { name: "Generate IELTS Video Drills" }),
     );
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Generated video lesson")).toBeInTheDocument();

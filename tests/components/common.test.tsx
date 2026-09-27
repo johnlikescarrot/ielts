@@ -89,6 +89,34 @@ describe('Common Components Suite', () => {
     vi.useRealTimers();
   });
 
+  it('completes AudioPlayer playback and restarts while running', () => {
+    vi.useFakeTimers();
+    const onUpdate = vi.fn();
+    const originalSpeak = window.speechSynthesis.speak;
+    window.speechSynthesis.speak = () => {};
+    render(
+      <I18nProvider>
+        <AudioPlayer transcriptText="Short test audio." durationSeconds={2} onTimeUpdate={onUpdate} />
+      </I18nProvider>
+    );
+
+    const playPauseBtn = screen.getByRole('button', { name: /Play/i });
+    fireEvent.click(playPauseBtn);
+
+    act(() => {
+      vi.advanceTimersByTime(2500);
+    });
+
+    expect(screen.getByText(/0:02 \/ 0:02/i)).toBeInTheDocument();
+    expect(onUpdate).toHaveBeenCalledWith(1);
+    expect(onUpdate).toHaveBeenCalledWith(2);
+    const resetBtn = screen.getByTitle('Reset');
+    fireEvent.click(resetBtn);
+    expect(onUpdate).toHaveBeenCalledWith(0);
+    window.speechSynthesis.speak = originalSpeak;
+    vi.useRealTimers();
+  });
+
   it('interacts with AudioPlayer: play, pause, speed cycles, time updates and restart', async () => {
     const onUpdate = vi.fn();
     render(
@@ -139,6 +167,61 @@ describe('Common Components Suite', () => {
     const playAudioBtn = screen.getByText(/Listen to Your Recording|Nghe lại/i);
     await userEvent.click(playAudioBtn);
     await userEvent.click(playAudioBtn);
+  });
+
+  it('uses VoiceRecorder fallback when microphone access fails', async () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const originalMediaDevices = navigator.mediaDevices;
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        getUserMedia: async () => {
+          throw new Error('denied');
+        },
+      },
+    });
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder onRecordingComplete={onComplete} />
+      </I18nProvider>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Start Voice Recording/i));
+    });
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.getByText('0:01')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText(/Stop Recording/i));
+    expect(onComplete).toHaveBeenCalled();
+
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: originalMediaDevices,
+    });
+    warnSpy.mockRestore();
+    vi.useRealTimers();
+  });
+
+  it('resets VoiceRecorder play state when recorded audio ends', async () => {
+    render(
+      <I18nProvider>
+        <VoiceRecorder />
+      </I18nProvider>
+    );
+
+    await userEvent.click(screen.getByText(/Start Voice Recording/i));
+    await userEvent.click(screen.getByText(/Stop Recording/i));
+    await userEvent.click(screen.getByText(/Listen to Your Recording/i));
+
+    const audio = document.querySelector('audio') as HTMLAudioElement;
+    fireEvent.ended(audio);
+    expect(screen.getByText(/Listen to Your Recording/i)).toBeInTheDocument();
   });
 
   it('renders Navbar on desktop and mobile', async () => {

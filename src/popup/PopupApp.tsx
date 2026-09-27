@@ -11,6 +11,7 @@ import {
   Headphones,
   PenTool,
   Mic,
+  Clapperboard,
   Layers,
   Flame,
   CheckCircle
@@ -167,6 +168,15 @@ const PopupContent: React.FC = () => {
           <Mic className="w-4 h-4 text-amber-500" />
           <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">Speaking</div>
           <p className="text-[10px] text-slate-400">Voice recorder</p>
+        </button>
+
+        <button
+          onClick={openDashboard}
+          className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-400 text-left space-y-1 transition group col-span-2"
+        >
+          <Clapperboard className="w-4 h-4 text-sky-500" />
+          <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">Video Lab</div>
+          <p className="text-[10px] text-slate-400">YouTube/Bilibili transcript drills</p>
         </button>
       </div>
 

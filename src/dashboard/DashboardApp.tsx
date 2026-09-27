@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SkillType, UserSettings } from "../types";
+import { AppTab, UserSettings } from "../types";
 import { storageService, DEFAULT_SETTINGS } from "../storage/storageService";
 import { I18nProvider } from "../i18n/i18nContext";
 import { Navbar } from "../components/common/Navbar";
@@ -10,14 +10,13 @@ import { WritingEvaluatorView } from "../components/writing/WritingEvaluatorView
 import { SpeakingLabView } from "../components/speaking/SpeakingLabView";
 import { VocabularySRSView } from "../components/vocabulary/VocabularySRSView";
 import { VideoStudyView } from "../components/video/VideoStudyView";
+import { VideoPracticeLabView } from "../components/video/VideoPracticeLabView";
 import { FullMockExamView } from "../components/mockTest/FullMockExamView";
 import { AnalyticsView } from "../components/analytics/AnalyticsView";
 import { SettingsView } from "../components/settings/SettingsView";
 
 export const DashboardApp: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<
-    SkillType | "dashboard" | "settings"
-  >("dashboard");
+  const [activeTab, setActiveTab] = useState<AppTab>("dashboard");
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
@@ -43,6 +42,7 @@ export const DashboardApp: React.FC = () => {
           {activeTab === "speaking" && <SpeakingLabView />}
           {activeTab === "vocabulary" && <VocabularySRSView />}
           {activeTab === "video" && <VideoStudyView />}
+          {activeTab === "video-lab" && <VideoPracticeLabView />}
           {activeTab === "mock-test" && <FullMockExamView />}
           {activeTab === "analytics" && <AnalyticsView />}
           {activeTab === "settings" && <SettingsView />}

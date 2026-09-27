@@ -6,6 +6,7 @@ import { ListeningPracticeView } from '../../src/components/listening/ListeningP
 import { WritingEvaluatorView } from '../../src/components/writing/WritingEvaluatorView';
 import { SpeakingLabView } from '../../src/components/speaking/SpeakingLabView';
 import { VocabularySRSView } from '../../src/components/vocabulary/VocabularySRSView';
+import { VideoPracticeLabView } from '../../src/components/video/VideoPracticeLabView';
 import { FullMockExamView } from '../../src/components/mockTest/FullMockExamView';
 import { AnalyticsView } from '../../src/components/analytics/AnalyticsView';
 import { SettingsView } from '../../src/components/settings/SettingsView';
@@ -230,6 +231,51 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     await userEvent.click(nextBtn);
   });
 
+  it('renders VideoPracticeLabView and generates offline video drills', async () => {
+    render(
+      <I18nProvider>
+        <VideoPracticeLabView />
+      </I18nProvider>
+    );
+
+    expect(screen.getByText(/IELTS Video Practice Lab/i)).toBeInTheDocument();
+
+    const titleInput = screen.getByDisplayValue(/Urban gardens and resilient cities/i);
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'Climate policy explainer');
+
+    const loadSampleBtn = screen.getByRole('button', { name: /Load sample/i });
+    await userEvent.click(loadSampleBtn);
+
+    const urlInput = screen.getByDisplayValue(/bilibili\.com/i);
+    await userEvent.clear(urlInput);
+    await userEvent.type(urlInput, 'https://www.youtube.com/watch?v=climate-demo');
+
+    const transcriptInput = screen.getByPlaceholderText(/Paste captions/i);
+    fireEvent.change(transcriptInput, {
+      target: {
+        value: '[00:00] Speaker: Climate policy can improve urban transport and public health.\n[00:09] Speaker: Evidence indicates that sustainable planning reduces emissions and creates social benefits.\n[00:20] Speaker: However, limited finance remains a significant challenge for local authorities.',
+      },
+    });
+
+    const generateBtn = screen.getByRole('button', { name: /Generate IELTS Video Drills/i });
+    await userEvent.click(generateBtn);
+
+    expect(screen.getByText(/Listening gap-fill drills/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reading T\/F\/NG drills/i)).toBeInTheDocument();
+    expect(screen.getByText(/Writing Task 2/i)).toBeInTheDocument();
+
+    const explanationToggles = screen.getAllByText(/Explanation/i);
+    await userEvent.click(explanationToggles[0]);
+
+    const exportBtn = screen.getByRole('button', { name: /JSON/i });
+    await userEvent.click(exportBtn);
+
+    const saveVocabBtn = screen.getByRole('button', { name: /Save vocab/i });
+    await userEvent.click(saveVocabBtn);
+    expect(await screen.findByText(/Saved to Flashcards/i)).toBeInTheDocument();
+  });
+
   it('renders FullMockExamView with score sliders and generates report', async () => {
     render(
       <I18nProvider>
@@ -339,6 +385,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
       'AST Astryx Heuristic',
       'Voice Recorder',
       'SM-2 Algorithm',
+      'YouTube/Bilibili',
       'Full 4 Skills',
     ];
 
@@ -442,6 +489,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
       'Writing',
       'Speaking',
       'Vocabulary',
+      'Video Lab',
       'Full Mock Exam',
       'Analytics & Progress',
       'Settings',

@@ -121,12 +121,100 @@ describe('StorageService Suite', () => {
     expect(bookmarks.length).toBe(0);
   });
 
+  it('hydrates saved localStorage data and sanitizes malformed arrays', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', JSON.stringify({
+      settings: { language: 'vi', targetBand: 8.5 },
+      srsCards: 'bad',
+      customVocabulary: 'bad',
+      testHistory: [{ id: 'existing', skill: 'reading' }],
+      bookmarks: 'bad',
+      notes: 'bad',
+    }));
+
+    const hydrated = await service.getData();
+    expect(hydrated.settings.language).toBe('vi');
+    expect(hydrated.settings.targetBand).toBe(8.5);
+    expect(hydrated.srsCards).toEqual([]);
+    expect(hydrated.testHistory).toHaveLength(1);
+  });
+
+  it('falls back to defaults when localStorage contains invalid JSON', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    localStorage.setItem('ielts_slayer_v1_data', '{invalid-json');
+
+    const fallback = await service.getData();
+    expect(fallback.settings).toEqual(DEFAULT_SETTINGS);
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it('continues when localStorage writes fail', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+
+    const updated = await service.saveData({ settings: { ...DEFAULT_SETTINGS, targetBand: 8 } });
+    expect(updated.settings.targetBand).toBe(8);
+    expect(errorSpy).toHaveBeenCalled();
+
+    setItemSpy.mockRestore();
+    errorSpy.mockRestore();
+  });
+
   it('resets all data back to defaults', async () => {
     await service.updateSettings({ targetBand: 9.0 });
     await service.resetAll();
 
     const settings = await service.getSettings();
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
+  });
+
+  it('hydrates existing browser.storage.local data', async () => {
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async (key: string) => ({
+            [key]: {
+              settings: { targetBand: 8.5 },
+              srsCards: 'bad',
+              customVocabulary: [],
+              testHistory: [],
+              bookmarks: [],
+              notes: [],
+            },
+          })),
+          set: vi.fn(),
+          remove: vi.fn(),
+        }
+      }
+    };
+
+    const browserService = new StorageService();
+    const data = await browserService.getData();
+    expect(data.settings.targetBand).toBe(8.5);
+    expect(data.srsCards).toEqual([]);
+    delete (globalThis as any).browser;
+  });
+
+  it('handles browser.storage.local reset errors', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          remove: vi.fn(async () => {
+            throw new Error('remove failed');
+          }),
+        }
+      }
+    };
+
+    const browserService = new StorageService();
+    await browserService.resetAll();
+    expect(errorSpy).toHaveBeenCalled();
+
+    errorSpy.mockRestore();
+    delete (globalThis as any).browser;
   });
 
   it('works with browser.storage.local mock', async () => {

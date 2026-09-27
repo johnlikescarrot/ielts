@@ -10,15 +10,15 @@ import {
   Settings,
   Globe,
   LayoutDashboard,
-  Captions,
+  Clapperboard,
 } from "lucide-react";
-import { SkillType } from "../../types";
+import { AppTab } from "../../types";
 import { useI18n } from "../../i18n/i18nContext";
 import { Badge } from "./Badge";
 
 export interface NavbarProps {
-  activeTab: SkillType | "dashboard" | "settings";
-  onSelectTab: (tab: SkillType | "dashboard" | "settings") => void;
+  activeTab: AppTab;
+  onSelectTab: (tab: AppTab) => void;
   targetBand?: number;
 }
 
@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "writing", label: t("nav.writing"), icon: PenTool },
     { id: "speaking", label: t("nav.speaking"), icon: Mic },
     { id: "vocabulary", label: t("nav.vocabulary"), icon: Layers },
-    { id: "video", label: t("nav.video"), icon: Captions },
+    { id: "video-lab", label: t("nav.videoLab"), icon: Clapperboard },
     { id: "mock-test", label: t("nav.mockTest"), icon: Award },
     { id: "analytics", label: t("nav.analytics"), icon: BarChart2 },
     { id: "settings", label: t("nav.settings"), icon: Settings },
@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               return (
                 <button
                   key={item.id}
-                  onClick={() => onSelectTab(item.id as any)}
+                  onClick={() => onSelectTab(item.id as AppTab)}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs lg:text-sm font-medium transition ${
                     isActive
                       ? "bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300 font-semibold shadow-xs"
@@ -132,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           return (
             <button
               key={item.id}
-              onClick={() => onSelectTab(item.id as any)}
+              onClick={() => onSelectTab(item.id as AppTab)}
               className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-md text-xs whitespace-nowrap font-medium ${
                 isActive
                   ? "bg-indigo-600 text-white font-semibold"

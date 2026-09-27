@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SkillType, UserSettings, TestAttempt, SRSCard } from '../../types';
+import { AppTab, SkillType, UserSettings, TestAttempt, SRSCard } from '../../types';
 import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
 import { getDeckSummary } from '../../srs/srsManager';
 import { useI18n } from '../../i18n/i18nContext';
@@ -11,6 +11,7 @@ import {
   Mic,
   Layers,
   Award,
+  Clapperboard,
   ArrowRight,
   Flame,
   Sparkles,
@@ -18,7 +19,7 @@ import {
 } from 'lucide-react';
 
 export interface DashboardOverviewProps {
-  onSelectSkill: (skill: SkillType | 'dashboard' | 'settings') => void;
+  onSelectSkill: (skill: AppTab) => void;
 }
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSkill }) => {
@@ -88,6 +89,14 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       icon: Layers,
       color: 'from-amber-600 to-emerald-600',
       tag: 'SM-2 Algorithm',
+    },
+    {
+      id: 'video-lab' as AppTab,
+      title: t('nav.videoLab'),
+      description: t('dash.featureVideoLabDesc'),
+      icon: Clapperboard,
+      color: 'from-sky-600 to-indigo-600',
+      tag: 'YouTube/Bilibili',
     },
     {
       id: 'mock-test' as SkillType,

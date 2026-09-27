@@ -1,5 +1,12 @@
 import "@testing-library/jest-dom/vitest";
 
+// Avoid jsdom navigation warnings for extension links/downloads.
+Object.defineProperty(window, "open", {
+  writable: true,
+  value: () => null,
+});
+HTMLAnchorElement.prototype.click = () => {};
+
 // Polyfill window.matchMedia
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -90,6 +97,7 @@ Object.defineProperty(window, "MediaRecorder", {
 // Polyfill navigator.mediaDevices
 Object.defineProperty(navigator, "mediaDevices", {
   writable: true,
+  configurable: true,
   value: {
     getUserMedia: async () => ({
       getTracks: () => [{ stop: () => {} }],
