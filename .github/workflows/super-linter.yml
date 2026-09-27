@@ -2,9 +2,9 @@ name: Super-Linter Quality Check
 
 on:
   push:
-    branches: [ main, 'arena/**' ]
+    branches: [main, "arena/**"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
