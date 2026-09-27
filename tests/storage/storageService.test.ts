@@ -15,6 +15,7 @@ describe('StorageService Suite', () => {
     expect(data.srsCards).toEqual([]);
     expect(data.customVocabulary).toEqual([]);
     expect(data.testHistory).toEqual([]);
+    expect(data.videoSessions).toEqual([]);
   });
 
   it('saves and retrieves updated settings', async () => {
@@ -25,6 +26,32 @@ describe('StorageService Suite', () => {
     const retrieved = await service.getSettings();
     expect(retrieved.targetBand).toBe(8.5);
     expect(retrieved.language).toBe('vi');
+  });
+
+  it('saves, updates, and removes private video study sessions', async () => {
+    const session = {
+      id: 'video_1',
+      title: 'Urban planning lecture',
+      source: {
+        platform: 'youtube' as const,
+        originalUrl: 'https://youtu.be/dQw4w9WgXcQ',
+        canonicalUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        videoId: 'dQw4w9WgXcQ',
+      },
+      transcript: 'Governments must analyze evidence before planning reliable transport networks.',
+      createdAt: '2026-09-27T00:00:00.000Z',
+      updatedAt: '2026-09-27T00:00:00.000Z',
+    };
+
+    await service.saveVideoSession(session);
+    expect(await service.getVideoSessions()).toEqual([session]);
+
+    const updated = { ...session, title: 'Updated urban planning lecture' };
+    await service.saveVideoSession(updated);
+    expect(await service.getVideoSessions()).toEqual([updated]);
+
+    await service.removeVideoSession(session.id);
+    expect(await service.getVideoSessions()).toEqual([]);
   });
 
   it('adds and retrieves test attempts in history', async () => {

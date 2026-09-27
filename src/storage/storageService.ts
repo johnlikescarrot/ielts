@@ -1,5 +1,6 @@
 import { StorageData } from './types';
 import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import { VideoStudySession } from '../video/transcriptStudio';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   language: 'en',
@@ -16,6 +17,7 @@ export const DEFAULT_STORAGE_DATA: StorageData = {
   srsCards: [],
   customVocabulary: [],
   testHistory: [],
+  videoSessions: [],
   bookmarks: [],
   notes: [],
 };
@@ -50,6 +52,7 @@ export class StorageService {
             srsCards: Array.isArray(parsed.srsCards) ? parsed.srsCards : [],
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
+            videoSessions: Array.isArray(parsed.videoSessions) ? parsed.videoSessions : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
@@ -65,6 +68,7 @@ export class StorageService {
             srsCards: Array.isArray(parsed.srsCards) ? parsed.srsCards : [],
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
+            videoSessions: Array.isArray(parsed.videoSessions) ? parsed.videoSessions : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
@@ -139,6 +143,22 @@ export class StorageService {
   async getTestHistory(): Promise<TestAttempt[]> {
     const data = await this.getData();
     return data.testHistory || [];
+  }
+
+  async getVideoSessions(): Promise<VideoStudySession[]> {
+    const data = await this.getData();
+    return data.videoSessions || [];
+  }
+
+  async saveVideoSession(session: VideoStudySession): Promise<void> {
+    const sessions = await this.getVideoSessions();
+    const withoutCurrent = sessions.filter(existing => existing.id !== session.id);
+    await this.saveData({ videoSessions: [session, ...withoutCurrent] });
+  }
+
+  async removeVideoSession(sessionId: string): Promise<void> {
+    const sessions = await this.getVideoSessions();
+    await this.saveData({ videoSessions: sessions.filter(session => session.id !== sessionId) });
   }
 
   async addTestAttempt(attempt: Omit<TestAttempt, 'id' | 'date'> & { id?: string; date?: string }): Promise<TestAttempt> {

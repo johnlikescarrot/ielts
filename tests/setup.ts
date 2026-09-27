@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -102,3 +102,7 @@ window.URL.revokeObjectURL = () => {};
 // Polyfill HTMLMediaElement play/pause
 HTMLMediaElement.prototype.play = async () => {};
 HTMLMediaElement.prototype.pause = () => {};
+
+// Keep browser-opening and download affordances testable without jsdom navigation errors.
+window.open = () => null;
+HTMLAnchorElement.prototype.click = () => {};

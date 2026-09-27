@@ -11,10 +11,11 @@ describe('exportImport', () => {
   it('exports data into structured JSON with version and timestamp', () => {
     const json = exportDataAsJSON(DEFAULT_STORAGE_DATA);
     expect(json).toContain('"app": "ielts-slayer"');
-    expect(json).toContain('"version": "1.0.0"');
+    expect(json).toContain('"version": "1.1.0"');
 
     const parsed = JSON.parse(json);
     expect(parsed.data.settings.targetBand).toBe(DEFAULT_STORAGE_DATA.settings.targetBand);
+    expect(parsed.data.videoSessions).toEqual([]);
   });
 
   it('validates imported JSON data format', () => {
@@ -22,12 +23,15 @@ describe('exportImport', () => {
       data: {
         settings: { targetBand: 8.5 },
         srsCards: [{ wordId: 'w1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-28', history: [] }],
+        videoSessions: [{ id: 'video-1', title: 'Local captions', sourceUrl: 'https://www.youtube.com/watch?v=abc123' }],
       }
     });
 
     const validated = validateImportData(validJson);
     expect(validated.settings.targetBand).toBe(8.5);
     expect(validated.srsCards.length).toBe(1);
+    expect(validated.videoSessions).toHaveLength(1);
+    expect(validated.videoSessions[0].id).toBe('video-1');
   });
 
   it('throws an error on invalid import payload', () => {

@@ -4,7 +4,7 @@ import { storageService, DEFAULT_STORAGE_DATA } from './storageService';
 export function exportDataAsJSON(data: StorageData): string {
   const exportPayload = {
     app: 'ielts-slayer',
-    version: '1.0.0',
+    version: '1.1.0',
     exportedAt: new Date().toISOString(),
     data,
   };
@@ -29,6 +29,7 @@ export function validateImportData(rawJson: string): StorageData {
   const srsCards = Array.isArray(data.srsCards) ? data.srsCards : [];
   const customVocabulary = Array.isArray(data.customVocabulary) ? data.customVocabulary : [];
   const testHistory = Array.isArray(data.testHistory) ? data.testHistory : [];
+  const videoSessions = Array.isArray(data.videoSessions) ? data.videoSessions : [];
   const bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
   const notes = Array.isArray(data.notes) ? data.notes : [];
 
@@ -37,6 +38,7 @@ export function validateImportData(rawJson: string): StorageData {
     srsCards,
     customVocabulary,
     testHistory,
+    videoSessions,
     bookmarks,
     notes,
   };
