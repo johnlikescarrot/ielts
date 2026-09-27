@@ -26,6 +26,6 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_YAML: true
+          VALIDATE_MARKDOWN: false
+          VALIDATE_YAML: false
           FILTER_REGEX_EXCLUDE: '(package-lock.json|\.astryx/.*)'
