@@ -32,8 +32,10 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_JAVASCRIPT_ES: true
+          # Node CI runs the repository's TypeScript-aware ESLint flat config.
+          # Super-Linter remains authoritative for portable file formats below.
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true
