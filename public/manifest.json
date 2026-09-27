@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "version": "0.2.0",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
+  "permissions": ["activeTab", "contextMenus", "scripting", "storage"],
+  "action": {
+    "default_title": "IELTS Forge",
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon.svg"
+  },
+  "background": { "scripts": ["background.js"] },
+  "chrome_url_overrides": { "newtab": "dashboard.html" },
+  "icons": { "48": "icons/icon.svg", "96": "icons/icon.svg" },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ielts-forge@johnlikescarrot.github.io",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  }
+}

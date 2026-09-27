@@ -1,1 +1,8 @@
-{"appName":{"message":"IELTS Slayer"},"tagline":{"message":"Luyện tập nhỏ. Tiến bộ lớn."},"today":{"message":"Luyện tập hôm nay"},"minutes":{"message":"phút"},"newPrompt":{"message":"Đề mới"},"log":{"message":"Ghi 5 phút"},"privacy":{"message":"Riêng tư · Không cần tài khoản · Hoạt động ngoại tuyến"}}
+{
+  "extensionName": {
+    "message": "IELTS Forge — Luyện tập riêng tư"
+  },
+  "extensionDescription": {
+    "message": "Lưu tiếng Anh theo ngữ cảnh, ôn bằng FSRS và luyện nói đuổi. Miễn phí, riêng tư, không đăng nhập."
+  }
+}

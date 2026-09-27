@@ -1,1 +1,0 @@
-{"manifest_version":2,"name":"IELTS Slayer","version":"0.1.0","description":"Free, private IELTS practice: one focused task at a time.","default_locale":"en","permissions":["storage"],"browser_action":{"default_title":"IELTS Slayer","default_popup":"popup.html"},"background":{"scripts":["background.js"],"persistent":false},"icons":{"48":"icon.svg"}}

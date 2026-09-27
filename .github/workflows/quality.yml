@@ -1,18 +1,56 @@
 name: Quality
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
-  test:
+  quality:
+    name: TypeScript, tests, coverage, and Firefox build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npm run coverage
-      - run: npm run build
-      - uses: super-linter/super-linter/slim@v7
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install exact dependencies
+        run: npm ci
+
+      - name: Verify Astryx integration
+        run: npm ls @astryxdesign/core @astryxdesign/theme-neutral
+
+      - name: Run all quality gates
+        run: npm run check
+
+      - name: Upload Firefox build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ielts-forge-firefox
+          path: dist
+          if-no-files-found: error
+
+  super-linter:
+    name: Super-Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out full history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Run Super-Linter
+        uses: super-linter/super-linter/slim@v8.7.0
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: ASTRYX analysis
-        run: npx astryx check .
+          VALIDATE_ALL_CODEBASE: true
+          FILTER_REGEX_EXCLUDE: (package-lock.json|coverage/|dist/|node_modules/)
