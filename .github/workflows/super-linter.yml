@@ -2,9 +2,9 @@ name: Super-Linter Quality Check
 
 on:
   push:
-    branches: [ main, 'arena/**' ]
+    branches: [main, "arena/**"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install project lint dependencies
         run: npm ci
@@ -37,24 +37,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # TypeScript/JavaScript linting is covered by the project-aware ESLint
-          # step in CI; Super-Linter's default JS rules do not understand this
-          # Vite + TS path setup or the repository's flat ESLint config.
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_TSX: false
-          VALIDATE_JSX: false
-          VALIDATE_TYPESCRIPT_PRETTIER: false
-          VALIDATE_JAVASCRIPT_PRETTIER: false
-          VALIDATE_BIOME_FORMAT: false
-          VALIDATE_BIOME_LINT: false
-          # Do not mix explicit VALIDATE_* true and false values; Super-Linter
-          # treats that combination as unsupported. Unset validators keep their
-          # default auto-detection behavior.
-          # Markdown/CSS/HTML are intentionally covered by lightweight local
-          # configs and browser build tests; keep Super-Linter focused on the
-          # portable repository metadata checks it can run consistently here.
-          VALIDATE_MARKDOWN: false
-          VALIDATE_CSS: false
-          VALIDATE_HTML: false
-          LINTER_RULES_PATH: /
+          # Use Super-Linter's explicit enable mode for portable JSON checks.
+          # TypeScript, TSX, JSX, CSS, HTML, and Markdown are already covered by
+          # the project-aware CI steps (`npm run lint`, build, tests, coverage,
+          # and local markdownlint config). Super-Linter does not support mixing
+          # VALIDATE_* true and false values, so keep this list enable-only.
+          VALIDATE_JSON: true
