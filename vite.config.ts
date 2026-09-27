@@ -15,8 +15,6 @@ export default defineConfig({
     // Allow Arena's proxied preview hostname without weakening extension builds.
     allowedHosts: ['.e2b.app'],
     cors: true,
-    // The Arena preview is served through a unique, proxied host.
-    allowedHosts: true,
   },
   build: {
     outDir: 'dist',

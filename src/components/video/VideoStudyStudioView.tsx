@@ -23,7 +23,7 @@ import {
 } from '../../video/transcriptStudio';
 
 function createSessionId(): string {
-  return `video_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  return `video_${crypto.randomUUID()}`;
 }
 
 export const VideoStudyStudioView: React.FC = () => {
