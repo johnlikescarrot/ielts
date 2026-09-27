@@ -37,8 +37,11 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_JAVASCRIPT_ES: true
+          # TypeScript/JavaScript linting is covered by the project-aware ESLint
+          # step in CI; Super-Linter's default JS rules do not understand this
+          # Vite + TS path setup or the repository's flat ESLint config.
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true
