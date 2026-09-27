@@ -1,0 +1,1 @@
+import{describe,expect,it}from'vitest';import{t}from'./i18n';describe('translations',()=>{it('defaults content in English and supports Vietnamese',()=>{expect(t('en','dashboard')).toBe('Dashboard');expect(t('vi','dashboard')).toBe('Tổng quan')})});

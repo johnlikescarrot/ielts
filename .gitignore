@@ -1,3 +1,8 @@
 node_modules/
 dist/
 coverage/
+*.zip
+.env*
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts

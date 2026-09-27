@@ -1,24 +1,46 @@
 {
   "name": "ielts-slayer-firefox",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "A free, offline-first Firefox extension for IELTS practice.",
   "type": "module",
+  "description": "A private, local-first IELTS study companion for Firefox.",
   "scripts": {
-    "build": "tsc --noEmit && node scripts/build.mjs",
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build && node scripts/copy-extension.mjs",
     "test": "vitest run --coverage",
-    "coverage": "vitest run --coverage",
-    "lint": "eslint .",
-    "lint:super-linter": "docker run --rm -e RUN_LOCAL=true -e DEFAULT_BRANCH=main -v \"$PWD:/tmp/lint\" github/super-linter:latest",
-    "astrix": "npx astryx check ."
+    "test:watch": "vitest",
+    "lint": "eslint . --max-warnings 0",
+    "check": "npm run lint && npm run test && npm run build",
+    "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs",
+    "package": "npm run build && cd dist && zip -r ../ielts-slayer-firefox.zip ."
+  },
+  "dependencies": {
+    "@astryxdesign/core": "0.6.3",
+    "@astryxdesign/theme-neutral": "0.6.3",
+    "@stylexjs/stylex": "^0.19.0",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
-    "@vitest/coverage-v8": "^2.1.8",
-    "eslint": "^9.17.0",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "@astryxdesign/cli": "0.6.3",
+    "@eslint/js": "^9.36.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@types/webextension-polyfill": "^0.12.3",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.4.0",
+    "jsdom": "^27.0.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.44.1",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4"
   }
 }

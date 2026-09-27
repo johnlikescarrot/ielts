@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "IELTS Slayer — Private Study Companion",
+  "version": "1.0.0",
+  "description": "Capture real English, review vocabulary, and practise IELTS — free, private, and without an account.",
+  "permissions": ["storage", "contextMenus", "notifications", "alarms"],
+  "host_permissions": ["<all_urls>"],
+  "action": {"default_title":"IELTS Slayer","default_popup":"popup.html"},
+  "background": {"scripts":["background.js"]},
+  "content_scripts": [{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}],
+  "browser_specific_settings": {"gecko":{"id":"ielts-slayer@openstudy.dev","strict_min_version":"109.0"}},
+  "commands": {"open-studio":{"suggested_key":{"default":"Alt+Shift+I"},"description":"Open study studio"}}
+}

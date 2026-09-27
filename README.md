@@ -1,19 +1,54 @@
-# IELTS Slayer
+# IELTS Slayer for Firefox
 
-A free, private, offline-first Firefox WebExtension for IELTS practice. No login, tracking, or server: choose a prompt, practise for five minutes, and build a daily streak. English is the default; Vietnamese is included.
+A free, local-first IELTS study companion inspired by the learning loop in [WeFode/IELTS_SLAYER](https://github.com/WeFode/IELTS_SLAYER): capture authentic language, review it with spaced repetition, and practise deliberately. No account, server, ads, AI API, or tracking.
 
-## Features
-- Reading, listening, writing, and speaking micro-prompts
-- One-click five-minute practice logging with a 25-minute daily goal
-- English and Vietnamese UI
-- Data stored locally in Firefox only
-- Keyboard-friendly, small popup, no remote dependencies
+Built in TypeScript and React with Meta's [Astryx](https://github.com/facebook/astryx) design system.
 
-## Development
-```sh
-npm ci
-npm test                 # 100% thresholds for the tested TypeScript core
-npm run build            # creates dist/ for temporary Firefox loading
+## Highlights
+
+- Save selected words and surrounding context from any webpage
+- Offline personal vocabulary deck and SM-2-style spaced repetition
+- English by default with a Vietnamese interface option
+- Speaking, listening/shadowing, and writing practice prompts
+- Keyboard shortcut (`Alt+Shift+I`), context menu, speech synthesis
+- Data stored only in Firefox local extension storage
+- 100% statement, branch, function, and line coverage for domain modules
+
+## Develop
+
+Requires Node.js 20+.
+
+```bash
+npm install
+npm run check
+npm run dev       # browser preview
+npm run package   # creates ielts-slayer-firefox.zip
 ```
 
-Load `dist/` at `about:debugging` → This Firefox → Load Temporary Add-on. The project also runs Super-Linter and ASTRYX analysis in CI. The initial concept was informed by the referenced IELTS_SLAYER project, while this implementation deliberately keeps the core flow local, login-free, and extension-native.
+### Load in Firefox
+
+1. Run `npm run build`.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Choose **Load Temporary Add-on** and select `dist/manifest.json`.
+
+## Architecture
+
+- `src/lib/study.ts`: deterministic local scheduling and session domain logic
+- `src/background.js`: context menu capture, reminders, and keyboard command
+- `src/content.js`: extracts context around the current selection
+- `src/App.tsx`: full study studio
+- `src/popup.tsx`: compact browser-action dashboard
+
+Astryx reset, component styles, neutral theme, and runtime `Theme` provider are applied globally. Product-specific CSS uses Astryx-compatible semantic layering while preserving a distinctive focused-study visual identity.
+
+## Privacy and permissions
+
+`storage` persists cards locally. `contextMenus` captures selected text only after an explicit user action. `<all_urls>` lets that context-menu workflow work on pages the learner chooses. No data is transmitted.
+
+## Quality
+
+`npm run check` runs ESLint, Vitest with mandatory 100% domain coverage, TypeScript, and a production build. GitHub Actions also runs Super-Linter and the complete quality suite.
+
+## License
+
+MIT
