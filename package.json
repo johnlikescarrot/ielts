@@ -39,6 +39,7 @@
     "@vitest/coverage-v8": "^5.0.2",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.20.1",
+    "eslint-plugin-jsonc": "^2.21.1",
     "globals": "^15.15.0",
     "jsdom": "^26.0.0",
     "postcss": "^8.5.2",

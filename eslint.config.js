@@ -1,8 +1,14 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import jsonc from 'eslint-plugin-jsonc';
 
 export default tseslint.config(
+  ...jsonc.configs['flat/recommended-with-json'].map(config => ({
+    ...config,
+    files: ['**/*.json'],
+  })),
+
   { ignores: ['dist', 'coverage', 'node_modules'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
