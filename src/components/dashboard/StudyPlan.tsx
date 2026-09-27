@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, BookOpen, Headphones, Layers, Mic, PenTool, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpen, Film, Headphones, Layers, Mic, PenTool, Sparkles } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { Card } from '@astryxdesign/core/Card';
 import { SkillType } from '../../types';
@@ -17,6 +17,7 @@ const skillIcons: Record<SkillType, React.FC<{ className?: string }>> = {
   writing: PenTool,
   speaking: Mic,
   vocabulary: Layers,
+  'video-lab': Film,
   'mock-test': Sparkles,
   analytics: Sparkles,
 };
