@@ -1,0 +1,53 @@
+name: Quality
+
+on:
+  push:
+    branches: [main, arena/01a0e182-ielts]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    name: Test, coverage, and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm audit --audit-level=moderate
+      - name: Package Firefox extension
+        run: npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ielts-forge-firefox
+          path: ielts-forge-firefox.zip
+
+  super-linter:
+    name: Super-Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v8.7.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_YAML: true
+          VALIDATE_CSS: false
+          MARKDOWN_CONFIG_FILE: .markdownlint.json
+          YAML_CONFIG_FILE: .yamllint.yml
+          FILTER_REGEX_EXCLUDE: "(package-lock.json|coverage/|dist/)"
