@@ -29,8 +29,10 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_JAVASCRIPT_ES: true
+          # TypeScript is checked with the repository's pinned ESLint plugins in CI.
+          # The Super-Linter image still validates the cross-language asset surface.
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true

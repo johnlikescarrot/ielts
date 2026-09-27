@@ -1,29 +1,50 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 import {
   exportDataAsJSON,
   validateImportData,
   importDataFromJSON,
-  triggerDownload
-} from '../../src/storage/exportImport';
-import { DEFAULT_STORAGE_DATA } from '../../src/storage/storageService';
+  triggerDownload,
+} from "../../src/storage/exportImport";
+import { DEFAULT_STORAGE_DATA } from "../../src/storage/storageService";
 
-describe('exportImport', () => {
-  it('exports data into structured JSON with version and timestamp', () => {
+describe("exportImport", () => {
+  it("exports data into structured JSON with version and timestamp", () => {
     const json = exportDataAsJSON(DEFAULT_STORAGE_DATA);
     expect(json).toContain('"app": "ielts-slayer"');
     expect(json).toContain('"version": "1.0.0"');
 
     const parsed = JSON.parse(json);
-    expect(parsed.data.settings.targetBand).toBe(DEFAULT_STORAGE_DATA.settings.targetBand);
+    expect(parsed.data.settings.targetBand).toBe(
+      DEFAULT_STORAGE_DATA.settings.targetBand,
+    );
   });
 
-  it('validates imported JSON data format', () => {
+  it("validates imported JSON data format", () => {
     const validJson = JSON.stringify({
       data: {
         settings: { targetBand: 8.5 },
-        srsCards: [{ wordId: 'w1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-28', history: [] }],
-        videoClips: [{ id: 'clip_1', provider: 'youtube', sourceUrl: 'https://youtu.be/abc', sourceTitle: 'Video', startSeconds: 1, endSeconds: 11, createdAt: '2026-09-27T00:00:00.000Z' }],
-      }
+        srsCards: [
+          {
+            wordId: "w1",
+            interval: 1,
+            repetition: 1,
+            easeFactor: 2.5,
+            nextReviewDate: "2026-09-28",
+            history: [],
+          },
+        ],
+        videoClips: [
+          {
+            id: "clip_1",
+            provider: "youtube",
+            sourceUrl: "https://youtu.be/abc",
+            sourceTitle: "Video",
+            startSeconds: 1,
+            endSeconds: 11,
+            createdAt: "2026-09-27T00:00:00.000Z",
+          },
+        ],
+      },
     });
 
     const validated = validateImportData(validJson);
@@ -32,26 +53,26 @@ describe('exportImport', () => {
     expect(validated.videoClips).toHaveLength(1);
   });
 
-  it('throws an error on invalid import payload', () => {
-    expect(() => validateImportData('null')).toThrow();
-    expect(() => validateImportData('42')).toThrow();
-    expect(() => validateImportData('invalid json text')).toThrow();
+  it("throws an error on invalid import payload", () => {
+    expect(() => validateImportData("null")).toThrow();
+    expect(() => validateImportData("42")).toThrow();
+    expect(() => validateImportData("invalid json text")).toThrow();
   });
 
-  it('imports valid JSON and saves to storage service', async () => {
+  it("imports valid JSON and saves to storage service", async () => {
     const payload = JSON.stringify({
       data: {
-        settings: { targetBand: 8.0, language: 'vi' },
+        settings: { targetBand: 8.0, language: "vi" },
         srsCards: [],
-      }
+      },
     });
 
     const saved = await importDataFromJSON(payload);
     expect(saved.settings.targetBand).toBe(8.0);
-    expect(saved.settings.language).toBe('vi');
+    expect(saved.settings.language).toBe("vi");
   });
 
-  it('triggers download without crashing in DOM environment', () => {
-    expect(() => triggerDownload('{}', 'test.json')).not.toThrow();
+  it("triggers download without crashing in DOM environment", () => {
+    expect(() => triggerDownload("{}", "test.json")).not.toThrow();
   });
 });

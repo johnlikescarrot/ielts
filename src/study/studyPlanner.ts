@@ -1,10 +1,15 @@
-import { SRSCard, SkillType, TestAttempt, UserSettings } from '../types';
-import { getDueCards } from '../srs/srsManager';
+import { SRSCard, SkillType, TestAttempt, UserSettings } from "../types";
+import { getDueCards } from "../srs/srsManager";
 
-export const CORE_SKILLS = ['reading', 'listening', 'writing', 'speaking'] as const;
+export const CORE_SKILLS = [
+  "reading",
+  "listening",
+  "writing",
+  "speaking",
+] as const;
 export type CoreSkill = (typeof CORE_SKILLS)[number];
 
-export type StudyTaskReason = 'due-vocabulary' | 'focus-skill' | 'balance';
+export type StudyTaskReason = "due-vocabulary" | "focus-skill" | "balance";
 
 export interface StudyPlanTask {
   id: string;
@@ -22,12 +27,12 @@ export interface StudyPlan {
 
 /** Return a stable local-calendar key for dates used by the offline planner. */
 export function getDateKey(value: Date | string): string {
-  const date = typeof value === 'string' ? new Date(value) : value;
-  if (Number.isNaN(date.getTime())) return '';
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) return "";
 
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
@@ -36,8 +41,13 @@ export function getDateKey(value: Date | string): string {
  * A streak can continue when the learner has not studied yet today, which avoids
  * showing a broken streak at the start of the day.
  */
-export function calculateStudyStreak(history: TestAttempt[], today = new Date()): number {
-  const activeDates = new Set(history.map(attempt => getDateKey(attempt.date)).filter(Boolean));
+export function calculateStudyStreak(
+  history: TestAttempt[],
+  today = new Date(),
+): number {
+  const activeDates = new Set(
+    history.map((attempt) => getDateKey(attempt.date)).filter(Boolean),
+  );
   if (activeDates.size === 0) return 0;
 
   const cursor = new Date(today);
@@ -61,12 +71,16 @@ function clampDailyMinutes(minutes: number): number {
 
 function averageScoresBySkill(history: TestAttempt[]): Map<CoreSkill, number> {
   const scores = new Map<CoreSkill, number>();
-  CORE_SKILLS.forEach(skill => scores.set(skill, 0));
+  CORE_SKILLS.forEach((skill) => scores.set(skill, 0));
 
-  CORE_SKILLS.forEach(skill => {
-    const attempts = history.filter(attempt => attempt.skill === skill && attempt.estimatedBand > 0);
+  CORE_SKILLS.forEach((skill) => {
+    const attempts = history.filter(
+      (attempt) => attempt.skill === skill && attempt.estimatedBand > 0,
+    );
     if (attempts.length > 0) {
-      const average = attempts.reduce((sum, attempt) => sum + attempt.estimatedBand, 0) / attempts.length;
+      const average =
+        attempts.reduce((sum, attempt) => sum + attempt.estimatedBand, 0) /
+        attempts.length;
       scores.set(skill, average);
     }
   });
@@ -74,16 +88,23 @@ function averageScoresBySkill(history: TestAttempt[]): Map<CoreSkill, number> {
 }
 
 /** Select the skill with the most room to improve, rotating untouched skills fairly. */
-export function selectFocusSkill(history: TestAttempt[], today = new Date()): CoreSkill {
+export function selectFocusSkill(
+  history: TestAttempt[],
+  today = new Date(),
+): CoreSkill {
   const scores = averageScoresBySkill(history);
-  const hasPracticeData = CORE_SKILLS.some(skill => scores.get(skill)! > 0);
+  const hasPracticeData = CORE_SKILLS.some((skill) => scores.get(skill)! > 0);
 
   if (!hasPracticeData) {
     return CORE_SKILLS[Math.abs(today.getDate() - 1) % CORE_SKILLS.length];
   }
 
-  const lowestScore = Math.min(...CORE_SKILLS.map(skill => scores.get(skill)! || 0));
-  const tiedSkills = CORE_SKILLS.filter(skill => (scores.get(skill) || 0) === lowestScore);
+  const lowestScore = Math.min(
+    ...CORE_SKILLS.map((skill) => scores.get(skill)! || 0),
+  );
+  const tiedSkills = CORE_SKILLS.filter(
+    (skill) => (scores.get(skill) || 0) === lowestScore,
+  );
   return tiedSkills[Math.abs(today.getDate() - 1) % tiedSkills.length];
 }
 
@@ -120,9 +141,9 @@ export function buildStudyPlan(
     );
     tasks.push({
       id: `study-${date}-vocabulary-${taskIndex++}`,
-      skill: 'vocabulary',
+      skill: "vocabulary",
       minutes: reviewMinutes,
-      reason: 'due-vocabulary',
+      reason: "due-vocabulary",
       dueCardCount,
     });
     remainingMinutes -= reviewMinutes;
@@ -137,7 +158,7 @@ export function buildStudyPlan(
     id: `study-${date}-${focusSkill}-${taskIndex++}`,
     skill: focusSkill,
     minutes: focusMinutes,
-    reason: 'focus-skill',
+    reason: "focus-skill",
   });
   remainingMinutes -= focusMinutes;
 
@@ -147,7 +168,7 @@ export function buildStudyPlan(
       id: `study-${date}-${balanceSkill}-${taskIndex}`,
       skill: balanceSkill,
       minutes: remainingMinutes,
-      reason: 'balance',
+      reason: "balance",
     });
   }
 

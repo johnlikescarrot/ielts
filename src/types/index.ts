@@ -1,15 +1,23 @@
-export type Language = 'en' | 'vi';
+export type Language = "en" | "vi";
 
-export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'video-lab' | 'mock-test' | 'analytics';
+export type SkillType =
+  | "reading"
+  | "listening"
+  | "writing"
+  | "speaking"
+  | "vocabulary"
+  | "video-lab"
+  | "mock-test"
+  | "analytics";
 
-export type ExamType = 'academic' | 'general';
+export type ExamType = "academic" | "general";
 
 export interface UserSettings {
   language: Language;
   examType: ExamType;
   targetBand: number;
   dailyGoalMinutes: number;
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   srsDailyTarget: number;
   autoSpeak: boolean;
 }
@@ -17,7 +25,7 @@ export interface UserSettings {
 /** A locally saved listening-repeat segment from a supported video page. */
 export interface VideoClip {
   id: string;
-  provider: 'youtube' | 'bilibili';
+  provider: "youtube" | "bilibili";
   sourceUrl: string;
   sourceTitle: string;
   startSeconds: number;
@@ -37,15 +45,15 @@ export interface VocabularyItem {
   synonyms: string[];
   topic: string;
   bandScore: number;
-  cefrLevel: 'B2' | 'C1' | 'C2';
+  cefrLevel: "B2" | "C1" | "C2";
   isAWL?: boolean;
 }
 
 export interface SRSCard {
   wordId: string;
-  interval: number;       // in days
-  repetition: number;     // number of consecutive successful reviews
-  easeFactor: number;     // SM-2 ease factor (default 2.5)
+  interval: number; // in days
+  repetition: number; // number of consecutive successful reviews
+  easeFactor: number; // SM-2 ease factor (default 2.5)
   nextReviewDate: string; // ISO date string
   lastReviewedDate?: string;
   history: {
@@ -55,13 +63,13 @@ export interface SRSCard {
 }
 
 // Reading types
-export type ReadingQuestionType = 
-  | 'multiple-choice'
-  | 'true-false-not-given'
-  | 'yes-no-not-given'
-  | 'matching-headings'
-  | 'sentence-completion'
-  | 'summary-completion';
+export type ReadingQuestionType =
+  | "multiple-choice"
+  | "true-false-not-given"
+  | "yes-no-not-given"
+  | "matching-headings"
+  | "sentence-completion"
+  | "summary-completion";
 
 export interface ReadingQuestion {
   id: string;
@@ -79,20 +87,20 @@ export interface ReadingPassage {
   id: string;
   title: string;
   examType: ExamType;
-  difficulty: 'Band 6.0-6.5' | 'Band 7.0-7.5' | 'Band 8.0-9.0';
+  difficulty: "Band 6.0-6.5" | "Band 7.0-7.5" | "Band 8.0-9.0";
   passageText: string;
   timeLimitMinutes: number;
   questions: ReadingQuestion[];
 }
 
 // Listening types
-export type ListeningQuestionType = 
-  | 'form-completion'
-  | 'multiple-choice'
-  | 'matching'
-  | 'map-labeling'
-  | 'short-answer'
-  | 'sentence-completion';
+export type ListeningQuestionType =
+  | "form-completion"
+  | "multiple-choice"
+  | "matching"
+  | "map-labeling"
+  | "short-answer"
+  | "sentence-completion";
 
 export interface ListeningQuestion {
   id: string;
@@ -123,7 +131,8 @@ export interface ListeningSection {
 }
 
 // Writing types
-export type WritingTaskType = 'task1-academic' | 'task1-general' | 'task2-essay';
+export type WritingTaskType =
+  "task1-academic" | "task1-general" | "task2-essay";
 
 export interface WritingPrompt {
   id: string;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { UserSettings } from '../../types';
-import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
-import { useI18n } from '../../i18n/i18nContext';
-import { Settings, CheckCircle, ShieldCheck, Cpu } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { UserSettings } from "../../types";
+import { storageService, DEFAULT_SETTINGS } from "../../storage/storageService";
+import { useI18n } from "../../i18n/i18nContext";
+import { Settings, CheckCircle, ShieldCheck, Cpu } from "lucide-react";
 
 export const SettingsView: React.FC = () => {
   const { language, setLanguage, t } = useI18n();
@@ -10,7 +10,7 @@ export const SettingsView: React.FC = () => {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    storageService.getSettings().then(s => setSettings(s));
+    storageService.getSettings().then((s) => setSettings(s));
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ export const SettingsView: React.FC = () => {
         <div className="flex items-center space-x-2">
           <Settings className="w-6 h-6 text-indigo-600" />
           <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-            {t('settings.title')}
+            {t("settings.title")}
           </h1>
         </div>
         <p className="text-xs text-slate-500">
@@ -40,15 +40,18 @@ export const SettingsView: React.FC = () => {
       {savedSuccess && (
         <div className="p-4 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 rounded-2xl text-xs font-semibold flex items-center space-x-2 shadow-xs">
           <CheckCircle className="w-4 h-4" />
-          <span>{t('settings.savedSuccess')}</span>
+          <span>{t("settings.savedSuccess")}</span>
         </div>
       )}
 
-      <form onSubmit={handleSave} className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 text-xs">
+      <form
+        onSubmit={handleSave}
+        className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 text-xs"
+      >
         {/* Target Band */}
         <div className="space-y-1.5">
           <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.targetScore')}: Band {settings.targetBand.toFixed(1)}
+            {t("settings.targetScore")}: Band {settings.targetBand.toFixed(1)}
           </label>
           <input
             type="range"
@@ -56,7 +59,12 @@ export const SettingsView: React.FC = () => {
             max="9.0"
             step="0.5"
             value={settings.targetBand}
-            onChange={(e) => setSettings({ ...settings, targetBand: parseFloat(e.target.value) })}
+            onChange={(e) =>
+              setSettings({
+                ...settings,
+                targetBand: parseFloat(e.target.value),
+              })
+            }
             className="w-full accent-indigo-600"
           />
         </div>
@@ -64,27 +72,27 @@ export const SettingsView: React.FC = () => {
         {/* Exam Type */}
         <div className="space-y-1.5">
           <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.preferredExam')}
+            {t("settings.preferredExam")}
           </label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setSettings({ ...settings, examType: 'academic' })}
+              onClick={() => setSettings({ ...settings, examType: "academic" })}
               className={`p-3 rounded-xl border font-bold text-xs transition ${
-                settings.examType === 'academic'
-                  ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                settings.examType === "academic"
+                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300"
+                  : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
               }`}
             >
               Academic
             </button>
             <button
               type="button"
-              onClick={() => setSettings({ ...settings, examType: 'general' })}
+              onClick={() => setSettings({ ...settings, examType: "general" })}
               className={`p-3 rounded-xl border font-bold text-xs transition ${
-                settings.examType === 'general'
-                  ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                settings.examType === "general"
+                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300"
+                  : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
               }`}
             >
               General Training
@@ -95,27 +103,27 @@ export const SettingsView: React.FC = () => {
         {/* Interface Language */}
         <div className="space-y-1.5">
           <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.language')}
+            {t("settings.language")}
           </label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setSettings({ ...settings, language: 'en' })}
+              onClick={() => setSettings({ ...settings, language: "en" })}
               className={`p-3 rounded-xl border font-bold text-xs transition ${
-                settings.language === 'en'
-                  ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                settings.language === "en"
+                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300"
+                  : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
               }`}
             >
               English (UK / US) 🇬🇧
             </button>
             <button
               type="button"
-              onClick={() => setSettings({ ...settings, language: 'vi' })}
+              onClick={() => setSettings({ ...settings, language: "vi" })}
               className={`p-3 rounded-xl border font-bold text-xs transition ${
-                settings.language === 'vi'
-                  ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                settings.language === "vi"
+                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-700 dark:text-indigo-300"
+                  : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
               }`}
             >
               Tiếng Việt (Vietnamese) 🇻🇳
@@ -126,7 +134,7 @@ export const SettingsView: React.FC = () => {
         {/* Daily Minutes */}
         <div className="space-y-1.5">
           <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.dailyMinutes')}
+            {t("settings.dailyMinutes")}
           </label>
           <input
             type="number"
@@ -134,7 +142,12 @@ export const SettingsView: React.FC = () => {
             max="240"
             step="5"
             value={settings.dailyGoalMinutes}
-            onChange={(e) => setSettings({ ...settings, dailyGoalMinutes: parseInt(e.target.value) || 30 })}
+            onChange={(e) =>
+              setSettings({
+                ...settings,
+                dailyGoalMinutes: parseInt(e.target.value) || 30,
+              })
+            }
             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
           />
         </div>
@@ -143,7 +156,7 @@ export const SettingsView: React.FC = () => {
           type="submit"
           className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl shadow-md transition text-xs active:scale-98"
         >
-          {t('common.save')}
+          {t("common.save")}
         </button>
       </form>
 
@@ -154,7 +167,10 @@ export const SettingsView: React.FC = () => {
           <span>100% Free & Privacy-First Architecture</span>
         </div>
         <p className="leading-relaxed">
-          IELTS Slayer operates 100% locally on your machine. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain encrypted in local browser storage.
+          IELTS Slayer operates 100% locally on your machine. Zero tracking,
+          zero ads, zero user accounts, zero remote analytics. Your test
+          responses and flashcard states remain encrypted in local browser
+          storage.
         </p>
 
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200 pt-2">
@@ -162,7 +178,8 @@ export const SettingsView: React.FC = () => {
           <span>Astryx Syntax AST Engine</span>
         </div>
         <p className="leading-relaxed">
-          The automated essay evaluation system uses a local Abstract Syntax Tree (AST) grammar heuristic. Your writing stays on this device.
+          The automated essay evaluation system uses a local Abstract Syntax
+          Tree (AST) grammar heuristic. Your writing stays on this device.
         </p>
       </div>
     </div>

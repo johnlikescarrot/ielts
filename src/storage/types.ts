@@ -1,4 +1,10 @@
-import { UserSettings, SRSCard, TestAttempt, VideoClip, VocabularyItem } from '../types';
+import {
+  UserSettings,
+  SRSCard,
+  TestAttempt,
+  VideoClip,
+  VocabularyItem,
+} from "../types";
 
 export interface StorageData {
   settings: UserSettings;
@@ -7,7 +13,7 @@ export interface StorageData {
   testHistory: TestAttempt[];
   bookmarks: {
     id: string;
-    type: 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary';
+    type: "reading" | "listening" | "writing" | "speaking" | "vocabulary";
     itemId: string;
     title: string;
     createdAt: string;
