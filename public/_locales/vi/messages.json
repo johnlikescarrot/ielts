@@ -1,0 +1,17 @@
+{
+  "extensionName": {
+    "message": "Bandcraft — Luyện thi IELTS"
+  },
+  "extensionDescription": {
+    "message": "Luyện từ vựng, đọc, viết, nghe và nói IELTS riêng tư trên thiết bị. Không cần tài khoản hay thuê bao."
+  },
+  "actionTitle": {
+    "message": "Mở bài luyện nhanh Bandcraft"
+  },
+  "sidebarTitle": {
+    "message": "Thanh bên học tập Bandcraft"
+  },
+  "saveSelection": {
+    "message": "Lưu phần đã chọn vào Bandcraft"
+  }
+}

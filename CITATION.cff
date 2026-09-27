@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: 'If you use Bandcraft in teaching or research, please cite the software version you used.'
+title: 'Bandcraft: A Local-First IELTS Practice Studio for Firefox'
+type: software
+authors:
+  - name: 'Bandcraft contributors'
+version: 1.0.0
+date-released: 2026-09-27
+url: 'https://github.com/johnlikescarrot/ielts'
+repository-code: 'https://github.com/johnlikescarrot/ielts'
+license: MIT
+keywords:
+  - IELTS
+  - language learning
+  - spaced repetition
+  - retrieval practice
+  - shadowing
+  - Firefox extension
+  - local-first software
+abstract: >-
+  Bandcraft is a free, no-login, local-first Firefox extension for deliberate
+  IELTS vocabulary, reading, writing, listening, and speaking practice. It
+  combines FSRS review, explicit page capture, timed production, subtitle-aligned
+  shadowing, local recording, bilingual English/Vietnamese UI, and transparent
+  data export without transmitting learner data.

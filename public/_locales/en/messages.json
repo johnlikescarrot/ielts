@@ -1,0 +1,17 @@
+{
+  "extensionName": {
+    "message": "Bandcraft — IELTS Practice Studio"
+  },
+  "extensionDescription": {
+    "message": "Private, local-first IELTS practice for vocabulary, reading, writing, listening, and speaking. No account or subscription."
+  },
+  "actionTitle": {
+    "message": "Open Bandcraft quick practice"
+  },
+  "sidebarTitle": {
+    "message": "Bandcraft study sidebar"
+  },
+  "saveSelection": {
+    "message": "Save selection to Bandcraft"
+  }
+}
