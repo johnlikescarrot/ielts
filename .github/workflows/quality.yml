@@ -1,0 +1,26 @@
+name: Quality
+on: [push, pull_request]
+jobs:
+  super-linter:
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: read, statuses: write}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Super-linter
+        uses: super-linter/super-linter/slim@v7
+        env: {DEFAULT_BRANCH: main, GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm}
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+  astrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Astrix analysis toolkit
+        run: git clone --depth 1 https://github.com/facebook/astrix.git .astrix
