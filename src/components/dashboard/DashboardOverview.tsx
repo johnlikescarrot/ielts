@@ -7,6 +7,7 @@ import { Badge } from '../common/Badge';
 import {
   BookOpen,
   Headphones,
+  Captions,
   PenTool,
   Mic,
   Layers,
@@ -66,12 +67,20 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       tag: 'Audio Player',
     },
     {
+      id: 'video' as SkillType,
+      title: t('nav.video'),
+      description: t('dash.featureVideoDesc'),
+      icon: Captions,
+      color: 'from-cyan-600 to-blue-600',
+      tag: 'WebVTT / SRT',
+    },
+    {
       id: 'writing' as SkillType,
       title: t('nav.writing'),
       description: t('dash.featureWritingDesc'),
       icon: PenTool,
       color: 'from-indigo-600 to-rose-600',
-      tag: 'AST Astryx Heuristic',
+      tag: 'AST Writing Engine',
     },
     {
       id: 'speaking' as SkillType,

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { StorageService, DEFAULT_SETTINGS } from '../../src/storage/storageService';
+import { createVideoPracticeSession } from '../../src/video/transcriptPractice';
 
 describe('StorageService Suite', () => {
   let service: StorageService;
@@ -44,6 +45,24 @@ describe('StorageService Suite', () => {
     const history = await service.getTestHistory();
     expect(history.length).toBe(1);
     expect(history[0].testTitle).toBe('Urban Vertical Farming');
+  });
+
+  it('saves, replaces, and removes private video practice sessions', async () => {
+    const session = createVideoPracticeSession({
+      title: 'Saved clip',
+      transcript: 'Research improves educational outcomes for learners.',
+      createdAt: '2026-09-27T12:00:00.000Z',
+    });
+
+    await service.saveVideoSession(session);
+    await service.saveVideoSession({ ...session, title: 'Updated saved clip' });
+
+    expect(await service.getVideoSessions()).toEqual([
+      expect.objectContaining({ id: session.id, title: 'Updated saved clip' }),
+    ]);
+
+    await service.removeVideoSession(session.id);
+    expect(await service.getVideoSessions()).toEqual([]);
   });
 
   it('manages custom vocabulary additions and removals', async () => {

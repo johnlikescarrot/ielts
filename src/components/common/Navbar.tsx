@@ -2,6 +2,7 @@ import React from 'react';
 import { 
   BookOpen, 
   Headphones, 
+  Captions,
   PenTool, 
   Mic, 
   Layers, 
@@ -32,6 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
     { id: 'reading', label: t('nav.reading'), icon: BookOpen },
     { id: 'listening', label: t('nav.listening'), icon: Headphones },
+    { id: 'video', label: t('nav.video'), icon: Captions },
     { id: 'writing', label: t('nav.writing'), icon: PenTool },
     { id: 'speaking', label: t('nav.speaking'), icon: Mic },
     { id: 'vocabulary', label: t('nav.vocabulary'), icon: Layers },

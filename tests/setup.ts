@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -49,6 +49,7 @@ Object.defineProperty(window, 'speechSynthesis', {
 
 // Polyfill navigator.clipboard
 Object.defineProperty(navigator, 'clipboard', {
+  configurable: true,
   value: {
     writeText: async () => {},
   },
@@ -102,3 +103,11 @@ window.URL.revokeObjectURL = () => {};
 // Polyfill HTMLMediaElement play/pause
 HTMLMediaElement.prototype.play = async () => {};
 HTMLMediaElement.prototype.pause = () => {};
+
+// Keep browser-navigation side effects out of jsdom test output.
+Object.defineProperty(window, 'open', {
+  configurable: true,
+  writable: true,
+  value: () => null,
+});
+HTMLAnchorElement.prototype.click = () => {};

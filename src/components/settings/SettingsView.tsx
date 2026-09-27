@@ -154,15 +154,15 @@ export const SettingsView: React.FC = () => {
           <span>100% Free & Privacy-First Architecture</span>
         </div>
         <p className="leading-relaxed">
-          IELTS Slayer operates 100% locally on your machine. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain encrypted in local browser storage.
+          IELTS Slayer operates locally in your browser. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain in Firefox local storage.
         </p>
 
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200 pt-2">
           <Cpu className="w-4 h-4 text-indigo-500" />
-          <span>Astryx Syntax AST Engine</span>
+          <span>Local AST Writing Engine</span>
         </div>
         <p className="leading-relaxed">
-          The automated essay evaluation system is powered by an Abstract Syntax Tree (AST) grammar heuristic inspired by the Astryx linguistic standard for IELTS assessment.
+          The automated essay evaluator uses transparent, on-device Abstract Syntax Tree (AST) grammar heuristics. It is a learning aid, not an official IELTS score.
         </p>
       </div>
     </div>

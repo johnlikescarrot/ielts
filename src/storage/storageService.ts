@@ -1,5 +1,6 @@
 import { StorageData } from './types';
 import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import type { VideoPracticeSession } from '../video/types';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   language: 'en',
@@ -18,6 +19,7 @@ export const DEFAULT_STORAGE_DATA: StorageData = {
   testHistory: [],
   bookmarks: [],
   notes: [],
+  videoSessions: [],
 };
 
 const STORAGE_KEY = 'ielts_slayer_v1_data';
@@ -52,6 +54,7 @@ export class StorageService {
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+            videoSessions: Array.isArray(parsed.videoSessions) ? parsed.videoSessions : [],
           };
           return { ...this.inMemoryCache };
         }
@@ -67,6 +70,7 @@ export class StorageService {
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+            videoSessions: Array.isArray(parsed.videoSessions) ? parsed.videoSessions : [],
           };
           return { ...this.inMemoryCache };
         }
@@ -152,6 +156,25 @@ export class StorageService {
     const updatedHistory = [newAttempt, ...(data.testHistory || [])];
     await this.saveData({ testHistory: updatedHistory });
     return newAttempt;
+  }
+
+  async getVideoSessions(): Promise<VideoPracticeSession[]> {
+    const data = await this.getData();
+    return data.videoSessions || [];
+  }
+
+  async saveVideoSession(session: VideoPracticeSession): Promise<VideoPracticeSession[]> {
+    const sessions = await this.getVideoSessions();
+    const updatedSessions = [session, ...sessions.filter((existing) => existing.id !== session.id)]
+      .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+      .slice(0, 12);
+    await this.saveData({ videoSessions: updatedSessions });
+    return updatedSessions;
+  }
+
+  async removeVideoSession(sessionId: string): Promise<void> {
+    const sessions = await this.getVideoSessions();
+    await this.saveData({ videoSessions: sessions.filter((session) => session.id !== sessionId) });
   }
 
   async getCustomVocabulary(): Promise<VocabularyItem[]> {

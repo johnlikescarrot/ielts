@@ -1,4 +1,5 @@
 import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import type { VideoPracticeSession } from '../video/types';
 
 export interface StorageData {
   settings: UserSettings;
@@ -18,4 +19,5 @@ export interface StorageData {
     content: string;
     updatedAt: string;
   }[];
+  videoSessions: VideoPracticeSession[];
 }

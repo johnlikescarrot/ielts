@@ -31,6 +31,7 @@ export function validateImportData(rawJson: string): StorageData {
   const testHistory = Array.isArray(data.testHistory) ? data.testHistory : [];
   const bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
   const notes = Array.isArray(data.notes) ? data.notes : [];
+  const videoSessions = Array.isArray(data.videoSessions) ? data.videoSessions : [];
 
   return {
     settings,
@@ -39,6 +40,7 @@ export function validateImportData(rawJson: string): StorageData {
     testHistory,
     bookmarks,
     notes,
+    videoSessions,
   };
 }
 

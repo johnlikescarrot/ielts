@@ -22,12 +22,14 @@ describe('exportImport', () => {
       data: {
         settings: { targetBand: 8.5 },
         srsCards: [{ wordId: 'w1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-28', history: [] }],
+        videoSessions: [{ id: 'video-1', title: 'Saved clip' }],
       }
     });
 
     const validated = validateImportData(validJson);
     expect(validated.settings.targetBand).toBe(8.5);
     expect(validated.srsCards.length).toBe(1);
+    expect(validated.videoSessions).toEqual([{ id: 'video-1', title: 'Saved clip' }]);
   });
 
   it('throws an error on invalid import payload', () => {
