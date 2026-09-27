@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserSettings } from '../../types';
 import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
 import { useI18n } from '../../i18n/i18nContext';
-import { Settings, CheckCircle, ShieldCheck, Cpu } from 'lucide-react';
+import { Settings, CheckCircle, ShieldCheck, Cpu, ExternalLink } from 'lucide-react';
 
 export const SettingsView: React.FC = () => {
   const { language, setLanguage, t } = useI18n();
@@ -33,7 +33,7 @@ export const SettingsView: React.FC = () => {
           </h1>
         </div>
         <p className="text-xs text-slate-500">
-          Personalize your IELTS target bands, study preferences, and language.
+          {t('settings.description')}
         </p>
       </div>
 
@@ -147,23 +147,28 @@ export const SettingsView: React.FC = () => {
         </button>
       </form>
 
-      {/* Privacy & Engine badges */}
+      {/* Privacy & design system disclosure */}
       <div className="p-5 bg-slate-100 dark:bg-slate-800/60 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs text-slate-600 dark:text-slate-400">
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>100% Free & Privacy-First Architecture</span>
+          <span>{t('settings.privacyTitle')}</span>
         </div>
-        <p className="leading-relaxed">
-          IELTS Slayer operates 100% locally on your machine. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain encrypted in local browser storage.
-        </p>
+        <p className="leading-relaxed">{t('settings.privacyBody')}</p>
 
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200 pt-2">
           <Cpu className="w-4 h-4 text-indigo-500" />
-          <span>Astryx Syntax AST Engine</span>
+          <span>{t('settings.designSystemTitle')}</span>
         </div>
-        <p className="leading-relaxed">
-          The automated essay evaluation system is powered by an Abstract Syntax Tree (AST) grammar heuristic inspired by the Astryx linguistic standard for IELTS assessment.
-        </p>
+        <p className="leading-relaxed">{t('settings.designSystemBody')}</p>
+        <a
+          href="https://github.com/facebook/astryx"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1.5 font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+        >
+          {t('settings.learnAstryx')}
+          <ExternalLink className="w-3 h-3" aria-hidden="true" />
+        </a>
       </div>
     </div>
   );

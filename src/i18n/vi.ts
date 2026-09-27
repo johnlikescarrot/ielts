@@ -48,6 +48,7 @@ export const vi: Record<string, string> = {
   'common.noData': 'Không có dữ liệu',
   'common.bookmark': 'Đánh dấu lưu',
   'common.bookmarked': 'Đã lưu',
+  'common.helloLearner': 'Xin chào, {name}!',
 
   // Dashboard Overview
   'dash.welcome': 'Chào mừng bạn quay lại với IELTS Slayer!',
@@ -174,10 +175,25 @@ export const vi: Record<string, string> = {
   'settings.language': 'Ngôn ngữ giao diện',
   'settings.theme': 'Giao diện hiển thị',
   'settings.savedSuccess': 'Đã lưu thiết lập thành công!',
+  'settings.description': 'Tùy chỉnh band mục tiêu, thói quen học và ngôn ngữ của bạn.',
+  'settings.privacyTitle': 'Miễn phí & ưu tiên quyền riêng tư',
+  'settings.privacyBody': 'IELTS Slayer không gửi dữ liệu học tập lên mạng. Không tài khoản, không quảng cáo và không phân tích từ xa. Tiến độ chỉ ở bộ nhớ cục bộ của Firefox và có thể xuất hoặc xóa bất cứ lúc nào.',
+  'settings.designSystemTitle': 'Hệ thống thiết kế Astryx',
+  'settings.designSystemBody': 'Giao diện sử dụng Astryx, hệ thống thiết kế React mã nguồn mở và tùy biến được của Meta. Bộ chấm bài viết vẫn là heuristic cục bộ minh bạch, không phải điểm IELTS chính thức.',
+  'settings.learnAstryx': 'Xem Astryx trên GitHub',
 
   // Content Script Popup
   'inspector.title': 'IELTS Slayer Tra Cứu Nhanh',
   'inspector.saveToFlashcards': 'Thêm vào Flashcard SRS',
   'inspector.saved': 'Đã lưu vào bộ thẻ!',
   'inspector.viewInDeck': 'Xem trong bộ từ',
+
+  // Popup quick study surface
+  'popup.wordOfTheDay': 'Từ vựng trong ngày',
+  'popup.readingDesc': 'Bài đọc chuẩn đề thi',
+  'popup.listeningDesc': 'Audio đủ 4 Section',
+  'popup.writingDesc': 'Phản hồi bài viết minh bạch',
+  'popup.speakingDesc': 'Luyện nói bằng giọng của bạn',
+  'popup.openDashboard': 'Mở bảng điều khiển đầy đủ',
+  'popup.privacyNote': 'Không tài khoản • Không theo dõi • Dùng ngoại tuyến',
 };

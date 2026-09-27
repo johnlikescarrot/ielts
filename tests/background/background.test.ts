@@ -34,6 +34,12 @@ describe('background Suite', () => {
     expect(mockBrowser.runtime.onMessage.addListener).toHaveBeenCalled();
   });
 
+  it('does nothing when optional Firefox APIs are absent', () => {
+    (globalThis as any).browser = {};
+    initializeBackground();
+    (globalThis as any).browser = mockBrowser;
+  });
+
   it('executes onInstalled listener and creates context menus', () => {
     initializeBackground();
     const installedCallback = mockBrowser.runtime.onInstalled.addListener.mock.calls[0][0];
@@ -94,5 +100,34 @@ describe('background Suite', () => {
     await storageService.saveSRSCards([]);
     await updateReviewBadge();
     expect(mockBrowser.action.setBadgeText).toHaveBeenCalledWith({ text: '' });
+  });
+
+  it('ignores badge updates when Firefox APIs are unavailable', async () => {
+    delete (globalThis as any).browser;
+    await updateReviewBadge();
+    (globalThis as any).browser = mockBrowser;
+  });
+
+  it('updates a due badge even when the color API is unavailable', async () => {
+    await storageService.saveSRSCards([
+      { wordId: 'w2', interval: 0, repetition: 0, easeFactor: 2.5, nextReviewDate: '2020-01-01', history: [] },
+    ]);
+    const setColor = mockBrowser.action.setBadgeBackgroundColor;
+    mockBrowser.action.setBadgeBackgroundColor = undefined;
+
+    await updateReviewBadge();
+
+    expect(mockBrowser.action.setBadgeText).toHaveBeenCalledWith({ text: '1' });
+    mockBrowser.action.setBadgeBackgroundColor = setColor;
+  });
+
+  it('contains badge API failures instead of breaking the background worker', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    mockBrowser.action.setBadgeText.mockRejectedValueOnce(new Error('quota'));
+
+    await updateReviewBadge();
+
+    expect(warn).toHaveBeenCalledWith('Could not update review badge', expect.any(Error));
+    warn.mockRestore();
   });
 });

@@ -4,6 +4,8 @@ import { VocabularyItem, UserSettings } from '../types';
 import { storageService, DEFAULT_SETTINGS } from '../storage/storageService';
 import { I18nProvider, useI18n } from '../i18n/i18nContext';
 import { Badge } from '../components/common/Badge';
+import { Button as AstryxButton } from '@astryxdesign/core/Button';
+import { Card as AstryxCard } from '@astryxdesign/core/Card';
 import {
   Volume2,
   ExternalLink,
@@ -17,7 +19,7 @@ import {
 } from 'lucide-react';
 
 const PopupContent: React.FC = () => {
-  const { language, t } = useI18n();
+  const { language, setLanguage, t } = useI18n();
   const [wordOfTheDay, setWordOfTheDay] = useState<VocabularyItem>(INITIAL_VOCABULARY[0]);
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isSaved, setIsSaved] = useState(false);
@@ -26,7 +28,7 @@ const PopupContent: React.FC = () => {
     storageService.getSettings().then(s => setSettings(s));
     // Pick word based on day of year
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
-    const word = INITIAL_VOCABULARY[dayOfYear % INITIAL_VOCABULARY.length] || INITIAL_VOCABULARY[0];
+    const word = INITIAL_VOCABULARY[dayOfYear % INITIAL_VOCABULARY.length];
     setWordOfTheDay(word);
   }, []);
 
@@ -39,7 +41,7 @@ const PopupContent: React.FC = () => {
   };
 
   const speakWord = (word: string) => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(word);
       u.lang = 'en-GB';
@@ -50,7 +52,6 @@ const PopupContent: React.FC = () => {
   const saveWord = async () => {
     await storageService.addCustomVocabulary(wordOfTheDay);
     setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
   };
 
   return (
@@ -67,6 +68,14 @@ const PopupContent: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-1.5">
+          <button
+            type="button"
+            onClick={() => void setLanguage(language === 'en' ? 'vi' : 'en')}
+            className="px-1.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+            aria-label={language === 'en' ? 'Switch to Vietnamese' : 'Chuyển sang tiếng Anh'}
+          >
+            {language === 'en' ? 'VI' : 'EN'}
+          </button>
           <Badge variant="primary" size="sm">
             Band {settings.targetBand.toFixed(1)}
           </Badge>
@@ -78,10 +87,15 @@ const PopupContent: React.FC = () => {
       </div>
 
       {/* Word of the Day Card */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-xs space-y-2.5">
+      <AstryxCard
+        variant="default"
+        elevation="low"
+        padding={4}
+        className="space-y-2.5"
+      >
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-            Word of the Day
+            {t('popup.wordOfTheDay')}
           </span>
           <Badge variant="neutral" size="sm">
             CEFR {wordOfTheDay.cefrLevel}
@@ -99,6 +113,7 @@ const PopupContent: React.FC = () => {
           </div>
           <button
             onClick={() => speakWord(wordOfTheDay.word)}
+            aria-label={language === 'vi' ? 'Phát âm từ' : 'Pronounce word'}
             className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded-full transition"
           >
             <Volume2 className="w-5 h-5" />
@@ -113,23 +128,14 @@ const PopupContent: React.FC = () => {
           "{wordOfTheDay.example}"
         </p>
 
-        <button
+        <AstryxButton
+          label={isSaved ? t('inspector.saved') : t('inspector.saveToFlashcards')}
           onClick={saveWord}
-          className="w-full py-2 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 font-semibold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition"
-        >
-          {isSaved ? (
-            <>
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-              <span>{t('inspector.saved')}</span>
-            </>
-          ) : (
-            <>
-              <Layers className="w-3.5 h-3.5" />
-              <span>{t('inspector.saveToFlashcards')}</span>
-            </>
-          )}
-        </button>
-      </div>
+          variant={isSaved ? 'secondary' : 'primary'}
+          width="100%"
+          icon={isSaved ? <CheckCircle className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
+        />
+      </AstryxCard>
 
       {/* Quick Launch Buttons */}
       <div className="grid grid-cols-2 gap-2">
@@ -139,7 +145,7 @@ const PopupContent: React.FC = () => {
         >
           <BookOpen className="w-4 h-4 text-blue-500" />
           <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">Reading</div>
-          <p className="text-[10px] text-slate-400">Authentic passages</p>
+          <p className="text-[10px] text-slate-400">{t('popup.readingDesc')}</p>
         </button>
 
         <button
@@ -148,7 +154,7 @@ const PopupContent: React.FC = () => {
         >
           <Headphones className="w-4 h-4 text-purple-500" />
           <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">Listening</div>
-          <p className="text-[10px] text-slate-400">Audio 4 sections</p>
+          <p className="text-[10px] text-slate-400">{t('popup.listeningDesc')}</p>
         </button>
 
         <button
@@ -157,7 +163,7 @@ const PopupContent: React.FC = () => {
         >
           <PenTool className="w-4 h-4 text-rose-500" />
           <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">AST Writing</div>
-          <p className="text-[10px] text-slate-400">Automated grader</p>
+          <p className="text-[10px] text-slate-400">{t('popup.writingDesc')}</p>
         </button>
 
         <button
@@ -166,7 +172,7 @@ const PopupContent: React.FC = () => {
         >
           <Mic className="w-4 h-4 text-amber-500" />
           <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600">Speaking</div>
-          <p className="text-[10px] text-slate-400">Voice recorder</p>
+          <p className="text-[10px] text-slate-400">{t('popup.speakingDesc')}</p>
         </button>
       </div>
 
@@ -175,9 +181,12 @@ const PopupContent: React.FC = () => {
         onClick={openDashboard}
         className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow-sm transition active:scale-98"
       >
-        <span>Open Full Dashboard</span>
+        <span>{t('popup.openDashboard')}</span>
         <ExternalLink className="w-3.5 h-3.5" />
       </button>
+      <p className="text-center text-[10px] text-slate-400" aria-label={t('popup.privacyNote')}>
+        {t('popup.privacyNote')}
+      </p>
     </div>
   );
 };

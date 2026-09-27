@@ -1,6 +1,6 @@
 {
   "name": "ielts-slayer-firefox",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Top-tier, 100% Free & Privacy-first IELTS Preparation Suite for Firefox with AST Analysis and Dual English/Vietnamese Support",
   "private": true,
   "type": "module",
@@ -15,9 +15,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@astryxdesign/core": "^0.6.3",
+    "@astryxdesign/theme-neutral": "^0.6.3",
+    "@stylexjs/stylex": "^0.19.1",
     "lucide-react": "^0.475.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
@@ -25,8 +28,8 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.13.4",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^5.0.2",
     "autoprefixer": "^10.4.20",

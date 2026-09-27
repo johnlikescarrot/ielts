@@ -105,5 +105,57 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
       nominalizationCount: 0,
     });
     expect(graReport.band).toBeLessThanOrEqual(5.5);
+
+    const mediumLengthAst = parseEssayToAST(Array.from({ length: 180 }, () => 'word').join(' '));
+    expect(extractTaskMetrics(mediumLengthAst, 250).wordCountPenalty).toBe(1.0);
+
+    const exactLengthTask = {
+      ...taskUnder,
+      wordCount: 250,
+      isWordCountSufficient: true,
+      wordCountPenalty: 0,
+    };
+    expect(evaluateTaskResponse(exactLengthTask, 3).band).toBeGreaterThan(6.0);
+    expect(evaluateTaskResponse({ ...exactLengthTask, wordCount: 290 }, 4).strengths).toContain(
+      'Exceeds minimum word requirement with comprehensive development.'
+    );
+
+    const twoParagraphAst = parseEssayToAST('Furthermore, ideas connect. However, examples help.\n\nMoreover, practice works.');
+    const midCohesion = extractCoherenceMetrics(twoParagraphAst);
+    expect(midCohesion.cohesionScore).toBeGreaterThan(20);
+
+    const onePerParagraphAst = parseEssayToAST('Furthermore, ideas connect.\n\nHowever, examples help.\n\nMoreover, practice works.');
+    expect(extractCoherenceMetrics(onePerParagraphAst).transitionsPerParagraph).toBe(1);
+
+    const highCohesionAst = parseEssayToAST(
+      'Furthermore, ideas connect. Moreover, examples help.\n\nHowever, practice works. Consequently, results improve.\n\nIn contrast, shortcuts fail. Therefore, effort matters.'
+    );
+    const highCohesion = extractCoherenceMetrics(highCohesionAst);
+    expect(highCohesion.transitionWordCount).toBeGreaterThanOrEqual(6);
+    expect(highCohesion.cohesionScore).toBe(100);
+
+    const highLexical = evaluateLexicalResource({
+      totalWords: 200,
+      uniqueWords: 150,
+      ttr: 0.75,
+      awlWords: Array.from({ length: 10 }, (_, index) => `academic${index}`),
+      awlDensityPercent: 5,
+      repeatedWords: [],
+      rareWordCount: 10,
+      collocationMatches: ['play a vital role', 'reap the benefits', 'tackle the problem'],
+    });
+    expect(highLexical.strengths).toHaveLength(3);
+
+    const advancedGrammar = evaluateGrammaticalRange({
+      sentenceCount: 10,
+      averageSentenceLength: 20,
+      sentenceTypeCounts: { simple: 1, compound: 1, complex: 6, 'compound-complex': 2 },
+      passiveVoiceCount: 2,
+      conditionalCount: 1,
+      relativeClauseCount: 2,
+      complexSentenceRatio: 0.8,
+      nominalizationCount: 4,
+    });
+    expect(advancedGrammar.band).toBeGreaterThanOrEqual(8.5);
   });
 });

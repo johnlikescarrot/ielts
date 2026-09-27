@@ -4,7 +4,7 @@ import { storageService, DEFAULT_STORAGE_DATA } from './storageService';
 export function exportDataAsJSON(data: StorageData): string {
   const exportPayload = {
     app: 'ielts-slayer',
-    version: '1.0.0',
+    version: '1.1.0',
     exportedAt: new Date().toISOString(),
     data,
   };
@@ -12,17 +12,22 @@ export function exportDataAsJSON(data: StorageData): string {
 }
 
 export function validateImportData(rawJson: string): StorageData {
-  const parsed = JSON.parse(rawJson);
-  const data = parsed.data || parsed;
-
-  if (typeof data !== 'object' || data === null) {
+  const parsed: unknown = JSON.parse(rawJson);
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
     throw new Error('Invalid backup file format: not a valid object');
   }
+
+  const candidate = parsed as Record<string, unknown>;
+  const dataValue = candidate.data ?? parsed;
+  if (typeof dataValue !== 'object' || dataValue === null || Array.isArray(dataValue)) {
+    throw new Error('Invalid backup file format: data must be an object');
+  }
+  const data = dataValue as Record<string, unknown>;
 
   // Validate settings
   const settings = {
     ...DEFAULT_STORAGE_DATA.settings,
-    ...(data.settings || {}),
+    ...(typeof data.settings === 'object' && data.settings !== null && !Array.isArray(data.settings) ? data.settings : {}),
   };
 
   // Validate arrays
@@ -48,8 +53,6 @@ export async function importDataFromJSON(rawJson: string): Promise<StorageData> 
 }
 
 export function triggerDownload(content: string, filename: string = `ielts-slayer-backup-${new Date().toISOString().split('T')[0]}.json`): void {
-  if (typeof window === 'undefined' || typeof document === 'undefined') return;
-
   const blob = new Blob([content], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

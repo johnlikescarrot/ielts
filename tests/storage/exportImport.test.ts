@@ -11,7 +11,7 @@ describe('exportImport', () => {
   it('exports data into structured JSON with version and timestamp', () => {
     const json = exportDataAsJSON(DEFAULT_STORAGE_DATA);
     expect(json).toContain('"app": "ielts-slayer"');
-    expect(json).toContain('"version": "1.0.0"');
+    expect(json).toContain('"version": "1.1.0"');
 
     const parsed = JSON.parse(json);
     expect(parsed.data.settings.targetBand).toBe(DEFAULT_STORAGE_DATA.settings.targetBand);
@@ -28,11 +28,30 @@ describe('exportImport', () => {
     const validated = validateImportData(validJson);
     expect(validated.settings.targetBand).toBe(8.5);
     expect(validated.srsCards.length).toBe(1);
+
+    const legacyPayload = validateImportData(JSON.stringify({ settings: { language: 'vi' } }));
+    expect(legacyPayload.settings.language).toBe('vi');
   });
 
   it('throws an error on invalid import payload', () => {
     expect(() => validateImportData('null')).toThrow();
+    expect(() => validateImportData('[]')).toThrow();
+    expect(() => validateImportData('{"data": []}')).toThrow();
     expect(() => validateImportData('invalid json text')).toThrow();
+  });
+
+  it('defaults malformed nested settings and collections safely', () => {
+    const validated = validateImportData(JSON.stringify({
+      data: {
+        settings: [],
+        srsCards: 'invalid',
+        bookmarks: {},
+      },
+    }));
+
+    expect(validated.settings.language).toBe('en');
+    expect(validated.srsCards).toEqual([]);
+    expect(validated.bookmarks).toEqual([]);
   });
 
   it('imports valid JSON and saves to storage service', async () => {

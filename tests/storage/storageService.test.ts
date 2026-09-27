@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { StorageService, DEFAULT_SETTINGS } from '../../src/storage/storageService';
+import { StorageService, DEFAULT_SETTINGS, DEFAULT_STORAGE_DATA } from '../../src/storage/storageService';
 
 describe('StorageService Suite', () => {
   let service: StorageService;
@@ -68,7 +68,12 @@ describe('StorageService Suite', () => {
     expect(custom.length).toBe(1);
     expect(custom[0].word).toBe('ephemeral');
 
-    await service.removeCustomVocabulary('cust_1');
+    await service.addCustomVocabulary({ ...customItem, id: 'cust_2' });
+    custom = await service.getCustomVocabulary();
+    expect(custom.length).toBe(1);
+    expect(custom[0].id).toBe('cust_2');
+
+    await service.removeCustomVocabulary('cust_2');
     custom = await service.getCustomVocabulary();
     expect(custom.length).toBe(0);
   });
@@ -129,8 +134,107 @@ describe('StorageService Suite', () => {
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
   });
 
-  it('works with browser.storage.local mock', async () => {
-    const mockStorage: Record<string, any> = {};
+  it('normalizes malformed persisted collections and returns isolated data', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', JSON.stringify({
+      settings: {
+        language: 'vi',
+        examType: 'unsupported',
+        targetBand: 99,
+        dailyGoalMinutes: 'invalid',
+        theme: 'unsupported',
+        srsDailyTarget: 0,
+        autoSpeak: 'yes',
+      },
+      srsCards: [{ wordId: 'malformed', history: null }],
+      customVocabulary: [{ id: 'malformed', word: 'word' }],
+      testHistory: [{ id: 'attempt', answers: null }],
+      bookmarks: [{ id: 'bookmark', type: 'reading', itemId: 'r1', title: 'Reading', createdAt: '2026-01-01' }],
+      notes: [{ id: 'note', itemId: 'r1', content: 'Note', updatedAt: '2026-01-01' }],
+    }));
+
+    const data = await service.getData();
+    expect(data.settings.language).toBe('vi');
+    expect(data.settings.examType).toBe('academic');
+    expect(data.settings.targetBand).toBe(9);
+    expect(data.settings.dailyGoalMinutes).toBe(DEFAULT_SETTINGS.dailyGoalMinutes);
+    expect(data.settings.theme).toBe('light');
+    expect(data.settings.srsDailyTarget).toBe(1);
+    expect(data.settings.autoSpeak).toBe(true);
+    expect(data.srsCards).toHaveLength(1);
+    expect(data.srsCards[0].history).toEqual([]);
+    expect(data.customVocabulary[0].collocations).toEqual([]);
+    expect(data.customVocabulary[0].synonyms).toEqual([]);
+    expect(data.testHistory[0].answers).toBeUndefined();
+
+    data.settings.language = 'en';
+    data.bookmarks.push({
+      id: 'temporary',
+      type: 'reading',
+      itemId: 'r1',
+      title: 'Temporary',
+      createdAt: new Date().toISOString(),
+    });
+    expect((await service.getData()).settings.language).toBe('vi');
+    expect((await service.getBookmarks())).toHaveLength(1);
+  });
+
+  it('falls back to defaults when local storage contains invalid JSON', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', '{invalid');
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const data = await service.getData();
+
+    expect(data).toEqual(DEFAULT_STORAGE_DATA);
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('falls back when the browser storage global is unavailable', async () => {
+    const previous = Object.getOwnPropertyDescriptor(globalThis, 'browser');
+    Object.defineProperty(globalThis, 'browser', {
+      configurable: true,
+      get: () => { throw new Error('browser global unavailable'); },
+    });
+
+    const data = await new StorageService().getData();
+
+    expect(data).toEqual(DEFAULT_STORAGE_DATA);
+    if (previous) {
+      Object.defineProperty(globalThis, 'browser', previous);
+    } else {
+      delete (globalThis as any).browser;
+    }
+  });
+
+  it('keeps the in-memory copy when browser storage writes fail', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async () => ({})),
+          set: vi.fn(async () => { throw new Error('write failed'); }),
+          remove: vi.fn(async () => { throw new Error('remove failed'); }),
+        },
+      },
+    };
+
+    const browserService = new StorageService();
+    await browserService.updateSettings({ targetBand: 8.5 });
+    expect((await browserService.getSettings()).targetBand).toBe(8.5);
+    await browserService.resetAll();
+
+    expect(error).toHaveBeenCalledTimes(2);
+    error.mockRestore();
+    delete (globalThis as any).browser;
+  });
+
+  it('reads a persisted browser storage payload before using the cache', async () => {
+    const mockStorage: Record<string, any> = {
+      ielts_slayer_v1_data: {
+        settings: { targetBand: 8.5 },
+        srsCards: [],
+      },
+    };
     (globalThis as any).browser = {
       storage: {
         local: {

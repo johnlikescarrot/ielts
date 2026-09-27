@@ -17,6 +17,8 @@ describe('contentScript Suite', () => {
     expect(awlMatch).toBeDefined();
     expect(awlMatch?.word).toBe('analyze');
 
+    expect(lookupWord('paradigm')?.band).toBe(8.5);
+
     const nonMatch = lookupWord('zzzznonexistentword');
     expect(nonMatch).toBeNull();
 
@@ -56,17 +58,30 @@ describe('contentScript Suite', () => {
     expect(saveBtn.textContent).toContain('✓ Saved to Flashcards!');
     expect((globalThis as any).browser.runtime.sendMessage).toHaveBeenCalled();
 
+    delete (globalThis as any).browser;
+    handleSelection();
+    const noRuntimeSaveBtn = document.querySelector('#ielts-save-btn') as HTMLElement;
+    noRuntimeSaveBtn.click();
+    expect(noRuntimeSaveBtn.textContent).toContain('Saved to Flashcards!');
+
     // Test mousedown outside
     const outsideEvent = new MouseEvent('mousedown', { bubbles: true });
     document.body.dispatchEvent(outsideEvent);
   });
 
-  it('removes tooltip when selection is empty or collapsed', () => {
+  it('removes tooltip when selection is empty, collapsed, or not in the bank', () => {
     window.getSelection = () => ({
       isCollapsed: true,
       toString: () => '',
     } as any);
 
+    handleSelection();
+    expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
+
+    window.getSelection = () => ({
+      isCollapsed: false,
+      toString: () => 'zzzznonexistentword',
+    } as any);
     handleSelection();
     expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
   });

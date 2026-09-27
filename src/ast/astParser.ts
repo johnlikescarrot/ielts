@@ -149,18 +149,6 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
     }
   }
 
-  if (clauses.length === 0) {
-    clauses.push({
-      type: 'Clause',
-      clauseType: 'independent',
-      tokens,
-      text: sentenceText,
-      hasPassive,
-      hasRelative,
-      hasConditional,
-    });
-  }
-
   return clauses;
 }
 
@@ -191,7 +179,6 @@ export function splitIntoSentences(paragraphText: string, baseOffset = 0): Sente
 
   while ((match = sentenceRegex.exec(paragraphText)) !== null) {
     const rawSentence = match[0].trim();
-    if (!rawSentence) continue;
 
     const sentenceStartIndex = baseOffset + match.index;
     const sentenceEndIndex = sentenceStartIndex + rawSentence.length;

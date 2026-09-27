@@ -1,4 +1,5 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -49,6 +50,7 @@ Object.defineProperty(window, 'speechSynthesis', {
 
 // Polyfill navigator.clipboard
 Object.defineProperty(navigator, 'clipboard', {
+  configurable: true,
   value: {
     writeText: async () => {},
   },
@@ -94,6 +96,10 @@ Object.defineProperty(navigator, 'mediaDevices', {
     }),
   },
 });
+
+// Keep jsdom tests deterministic when code opens a dashboard or downloads a backup.
+Object.defineProperty(window, 'open', { writable: true, value: vi.fn() });
+HTMLAnchorElement.prototype.click = vi.fn();
 
 // Polyfill URL.createObjectURL and revokeObjectURL
 window.URL.createObjectURL = () => 'blob:mock-url';

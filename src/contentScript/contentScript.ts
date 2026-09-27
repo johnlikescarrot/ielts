@@ -44,7 +44,6 @@ export function lookupWord(rawWord: string) {
 }
 
 export function handleSelection(): void {
-  if (typeof window === 'undefined') return;
   const selection = window.getSelection();
   if (!selection || selection.isCollapsed) {
     removeTooltip();

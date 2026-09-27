@@ -48,6 +48,7 @@ export const en: Record<string, string> = {
   'common.noData': 'No data found',
   'common.bookmark': 'Bookmark',
   'common.bookmarked': 'Bookmarked',
+  'common.helloLearner': 'Hello, {name}!',
 
   // Dashboard Overview
   'dash.welcome': 'Welcome back, IELTS Slayer!',
@@ -174,10 +175,25 @@ export const en: Record<string, string> = {
   'settings.language': 'Interface Language',
   'settings.theme': 'Appearance Theme',
   'settings.savedSuccess': 'Settings saved successfully!',
+  'settings.description': 'Personalize your target band, study preferences, and language.',
+  'settings.privacyTitle': 'Free & privacy-first by design',
+  'settings.privacyBody': 'IELTS Slayer makes no network requests for your learning data. There is no account, advertising, or remote analytics. Progress stays in Firefox local storage and can be exported or deleted at any time.',
+  'settings.designSystemTitle': 'Astryx design system',
+  'settings.designSystemBody': 'This interface uses Astryx, an open-source, themeable React design system from Meta. The essay evaluator remains a transparent local heuristic and is not an official IELTS score.',
+  'settings.learnAstryx': 'View Astryx on GitHub',
 
   // Content Script Popup
   'inspector.title': 'IELTS Slayer Inspector',
   'inspector.saveToFlashcards': 'Add to SRS Flashcards',
   'inspector.saved': 'Saved to Flashcards!',
   'inspector.viewInDeck': 'View in Deck',
+
+  // Popup quick study surface
+  'popup.wordOfTheDay': 'Word of the Day',
+  'popup.readingDesc': 'Authentic passages',
+  'popup.listeningDesc': 'Audio across 4 sections',
+  'popup.writingDesc': 'Transparent essay feedback',
+  'popup.speakingDesc': 'Practice with your voice',
+  'popup.openDashboard': 'Open Full Dashboard',
+  'popup.privacyNote': 'No account • No tracking • Works offline',
 };

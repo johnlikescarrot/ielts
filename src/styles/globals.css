@@ -1,3 +1,8 @@
+/* Astryx reset, components, and neutral theme are bundled locally. */
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

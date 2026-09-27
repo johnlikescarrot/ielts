@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi as vitest } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { I18nProvider, useI18n } from '../../src/i18n/i18nContext';
 import { en } from '../../src/i18n/en';
 import { vi } from '../../src/i18n/vi';
+import { storageService, DEFAULT_SETTINGS } from '../../src/storage/storageService';
 
 const TestComponent = () => {
   const { language, setLanguage, t } = useI18n();
@@ -14,6 +15,8 @@ const TestComponent = () => {
       <span data-testid="title">{t('app.name')}</span>
       <span data-testid="greeting">{t('dash.welcome')}</span>
       <span data-testid="param-test">{t('reading.timeAllowed')}</span>
+      <span data-testid="interpolation">{t('common.helloLearner', { name: 'Alex' })}</span>
+      <span data-testid="missing">{t('missing.key')}</span>
       <button onClick={() => setLanguage('vi')}>Switch VI</button>
       <button onClick={() => setLanguage('en')}>Switch EN</button>
     </div>
@@ -43,6 +46,8 @@ describe('i18n', () => {
     );
 
     expect(screen.getByTestId('title')).toHaveTextContent('IELTS Slayer');
+    expect(screen.getByTestId('interpolation')).toHaveTextContent('Hello, Alex!');
+    expect(screen.getByTestId('missing')).toHaveTextContent('missing.key');
 
     const viBtn = screen.getByText('Switch VI');
     await userEvent.click(viBtn);
@@ -51,13 +56,36 @@ describe('i18n', () => {
     expect(screen.getByTestId('greeting')).toHaveTextContent('Chào mừng bạn quay lại với IELTS Slayer!');
   });
 
+  it('keeps English when persisted settings contain an unsupported locale', async () => {
+    const getSettings = vitest.spyOn(storageService, 'getSettings').mockResolvedValue({
+      ...DEFAULT_SETTINGS,
+      language: 'xx',
+    } as never);
+
+    render(
+      <I18nProvider>
+        <TestComponent />
+      </I18nProvider>
+    );
+    await Promise.resolve();
+
+    expect(screen.getByTestId('lang')).toHaveTextContent('en');
+    getSettings.mockRestore();
+  });
+
   it('provides safe fallback when useI18n is called outside provider', () => {
     const FallbackComponent = () => {
-      const { t, language } = useI18n();
-      return <div data-testid="fallback">{language}:{t('app.name')}</div>;
+      const { t, language, setLanguage } = useI18n();
+      return (
+        <div data-testid="fallback">
+          {language}:{t('app.name')}
+          <button onClick={() => void setLanguage('vi')}>No-op switch</button>
+        </div>
+      );
     };
 
     render(<FallbackComponent />);
     expect(screen.getByTestId('fallback')).toHaveTextContent('en:IELTS Slayer');
+    fireEvent.click(screen.getByText('No-op switch'));
   });
 });
