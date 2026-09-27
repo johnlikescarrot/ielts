@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TestAttempt } from '../../types';
 import { storageService } from '../../storage/storageService';
 import { exportDataAsJSON, importDataFromJSON, triggerDownload } from '../../storage/exportImport';
+import { calculateStudyStreak } from '../../study/studyPlanner';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
 import {
@@ -72,6 +73,7 @@ export const AnalyticsView: React.FC = () => {
   });
 
   const totalTimeMinutes = Math.round(history.reduce((sum, h) => sum + (h.timeSpentSeconds || 0), 0) / 60);
+  const studyStreak = calculateStudyStreak(history);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -143,7 +145,7 @@ export const AnalyticsView: React.FC = () => {
         <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 font-medium">{t('dash.dailyStreak')}</span>
-            <div className="text-2xl font-black text-amber-500 mt-0.5">3 {t('dash.days')}</div>
+            <div className="text-2xl font-black text-amber-500 mt-0.5">{studyStreak} {t('dash.days')}</div>
           </div>
           <Calendar className="w-6 h-6 text-amber-400 opacity-70" />
         </div>

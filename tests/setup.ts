@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -54,6 +54,13 @@ Object.defineProperty(navigator, 'clipboard', {
   },
 });
 
+// Keep browser-only navigation APIs deterministic in jsdom.
+Object.defineProperty(window, 'open', {
+  writable: true,
+  value: () => null,
+});
+HTMLAnchorElement.prototype.click = () => {};
+
 // Polyfill MediaRecorder
 class MockMediaRecorder {
   state: string = 'inactive';
@@ -88,6 +95,7 @@ Object.defineProperty(window, 'MediaRecorder', {
 // Polyfill navigator.mediaDevices
 Object.defineProperty(navigator, 'mediaDevices', {
   writable: true,
+  configurable: true,
   value: {
     getUserMedia: async () => ({
       getTracks: () => [{ stop: () => {} }],

@@ -32,6 +32,7 @@ describe('exportImport', () => {
 
   it('throws an error on invalid import payload', () => {
     expect(() => validateImportData('null')).toThrow();
+    expect(() => validateImportData('42')).toThrow();
     expect(() => validateImportData('invalid json text')).toThrow();
   });
 

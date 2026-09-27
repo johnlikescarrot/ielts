@@ -17,7 +17,11 @@
 - **Spaced Repetition (SRS) Vocabulary Engine**: SuperMemo SM-2 algorithm managing 500+ Band 7–9 words, Academic Word List (AWL), definitions, phonetic transcriptions, collocations, examples, and interactive mini-quizzes.
 - **Full Mock Exam Simulator**: 4-skill score weighting and realistic IELTS Test Report Form (TRF) composite band calculation.
 - **Analytics & History**: Score progress tracking, skill breakdown charts, study streak counters, and full JSON data backup export/import.
+- **Adaptive Daily Study Plan**: A deterministic, offline planner prioritizes due SM-2 cards, identifies the weakest recent skill, and fills the remaining time with balanced practice. It never uploads scores or requires an account.
 - **Webpage Vocabulary Inspector**: Highlight any English word on any webpage while browsing Firefox to look up CEFR level, band score, bilingual definitions, and save directly to your SRS flashcard deck.
+
+### Research-informed update
+The companion [IELTS Video Assistant](https://github.com/Libailin222/ielts-video-assistant) demonstrates the value of turning authentic media into immediate IELTS practice across Reading, Listening, Speaking, and Writing. IELTS Slayer keeps that learner-first focus while preserving a fully offline/no-login promise: the new adaptive plan turns each local result and review queue into the next best action, so learners do not have to decide what to study next.
 
 ---
 
@@ -25,8 +29,8 @@
 
 - **Platform**: Firefox WebExtension (Manifest V3 / Manifest V2 compatible)
 - **Language**: TypeScript 5.3+ (Strict mode)
-- **UI Framework**: React 18 & Lucide Icons
-- **Styling**: Tailwind CSS & PostCSS
+- **UI Framework**: React 19, Lucide Icons, and accessible components from [Facebook Astryx](https://github.com/facebook/astryx)
+- **Styling**: Tailwind CSS, PostCSS, and Astryx Neutral theme tokens
 - **Bundler**: Vite 6 (Multi-page configuration for Dashboard, Popup, Background worker, Content Script)
 - **Testing**: Vitest, React Testing Library, jsdom, V8 Coverage
 

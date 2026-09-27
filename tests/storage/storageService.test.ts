@@ -129,6 +129,72 @@ describe('StorageService Suite', () => {
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
   });
 
+  it('falls back safely when browser and local storage operations fail', async () => {
+    Object.defineProperty(globalThis, 'browser', {
+      configurable: true,
+      get: () => { throw new Error('browser storage unavailable'); },
+    });
+    const failedBrowserService = new StorageService();
+    await expect(failedBrowserService.getData()).resolves.toEqual(expect.objectContaining({ settings: DEFAULT_SETTINGS }));
+    delete (globalThis as any).browser;
+
+    localStorage.setItem('ielts_slayer_v1_data', 'not-json');
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await expect(new StorageService().getData()).resolves.toEqual(expect.objectContaining({ settings: DEFAULT_SETTINGS }));
+    warning.mockRestore();
+
+    const writeError = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('write failed'); });
+    await new StorageService().saveData({ settings: { ...DEFAULT_SETTINGS, targetBand: 8 } });
+    writeError.mockRestore();
+
+    const removeError = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => { throw new Error('remove failed'); });
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await new StorageService().resetAll();
+    error.mockRestore();
+    removeError.mockRestore();
+  });
+
+  it('hydrates and sanitizes persisted local data', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', JSON.stringify({
+      settings: { targetBand: 8.5 },
+      srsCards: 'invalid',
+      customVocabulary: null,
+      testHistory: [{ id: 'saved' }],
+    }));
+
+    const data = await new StorageService().getData();
+    expect(data.settings.targetBand).toBe(8.5);
+    expect(data.srsCards).toEqual([]);
+    expect(data.customVocabulary).toEqual([]);
+    expect(data.testHistory).toEqual([{ id: 'saved' }]);
+    expect(data.bookmarks).toEqual([]);
+    expect(data.notes).toEqual([]);
+  });
+
+  it('hydrates persisted browser storage before using the in-memory cache', async () => {
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async () => ({
+            ielts_slayer_v1_data: {
+              settings: { language: 'vi' },
+              srsCards: [{ wordId: 'browser-card' }],
+              customVocabulary: [],
+              testHistory: [],
+              bookmarks: [],
+              notes: [],
+            },
+          })),
+        },
+      },
+    };
+
+    const data = await new StorageService().getData();
+    expect(data.settings.language).toBe('vi');
+    expect(data.srsCards).toHaveLength(1);
+    delete (globalThis as any).browser;
+  });
+
   it('works with browser.storage.local mock', async () => {
     const mockStorage: Record<string, any> = {};
     (globalThis as any).browser = {

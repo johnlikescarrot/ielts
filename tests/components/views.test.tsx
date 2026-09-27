@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReadingPracticeView } from '../../src/components/reading/ReadingPracticeView';
 import { ListeningPracticeView } from '../../src/components/listening/ListeningPracticeView';
@@ -315,6 +315,9 @@ describe('Feature Views & Dashboard Extended Suite', () => {
   });
 
   it('renders DashboardOverview and triggers navigation callbacks', async () => {
+    await storageService.saveSRSCards([
+      { wordId: 'due_1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-27', history: [] },
+    ]);
     await storageService.addTestAttempt({
       skill: 'reading',
       testId: 'r1',
@@ -332,6 +335,8 @@ describe('Feature Views & Dashboard Extended Suite', () => {
 
     expect(screen.getByText(/Estimated Band/i)).toBeInTheDocument();
     expect(await screen.findByText(/Urban Vertical Farming/i)).toBeInTheDocument();
+    await userEvent.click(screen.getByText(/Review Now/i));
+    expect(onSelect).toHaveBeenCalledWith('vocabulary');
 
     const quickSkills = [
       'Academic & GT',
@@ -430,6 +435,10 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       await userEvent.upload(fileInput, file);
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+      await userEvent.upload(fileInput, new File(['not-json'], 'broken.json', { type: 'application/json' }));
+      await waitFor(() => expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to import backup')));
+      alertSpy.mockRestore();
     }
   });
 

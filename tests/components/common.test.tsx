@@ -119,6 +119,51 @@ describe('Common Components Suite', () => {
     await userEvent.click(resetBtn);
   });
 
+  it('restarts an audio track while playing at a changed speed', () => {
+    vi.useFakeTimers();
+    const onUpdate = vi.fn();
+    render(
+      <I18nProvider>
+        <AudioPlayer transcriptText="A longer listening sample." durationSeconds={30} onTimeUpdate={onUpdate} />
+      </I18nProvider>
+    );
+
+    const playButton = screen.getByRole('button', { name: /Play|Pause/i });
+    fireEvent.click(playButton);
+    fireEvent.click(playButton);
+    fireEvent.click(playButton);
+    fireEvent.click(screen.getByText('1x'));
+    act(() => {
+      vi.advanceTimersByTime(1100);
+    });
+    expect(screen.getByText('1.25x')).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it('uses the offline recording fallback when microphone access is unavailable', async () => {
+    const onComplete = vi.fn();
+    const originalMediaDevices = navigator.mediaDevices;
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: { getUserMedia: undefined },
+    });
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder onRecordingComplete={onComplete} />
+      </I18nProvider>
+    );
+
+    await userEvent.click(screen.getByText(/Start Voice Recording/i));
+    await userEvent.click(screen.getByText(/Stop Recording/i));
+    expect(onComplete).toHaveBeenCalled();
+
+    const playAudioBtn = screen.getByText(/Listen to Your Recording|Nghe lại/i);
+    await userEvent.click(playAudioBtn);
+    await userEvent.click(playAudioBtn);
+    Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: originalMediaDevices });
+  });
+
   it('interacts with VoiceRecorder: recording lifecycle and audio playback', async () => {
     const onComplete = vi.fn();
     render(

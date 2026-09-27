@@ -113,7 +113,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
               {t('dash.welcome')}
             </h1>
             <p className="text-xs sm:text-sm text-indigo-200 max-w-xl">
-              Equipped with AST syntax assessment, SM-2 Spaced Repetition, and full 4-skill testing modules for your target Band {settings.targetBand.toFixed(1)}.
+              {t('dash.heroDescription', { band: settings.targetBand.toFixed(1) })}
             </p>
           </div>
 
