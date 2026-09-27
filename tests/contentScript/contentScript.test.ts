@@ -1,10 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { lookupWord, handleSelection, removeTooltip } from '../../src/contentScript/contentScript';
+import { lookupWord, handleSelection, removeTooltip, escapeHtml } from '../../src/contentScript/contentScript';
 
 describe('contentScript Suite', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     removeTooltip();
+  });
+
+  it('escapes content-script tooltip values before HTML interpolation', () => {
+    expect(escapeHtml(`<script>alert("x")</script>`)).toBe('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;');
+    expect(escapeHtml("it's safe & sound")).toBe('it&#39;s safe &amp; sound');
   });
 
   it('looks up words in vocabulary bank and academic word list', () => {

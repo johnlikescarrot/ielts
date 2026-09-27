@@ -3,6 +3,16 @@ import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 
 let activeTooltip: HTMLElement | null = null;
 
+/** Escape values before interpolating trusted vocabulary data into tooltip HTML. */
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function removeTooltip(): void {
   if (activeTooltip && activeTooltip.parentNode) {
     activeTooltip.parentNode.removeChild(activeTooltip);
@@ -70,11 +80,11 @@ export function handleSelection(): void {
 
   tooltip.innerHTML = `
     <div class="ielts-slayer-tooltip-header">
-      <span class="ielts-slayer-tooltip-title">${info.word}</span>
-      <span class="ielts-slayer-tooltip-badge">Band ${info.band.toFixed(1)} (${info.cefr})</span>
+      <span class="ielts-slayer-tooltip-title">${escapeHtml(info.word)}</span>
+      <span class="ielts-slayer-tooltip-badge">Band ${info.band.toFixed(1)} (${escapeHtml(info.cefr)})</span>
     </div>
-    <div class="ielts-slayer-tooltip-def">${info.defEn}</div>
-    <div class="ielts-slayer-tooltip-def-vi">${info.defVi}</div>
+    <div class="ielts-slayer-tooltip-def">${escapeHtml(info.defEn)}</div>
+    <div class="ielts-slayer-tooltip-def-vi">${escapeHtml(info.defVi)}</div>
     <button class="ielts-slayer-tooltip-btn" id="ielts-save-btn">+ Add to IELTS Flashcards</button>
   `;
 
