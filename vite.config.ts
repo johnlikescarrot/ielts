@@ -13,6 +13,8 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     cors: true,
+    // The Arena preview is served through a unique, proxied host.
+    allowedHosts: true,
   },
   build: {
     outDir: 'dist',
