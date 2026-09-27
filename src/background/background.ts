@@ -46,6 +46,10 @@ export function initializeBackground() {
         await updateReviewBadge();
         return { success: true };
       }
+      if (message.type === 'SAVE_VIDEO_CLIP') {
+        await storageService.addVideoClip(message.data);
+        return { success: true };
+      }
       return false;
     });
   }

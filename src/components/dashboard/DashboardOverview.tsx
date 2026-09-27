@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Flame,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Film
 } from 'lucide-react';
 
 export interface DashboardOverviewProps {
@@ -71,7 +72,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       description: t('dash.featureWritingDesc'),
       icon: PenTool,
       color: 'from-indigo-600 to-rose-600',
-      tag: 'AST Astryx Heuristic',
+      tag: 'AST Writing Heuristic',
     },
     {
       id: 'speaking' as SkillType,
@@ -88,6 +89,14 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       icon: Layers,
       color: 'from-amber-600 to-emerald-600',
       tag: 'SM-2 Algorithm',
+    },
+    {
+      id: 'video-lab' as SkillType,
+      title: t('nav.videoLab'),
+      description: t('videoLab.subtitle'),
+      icon: Film,
+      color: 'from-cyan-600 to-blue-600',
+      tag: 'YouTube + Bilibili',
     },
     {
       id: 'mock-test' as SkillType,

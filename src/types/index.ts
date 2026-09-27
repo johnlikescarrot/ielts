@@ -1,6 +1,6 @@
 export type Language = 'en' | 'vi';
 
-export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'mock-test' | 'analytics';
+export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'video-lab' | 'mock-test' | 'analytics';
 
 export type ExamType = 'academic' | 'general';
 
@@ -12,6 +12,17 @@ export interface UserSettings {
   theme: 'light' | 'dark' | 'system';
   srsDailyTarget: number;
   autoSpeak: boolean;
+}
+
+/** A locally saved listening-repeat segment from a supported video page. */
+export interface VideoClip {
+  id: string;
+  provider: 'youtube' | 'bilibili';
+  sourceUrl: string;
+  sourceTitle: string;
+  startSeconds: number;
+  endSeconds: number;
+  createdAt: string;
 }
 
 export interface VocabularyItem {

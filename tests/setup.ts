@@ -107,6 +107,10 @@ Object.defineProperty(navigator, 'mediaDevices', {
 window.URL.createObjectURL = () => 'blob:mock-url';
 window.URL.revokeObjectURL = () => {};
 
+// jsdom does not implement browser navigation or secondary windows.
+window.open = () => null;
+HTMLAnchorElement.prototype.click = () => {};
+
 // Polyfill HTMLMediaElement play/pause
 HTMLMediaElement.prototype.play = async () => {};
 HTMLMediaElement.prototype.pause = () => {};

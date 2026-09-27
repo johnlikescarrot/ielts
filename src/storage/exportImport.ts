@@ -30,6 +30,7 @@ export function validateImportData(rawJson: string): StorageData {
   const customVocabulary = Array.isArray(data.customVocabulary) ? data.customVocabulary : [];
   const testHistory = Array.isArray(data.testHistory) ? data.testHistory : [];
   const bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+  const videoClips = Array.isArray(data.videoClips) ? data.videoClips : [];
   const notes = Array.isArray(data.notes) ? data.notes : [];
 
   return {
@@ -38,6 +39,7 @@ export function validateImportData(rawJson: string): StorageData {
     customVocabulary,
     testHistory,
     bookmarks,
+    videoClips,
     notes,
   };
 }

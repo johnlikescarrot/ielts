@@ -79,6 +79,18 @@ describe('background Suite', () => {
 
     expect(result).toEqual({ success: true });
 
+    const videoResult = await messageCallback({
+      type: 'SAVE_VIDEO_CLIP',
+      data: {
+        provider: 'youtube',
+        sourceUrl: 'https://www.youtube.com/watch?v=practice',
+        sourceTitle: 'Practice video',
+        startSeconds: 10,
+        endSeconds: 20,
+      },
+    });
+    expect(videoResult).toEqual({ success: true });
+
     const unknownResult = await messageCallback({ type: 'UNKNOWN' });
     expect(unknownResult).toBe(false);
   });

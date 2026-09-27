@@ -162,7 +162,7 @@ export const SettingsView: React.FC = () => {
           <span>Astryx Syntax AST Engine</span>
         </div>
         <p className="leading-relaxed">
-          The automated essay evaluation system is powered by an Abstract Syntax Tree (AST) grammar heuristic inspired by the Astryx linguistic standard for IELTS assessment.
+          The automated essay evaluation system uses a local Abstract Syntax Tree (AST) grammar heuristic. Your writing stays on this device.
         </p>
       </div>
     </div>

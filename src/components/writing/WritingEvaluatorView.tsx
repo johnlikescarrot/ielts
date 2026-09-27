@@ -78,7 +78,7 @@ export const WritingEvaluatorView: React.FC = () => {
               {t('writing.title')}
             </h1>
             <Badge variant="purple" size="sm">
-              AST Astryx Engine
+              AST Writing Engine
             </Badge>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">

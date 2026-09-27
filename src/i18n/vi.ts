@@ -8,6 +8,7 @@ export const vi: Record<string, string> = {
   'nav.writing': 'Writing (Viết & Chấm)',
   'nav.speaking': 'Speaking (Nói & Ghi âm)',
   'nav.vocabulary': 'Từ vựng & Flashcard SRS',
+  'nav.videoLab': 'Phòng học Video',
   'nav.mockTest': 'Thi thử toàn diện',
   'nav.analytics': 'Tiến độ & Phân tích',
   'nav.settings': 'Cài đặt',
@@ -48,6 +49,17 @@ export const vi: Record<string, string> = {
   'common.noData': 'Không có dữ liệu',
   'common.bookmark': 'Đánh dấu lưu',
   'common.bookmarked': 'Đã lưu',
+
+  // Video Lab
+  'videoLab.title': 'Các đoạn video đã lưu',
+  'videoLab.subtitle': 'Luyện nghe với các vòng lặp ngắn từ YouTube và Bilibili — hoàn toàn trong trình duyệt của bạn.',
+  'videoLab.emptyTitle': 'Thư viện đoạn nghe đã sẵn sàng',
+  'videoLab.emptyDescription': 'Mở một video được hỗ trợ, dùng bảng Phòng học Video IELTS để lặp đoạn ngắn, rồi chọn Lưu đoạn. Không cần tài khoản hoặc API key.',
+  'videoLab.open': 'Mở tại mốc thời gian',
+  'videoLab.delete': 'Xóa đoạn',
+  'videoLab.privacy': 'Các đoạn chỉ lưu liên kết trang và mốc thời gian trong bộ nhớ cục bộ của Firefox. Video và âm thanh không bao giờ rời khỏi trình duyệt.',
+  'videoLab.savedCount': '{count} đoạn đã lưu',
+  'videoLab.from': 'Từ {provider}',
 
   // Dashboard Overview
   'dash.welcome': 'Chào mừng bạn quay lại với IELTS Slayer!',
