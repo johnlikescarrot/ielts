@@ -1,7 +1,7 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom/vitest";
 
 // Polyfill window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query: string) => ({
     matches: false,
@@ -18,7 +18,7 @@ Object.defineProperty(window, 'matchMedia', {
 // Polyfill SpeechSynthesis
 class MockSpeechSynthesisUtterance {
   text: string;
-  lang: string = 'en-GB';
+  lang: string = "en-GB";
   rate: number = 1;
   onend: any = null;
   constructor(text: string) {
@@ -37,18 +37,18 @@ const mockSpeechSynthesis = {
   resume: () => {},
 };
 
-Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+Object.defineProperty(window, "SpeechSynthesisUtterance", {
   writable: true,
   value: MockSpeechSynthesisUtterance,
 });
 
-Object.defineProperty(window, 'speechSynthesis', {
+Object.defineProperty(window, "speechSynthesis", {
   writable: true,
   value: mockSpeechSynthesis,
 });
 
 // Polyfill navigator.clipboard
-Object.defineProperty(navigator, 'clipboard', {
+Object.defineProperty(navigator, "clipboard", {
   value: {
     writeText: async () => {},
   },
@@ -56,7 +56,7 @@ Object.defineProperty(navigator, 'clipboard', {
 
 // Polyfill MediaRecorder
 class MockMediaRecorder {
-  state: string = 'inactive';
+  state: string = "inactive";
   ondataavailable: any = null;
   onstop: any = null;
   stream: any;
@@ -66,27 +66,29 @@ class MockMediaRecorder {
   }
 
   start() {
-    this.state = 'recording';
+    this.state = "recording";
     if (this.ondataavailable) {
-      this.ondataavailable({ data: new Blob(['mock audio'], { type: 'audio/webm' }) });
+      this.ondataavailable({
+        data: new Blob(["mock audio"], { type: "audio/webm" }),
+      });
     }
   }
 
   stop() {
-    this.state = 'inactive';
+    this.state = "inactive";
     if (this.onstop) {
       this.onstop();
     }
   }
 }
 
-Object.defineProperty(window, 'MediaRecorder', {
+Object.defineProperty(window, "MediaRecorder", {
   writable: true,
   value: MockMediaRecorder,
 });
 
 // Polyfill navigator.mediaDevices
-Object.defineProperty(navigator, 'mediaDevices', {
+Object.defineProperty(navigator, "mediaDevices", {
   writable: true,
   value: {
     getUserMedia: async () => ({
@@ -96,7 +98,7 @@ Object.defineProperty(navigator, 'mediaDevices', {
 });
 
 // Polyfill URL.createObjectURL and revokeObjectURL
-window.URL.createObjectURL = () => 'blob:mock-url';
+window.URL.createObjectURL = () => "blob:mock-url";
 window.URL.revokeObjectURL = () => {};
 
 // Polyfill HTMLMediaElement play/pause

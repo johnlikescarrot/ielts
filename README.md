@@ -9,6 +9,7 @@
 - **100% Free & Open-Source**: Zero subscription fees, zero telemetry, zero paywalls.
 - **Privacy-First & Offline Capable**: All essays, audio recordings, mock scores, settings, and flashcards stay strictly inside Firefox local storage (`browser.storage.local` with memory fallback). No account or server required.
 - **Dual Language Parity**: Full bilingual user interface — English (default) and Vietnamese (Tiếng Việt) with instantaneous on-the-fly toggling.
+- **Video-to-IELTS Studio**: Paste captions from YouTube, Bilibili, TED, or any course to generate a private, offline four-skill lesson with timestamp cleanup, listening cloze tasks, Academic Word List vocabulary, Speaking Part 3 prompts, and a Writing Task 2 question. No AI key or upload required.
 - **4 Complete Skill Modules**:
   1. **Reading Practice**: Academic & General Training passages, multi-color highlighting tool (Yellow, Green, Blue), countdown timer, multiple-choice / True-False-Not-Given / sentence completion questions, instant band conversion, and bilingual explanation keys.
   2. **Listening Simulator**: Multi-section audio simulation, audio playback controls (0.75x–1.5x speeds), interactive transcript toggles, and answer submission with scoring.

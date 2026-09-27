@@ -1,3 +1,4 @@
+@import "@astryxdesign/core/astryx.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -61,12 +62,27 @@
 
 /* Audio waveform animation */
 @keyframes soundwave {
-  0%, 100% { height: 6px; }
-  50% { height: 28px; }
+  0%,
+  100% {
+    height: 6px;
+  }
+  50% {
+    height: 28px;
+  }
 }
 
-.animate-soundwave-1 { animation: soundwave 1s ease-in-out infinite; }
-.animate-soundwave-2 { animation: soundwave 1.2s ease-in-out 0.2s infinite; }
-.animate-soundwave-3 { animation: soundwave 0.8s ease-in-out 0.4s infinite; }
-.animate-soundwave-4 { animation: soundwave 1.1s ease-in-out 0.1s infinite; }
-.animate-soundwave-5 { animation: soundwave 0.9s ease-in-out 0.3s infinite; }
+.animate-soundwave-1 {
+  animation: soundwave 1s ease-in-out infinite;
+}
+.animate-soundwave-2 {
+  animation: soundwave 1.2s ease-in-out 0.2s infinite;
+}
+.animate-soundwave-3 {
+  animation: soundwave 0.8s ease-in-out 0.4s infinite;
+}
+.animate-soundwave-4 {
+  animation: soundwave 1.1s ease-in-out 0.1s infinite;
+}
+.animate-soundwave-5 {
+  animation: soundwave 0.9s ease-in-out 0.3s infinite;
+}
