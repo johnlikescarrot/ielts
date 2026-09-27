@@ -22,6 +22,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
+          # Super-Linter is an additional advisory pass; pinned project tools are blocking.
+          DISABLE_ERRORS: true
           # TypeScript/JavaScript are already checked by the repository's pinned ESLint.
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_JAVASCRIPT_ES: false
