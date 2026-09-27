@@ -42,7 +42,9 @@ jobs:
           # Vite + TS path setup or the repository's flat ESLint config.
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_JSON: true
+          # Do not mix explicit VALIDATE_* true and false values; Super-Linter
+          # treats that combination as unsupported. Unset validators keep their
+          # default auto-detection behavior.
           # Markdown/CSS/HTML are intentionally covered by lightweight local
           # configs and browser build tests; keep Super-Linter focused on the
           # portable repository metadata checks it can run consistently here.
