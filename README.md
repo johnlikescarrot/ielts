@@ -31,6 +31,7 @@
 This local timestamp-and-repeat workflow was informed by research into [IELTS Video Assistant](https://github.com/Libailin222/ielts-video-assistant), while retaining IELTS Slayer's free, no-login, on-device privacy model.
 
 ### Research-informed update
+
 The companion [IELTS Video Assistant](https://github.com/Libailin222/ielts-video-assistant) demonstrates the value of turning authentic media into immediate IELTS practice across Reading, Listening, Speaking, and Writing. IELTS Slayer keeps that learner-first focus while preserving a fully offline/no-login promise: the new adaptive plan turns each local result and review queue into the next best action, so learners do not have to decide what to study next.
 
 ---
@@ -49,15 +50,18 @@ The companion [IELTS Video Assistant](https://github.com/Libailin222/ielts-video
 ## 🚀 Development & Build
 
 ### Prerequisites
+
 - Node.js >= 18.0.0
 - npm >= 9.0.0
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### Run Tests & Code Coverage
+
 ```bash
 # Run all unit and integration tests
 npm test
@@ -67,15 +71,18 @@ npm run test:coverage
 ```
 
 ### Type Checking & Linting
+
 ```bash
 npm run typecheck
 npm run lint
 ```
 
 ### Build for Production
+
 ```bash
 npm run build
 ```
+
 The compiled extension artifacts will be generated in `dist/`.
 
 ---
@@ -90,4 +97,5 @@ The compiled extension artifacts will be generated in `dist/`.
 ---
 
 ## 📄 License
+
 MIT License. Free for all learners worldwide.

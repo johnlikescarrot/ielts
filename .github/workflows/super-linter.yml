@@ -38,3 +38,10 @@ jobs:
           # Keep the repository's flat ESLint configuration active inside the linter container.
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
+          LOG_LEVEL: DEBUG
+          SAVE_SUPER_LINTER_OUTPUT: true
+
+      - name: Show Super-Linter diagnostics
+        if: always()
+        run: |
+          find . -maxdepth 3 -iname '*super*linter*' -type f -print -exec sed -n '1,240p' {} \;
