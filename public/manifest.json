@@ -19,14 +19,9 @@
     },
     "default_title": "IELTS Slayer"
   },
-  "permissions": [
-    "storage",
-    "activeTab",
-    "contextMenus",
-    "alarms"
-  ],
+  "permissions": ["storage", "activeTab", "contextMenus", "alarms"],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
