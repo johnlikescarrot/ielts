@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SkillType, UserSettings, TestAttempt, SRSCard } from '../../types';
 import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
 import { getDeckSummary } from '../../srs/srsManager';
+import { buildStudyPlan } from '../../progress/studyPlan';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
 import {
@@ -41,6 +42,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
   };
 
   const deckSummary = getDeckSummary(srsCards);
+  const studyPlan = buildStudyPlan(history, settings.dailyGoalMinutes);
 
   // Calculate average band from recent attempts
   const validScores = history.filter(h => h.estimatedBand > 0).map(h => h.estimatedBand);
@@ -125,17 +127,21 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
               </span>
               <div className="flex items-center justify-center space-x-1 mt-1 text-2xl font-black text-amber-400">
                 <Flame className="w-6 h-6 fill-amber-400" />
-                <span>3 {t('dash.days')}</span>
+                <span>{studyPlan.streakDays} {t('dash.days')}</span>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 text-center min-w-[100px]">
               <span className="text-[10px] uppercase font-bold text-indigo-300 block">
-                Estimated Band
+                {t('dash.overallEstimatedBand')}
               </span>
               <div className="text-2xl font-black text-yellow-300 mt-1">
                 {avgBand}
               </div>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 text-center min-w-[100px]">
+              <span className="text-[10px] uppercase font-bold text-indigo-300 block">{t('dash.todayProgress')}</span>
+              <div className="text-2xl font-black text-emerald-300 mt-1">{studyPlan.minutesToday}/{studyPlan.goalMinutes}<span className="text-xs ml-1">{t('dash.minutes')}</span></div>
             </div>
           </div>
         </div>
@@ -169,6 +175,20 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
           </button>
         </div>
       )}
+
+      {/* Adaptive daily plan */}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm">
+        <div className="flex items-center justify-between gap-4 mb-3">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white">{t('dash.todayPlan')}</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{studyPlan.remainingMinutes > 0 ? t('dash.planRemaining', { minutes: studyPlan.remainingMinutes }) : t('dash.planComplete')}</p>
+          </div>
+          <button onClick={() => onSelectSkill(studyPlan.recommendedSkill)} className="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">{t('dash.startRecommended')}</button>
+        </div>
+        <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden" role="progressbar" aria-valuenow={studyPlan.completionPercent} aria-valuemin={0} aria-valuemax={100} aria-label={t('dash.todayProgress')}>
+          <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all" style={{ width: `${studyPlan.completionPercent}%` }} />
+        </div>
+      </div>
 
       {/* Feature Navigation Grid */}
       <div className="space-y-3">

@@ -16,6 +16,7 @@
   4. **Speaking Lab**: Authentic 3-part mock interview format (Part 1 everyday topics, Part 2 cue cards with 1-min prep timer, Part 3 abstract discussions), built-in voice recorder with playback and download, official IELTS band descriptors, topic idioms, and model answers.
 - **Spaced Repetition (SRS) Vocabulary Engine**: SuperMemo SM-2 algorithm managing 500+ Band 7–9 words, Academic Word List (AWL), definitions, phonetic transcriptions, collocations, examples, and interactive mini-quizzes.
 - **Full Mock Exam Simulator**: 4-skill score weighting and realistic IELTS Test Report Form (TRF) composite band calculation.
+- **Adaptive Daily Plan**: Replaces hard-coded streaks with local, privacy-first progress metrics; tracks today’s minutes against the learner’s goal, calculates a resilient calendar-day streak, and recommends the weakest practiced skill. Progress is computed offline from saved attempts and never requires an account.
 - **Analytics & History**: Score progress tracking, skill breakdown charts, study streak counters, and full JSON data backup export/import.
 - **Webpage Vocabulary Inspector**: Highlight any English word on any webpage while browsing Firefox to look up CEFR level, band score, bilingual definitions, and save directly to your SRS flashcard deck.
 
