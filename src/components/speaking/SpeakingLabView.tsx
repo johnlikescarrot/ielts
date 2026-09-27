@@ -6,14 +6,7 @@ import { useI18n } from '../../i18n/i18nContext';
 import { VoiceRecorder } from '../common/VoiceRecorder';
 import { Timer } from '../common/Timer';
 import { Badge } from '../common/Badge';
-import {
-  Mic,
-  Clock,
-  Sparkles,
-  Award,
-  Lightbulb,
-  CheckSquare
-} from 'lucide-react';
+import { Mic, Clock, Sparkles, Award, Lightbulb, CheckSquare } from 'lucide-react';
 
 export const SpeakingLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -28,12 +21,12 @@ export const SpeakingLabView: React.FC = () => {
     pronunciation: true,
   });
 
-  const filteredQuestions = SPEAKING_QUESTIONS.filter(q => q.part === activePart);
+  const filteredQuestions = SPEAKING_QUESTIONS.filter((q) => q.part === activePart);
   const currentQuestion: SpeakingQuestion =
-    SPEAKING_QUESTIONS.find(q => q.id === selectedQuestionId) || filteredQuestions[0] || SPEAKING_QUESTIONS[0];
+    SPEAKING_QUESTIONS.find((q) => q.id === selectedQuestionId) || filteredQuestions[0] || SPEAKING_QUESTIONS[0];
 
   const handleToggleCheck = (key: string) => {
-    setRubricChecks(prev => ({ ...prev, [key]: !prev[key] }));
+    setRubricChecks((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleSaveAttempt = async () => {
@@ -54,16 +47,12 @@ export const SpeakingLabView: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <Mic className="w-6 h-6 text-rose-600" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-              {t('speaking.title')}
-            </h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('speaking.title')}</h1>
             <Badge variant="danger" size="sm">
               Part {activePart}
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t('speaking.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('speaking.subtitle')}</p>
         </div>
 
         {/* Part Switcher */}
@@ -71,11 +60,13 @@ export const SpeakingLabView: React.FC = () => {
           <button
             onClick={() => {
               setActivePart(1);
-              const firstP1 = SPEAKING_QUESTIONS.find(q => q.part === 1);
+              const firstP1 = SPEAKING_QUESTIONS.find((q) => q.part === 1);
               if (firstP1) setSelectedQuestionId(firstP1.id);
             }}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activePart === 1 ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activePart === 1
+                ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             Part 1
@@ -83,11 +74,13 @@ export const SpeakingLabView: React.FC = () => {
           <button
             onClick={() => {
               setActivePart(2);
-              const firstP2 = SPEAKING_QUESTIONS.find(q => q.part === 2);
+              const firstP2 = SPEAKING_QUESTIONS.find((q) => q.part === 2);
               if (firstP2) setSelectedQuestionId(firstP2.id);
             }}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activePart === 2 ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activePart === 2
+                ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             Part 2 (Cue Card)
@@ -95,11 +88,13 @@ export const SpeakingLabView: React.FC = () => {
           <button
             onClick={() => {
               setActivePart(3);
-              const firstP3 = SPEAKING_QUESTIONS.find(q => q.part === 3);
+              const firstP3 = SPEAKING_QUESTIONS.find((q) => q.part === 3);
               if (firstP3) setSelectedQuestionId(firstP3.id);
             }}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activePart === 3 ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activePart === 3
+                ? 'bg-white dark:bg-slate-900 text-rose-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             Part 3

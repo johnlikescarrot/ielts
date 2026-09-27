@@ -79,7 +79,7 @@ export function calculateOverallBand(scores: {
   speaking?: number;
 }): number {
   const validScores = [scores.listening, scores.reading, scores.writing, scores.speaking].filter(
-    (s): s is number => typeof s === 'number' && !isNaN(s) && s >= 1.0 && s <= 9.0
+    (s): s is number => typeof s === 'number' && !isNaN(s) && s >= 1.0 && s <= 9.0,
   );
 
   if (validScores.length === 0) return 0;
@@ -113,36 +113,36 @@ export function getBandDescriptor(band: number): { en: string; vi: string } {
   if (band >= 9.0) {
     return {
       en: 'Expert User - Has fully operational command of the language: appropriate, accurate and fluent with complete understanding.',
-      vi: 'Thông thạo hoàn toàn - Sử dụng ngôn ngữ chuẩn xác, lưu loát và thấu hiểu toàn diện như người bản xứ.'
+      vi: 'Thông thạo hoàn toàn - Sử dụng ngôn ngữ chuẩn xác, lưu loát và thấu hiểu toàn diện như người bản xứ.',
     };
   }
   if (band >= 8.0) {
     return {
       en: 'Very Good User - Has fully operational command of the language with only occasional unsystematic inaccuracies.',
-      vi: 'Rất tốt - Làm chủ ngôn ngữ hoàn toàn, chỉ thỉnh thoảng mắc lỗi không có tính hệ thống.'
+      vi: 'Rất tốt - Làm chủ ngôn ngữ hoàn toàn, chỉ thỉnh thoảng mắc lỗi không có tính hệ thống.',
     };
   }
   if (band >= 7.0) {
     return {
       en: 'Good User - Has operational command of the language, though with occasional inaccuracies and misunderstandings in some situations.',
-      vi: 'Tốt - Nắm chắc ngôn ngữ, dù có thể có một vài sai sót hoặc hiểu nhầm trong một số tình huống phức tạp.'
+      vi: 'Tốt - Nắm chắc ngôn ngữ, dù có thể có một vài sai sót hoặc hiểu nhầm trong một số tình huống phức tạp.',
     };
   }
   if (band >= 6.0) {
     return {
       en: 'Competent User - Has generally effective command of the language despite some inaccuracies and misunderstandings.',
-      vi: 'Khá - Sử dụng ngôn ngữ nhìn chung hiệu quả, dù còn một số lỗi dùng từ hoặc ngữ pháp trong tình huống phức tạp.'
+      vi: 'Khá - Sử dụng ngôn ngữ nhìn chung hiệu quả, dù còn một số lỗi dùng từ hoặc ngữ pháp trong tình huống phức tạp.',
     };
   }
   if (band >= 5.0) {
     return {
       en: 'Modest User - Has partial command of the language, coping with overall meaning in most situations.',
-      vi: 'Trung bình - Làm chủ ngôn ngữ một phần, nắm được ý chính trong phần lớn các tình huống quen thuộc.'
+      vi: 'Trung bình - Làm chủ ngôn ngữ một phần, nắm được ý chính trong phần lớn các tình huống quen thuộc.',
     };
   }
   return {
     en: 'Limited User - Basic competence is limited to familiar situations.',
-    vi: 'Cơ bản - Năng lực cơ bản chỉ giới hạn trong các tình huống quen thuộc.'
+    vi: 'Cơ bản - Năng lực cơ bản chỉ giới hạn trong các tình huống quen thuộc.',
   };
 }
 
@@ -150,7 +150,7 @@ export function getScoreBreakdown(
   skill: SkillType,
   rawScore: number,
   totalQuestions: number,
-  examType: ExamType = 'academic'
+  examType: ExamType = 'academic',
 ): ScoreBreakdown {
   let band = 1.0;
   if (skill === 'listening') {

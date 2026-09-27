@@ -2,9 +2,9 @@ name: Super-Linter Quality Check
 
 on:
   push:
-    branches: [ main, 'arena/**' ]
+    branches: [main, 'arena/**']
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -34,4 +34,4 @@ jobs:
           VALIDATE_MARKDOWN: true
           VALIDATE_CSS: true
           VALIDATE_HTML: true
-          LINTER_RULES_PATH: /
+          LINTER_RULES_PATH: .github/linters

@@ -26,17 +26,40 @@ Secondly, human teachers provide emotional support that computers cannot give. W
 
 In summary, although technology is very convenient and helpful for studying, human teachers are still essential for students' personal growth. Therefore, we should combine technology with traditional teaching.`,
     sampleAnalysis: {
-      taskAchievement: 'Band 9: Fully addresses all parts of the prompt, presents a clear and nuanced position throughout, fully extended arguments.',
-      coherenceCohesion: 'Band 9: Seamless paragraph progression, sophisticated discourse markers, precise referencing.',
-      lexicalResource: 'Band 9: Wide range of academic vocabulary (pedagogy, scalability, trajectories, deficits, democratization, auxiliary instruments).',
+      taskAchievement:
+        'Band 9: Fully addresses all parts of the prompt, presents a clear and nuanced position throughout, fully extended arguments.',
+      coherenceCohesion:
+        'Band 9: Seamless paragraph progression, sophisticated discourse markers, precise referencing.',
+      lexicalResource:
+        'Band 9: Wide range of academic vocabulary (pedagogy, scalability, trajectories, deficits, democratization, auxiliary instruments).',
       grammaticalRange: 'Band 9: Wide range of complex structures used with full flexibility and accuracy.',
     },
     keyVocabulary: [
-      { word: 'Pedagogy', meaning: 'The method and practice of teaching', usage: 'Modern pedagogy emphasizes interactive problem-solving.' },
-      { word: 'Proliferation', meaning: 'Rapid increase in numbers', usage: 'The proliferation of smartphones transformed classrooms.' },
-      { word: 'Facilitator', meaning: 'One who makes a process easier', usage: 'Teachers act as facilitators rather than simple lecturers.' },
-      { word: 'Indispensable', meaning: 'Absolutely necessary', usage: 'Human mentors remain indispensable in education.' },
-      { word: 'Dissemination', meaning: 'The spreading of information widely', usage: 'The internet accelerated the dissemination of scientific research.' },
+      {
+        word: 'Pedagogy',
+        meaning: 'The method and practice of teaching',
+        usage: 'Modern pedagogy emphasizes interactive problem-solving.',
+      },
+      {
+        word: 'Proliferation',
+        meaning: 'Rapid increase in numbers',
+        usage: 'The proliferation of smartphones transformed classrooms.',
+      },
+      {
+        word: 'Facilitator',
+        meaning: 'One who makes a process easier',
+        usage: 'Teachers act as facilitators rather than simple lecturers.',
+      },
+      {
+        word: 'Indispensable',
+        meaning: 'Absolutely necessary',
+        usage: 'Human mentors remain indispensable in education.',
+      },
+      {
+        word: 'Dissemination',
+        meaning: 'The spreading of information widely',
+        usage: 'The internet accelerated the dissemination of scientific research.',
+      },
     ],
   },
   {
@@ -47,7 +70,8 @@ In summary, although technology is very convenient and helpful for studying, hum
     prompt: `The chart below illustrates the proportion of global electricity generated from three distinct renewable sources (Solar, Wind, and Hydroelectric) between 2010 and 2025, with projected figures for 2030.
 
 Summarize the information by selecting and reporting the main features, and make comparisons where relevant.`,
-    chartDescription: 'Line graph showing Solar rising from 2% (2010) to 14% (2025) and projected 22% (2030); Wind rising from 5% (2010) to 16% (2025); Hydroelectric remaining dominant but relatively stable between 18% and 20%.',
+    chartDescription:
+      'Line graph showing Solar rising from 2% (2010) to 14% (2025) and projected 22% (2030); Wind rising from 5% (2010) to 16% (2025); Hydroelectric remaining dominant but relatively stable between 18% and 20%.',
     timeLimitMinutes: 20,
     minWordCount: 150,
     sampleEssayBand9: `The line graph delineates the percentage of worldwide electricity produced by solar, wind, and hydroelectric power from 2010 to 2025, alongside projected trends through 2030.
@@ -65,16 +89,30 @@ In 2010, hydroelectricity was the most popular renewable source, making up 18% o
 
 On the other hand, solar energy had the lowest percentage in 2010 at only 2%. However, it increased quickly after 2018 to reach 14% in 2025. By 2030, solar energy is predicted to reach 22%, which will be higher than wind and hydroelectric power.`,
     sampleAnalysis: {
-      taskAchievement: 'Band 9: Clear overview presenting prominent trends, key data points selected, accurate comparisons made.',
+      taskAchievement:
+        'Band 9: Clear overview presenting prominent trends, key data points selected, accurate comparisons made.',
       coherenceCohesion: 'Band 9: Logical flow, cohesive grouping by source and time periods.',
-      lexicalResource: 'Band 9: Rich descriptive language (delineates, upward trajectories, plateau, meteoric expansion).',
+      lexicalResource:
+        'Band 9: Rich descriptive language (delineates, upward trajectories, plateau, meteoric expansion).',
       grammaticalRange: 'Band 9: Diverse participle clauses, compound-complex sentences, accurate passive forms.',
     },
     keyVocabulary: [
-      { word: 'Delineates', meaning: 'Describes or portrays precisely', usage: 'The graph delineates regional energy consumption trends.' },
+      {
+        word: 'Delineates',
+        meaning: 'Describes or portrays precisely',
+        usage: 'The graph delineates regional energy consumption trends.',
+      },
       { word: 'Meteoric', meaning: 'Very rapid and striking', usage: 'Solar energy experienced a meteoric rise.' },
-      { word: 'Plateau', meaning: 'Reach a state of little or no change after a period of growth', usage: 'Hydroelectric capacity plateaued around 20%.' },
-      { word: 'Trajectory', meaning: 'The curved path or general direction of growth', usage: 'Wind energy followed an upward trajectory.' },
+      {
+        word: 'Plateau',
+        meaning: 'Reach a state of little or no change after a period of growth',
+        usage: 'Hydroelectric capacity plateaued around 20%.',
+      },
+      {
+        word: 'Trajectory',
+        meaning: 'The curved path or general direction of growth',
+        usage: 'Wind energy followed an upward trajectory.',
+      },
     ],
-  }
+  },
 ];

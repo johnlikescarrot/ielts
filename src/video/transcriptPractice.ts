@@ -14,10 +14,50 @@ const WORD_PATTERN = /[A-Za-z]+(?:['’][A-Za-z]+)*/g;
 const TIMECODE_PATTERN = /^(?:(\d{1,2}):)?(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$/;
 const TIMELINE_PATTERN = /^(.+?)\s+-->\s+([^\s]+)(?:\s+.*)?$/;
 const STOP_WORDS = new Set([
-  'about', 'after', 'again', 'also', 'although', 'among', 'another', 'because', 'before', 'being',
-  'between', 'could', 'every', 'first', 'from', 'have', 'into', 'other', 'should', 'that', 'their',
-  'there', 'these', 'those', 'through', 'under', 'using', 'which', 'while', 'would', 'with', 'where',
-  'when', 'what', 'will', 'than', 'then', 'they', 'this', 'were', 'your', 'some', 'more', 'such',
+  'about',
+  'after',
+  'again',
+  'also',
+  'although',
+  'among',
+  'another',
+  'because',
+  'before',
+  'being',
+  'between',
+  'could',
+  'every',
+  'first',
+  'from',
+  'have',
+  'into',
+  'other',
+  'should',
+  'that',
+  'their',
+  'there',
+  'these',
+  'those',
+  'through',
+  'under',
+  'using',
+  'which',
+  'while',
+  'would',
+  'with',
+  'where',
+  'when',
+  'what',
+  'will',
+  'than',
+  'then',
+  'they',
+  'this',
+  'were',
+  'your',
+  'some',
+  'more',
+  'such',
 ]);
 
 interface WordCandidate {
@@ -28,7 +68,10 @@ interface WordCandidate {
 }
 
 function normalizedWord(value: string): string {
-  return value.toLowerCase().replace(/[’]/g, "'").replace(/^'+|'+$/g, '');
+  return value
+    .toLowerCase()
+    .replace(/[’]/g, "'")
+    .replace(/^'+|'+$/g, '');
 }
 
 function extractWords(text: string): string[] {
@@ -130,17 +173,28 @@ export function parseTimestamp(value: string): number | undefined {
     return undefined;
   }
 
-  return (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
+  return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
 }
 
 export function stripCueMarkup(value: string): string {
-  return value
-    .replace(/<[^>]*>/g, '')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/\s+/g, ' ')
-    .trim();
+  let text = '';
+  let insideTag = false;
+
+  for (const character of value) {
+    if (character === '<') {
+      insideTag = true;
+    } else if (character === '>') {
+      if (insideTag) {
+        insideTag = false;
+      } else {
+        text += character;
+      }
+    } else if (!insideTag) {
+      text += character;
+    }
+  }
+
+  return text.replace(/\s+/g, ' ').trim();
 }
 
 export function parseTranscript(transcript: string): TranscriptCue[] {
@@ -148,7 +202,10 @@ export function parseTranscript(transcript: string): TranscriptCue[] {
   const timedCues: TranscriptCue[] = [];
 
   blocks.forEach((block) => {
-    const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+    const lines = block
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
     if (lines.length === 0 || /^(WEBVTT|NOTE|STYLE|REGION)\b/i.test(lines[0])) {
       return;
     }
@@ -167,7 +224,7 @@ export function parseTranscript(transcript: string): TranscriptCue[] {
     }
 
     timedCues.push({
-      id: `cue-${timedCues.length + 1}`, 
+      id: `cue-${timedCues.length + 1}`,
       startSeconds,
       endSeconds,
       text,

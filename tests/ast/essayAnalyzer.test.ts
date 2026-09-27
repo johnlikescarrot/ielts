@@ -8,7 +8,7 @@ import {
   evaluateTaskResponse,
   evaluateCoherenceCohesion,
   evaluateLexicalResource,
-  evaluateGrammaticalRange
+  evaluateGrammaticalRange,
 } from '../../src/ast/essayAnalyzer';
 import { parseEssayToAST } from '../../src/ast/astParser';
 
@@ -67,17 +67,20 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
     };
     const trReport = evaluateTaskResponse(taskUnder, 2);
     expect(trReport.band).toBeLessThan(6.0);
-    expect(trReport.weaknesses.some(w => w.includes('Under length'))).toBe(true);
+    expect(trReport.weaknesses.some((w) => w.includes('Under length'))).toBe(true);
 
     // Coherence with 3 paragraphs & low transitions
-    const ccReport = evaluateCoherenceCohesion({
-      paragraphCount: 3,
-      transitionWordsUsed: ['however'],
-      transitionWordCount: 1,
-      transitionsPerParagraph: 0.33,
-      cohesionScore: 20,
-      hasIntroAndConclusion: false,
-    }, parseEssayToAST('Paragraph 1.\n\nParagraph 2.\n\nParagraph 3.'));
+    const ccReport = evaluateCoherenceCohesion(
+      {
+        paragraphCount: 3,
+        transitionWordsUsed: ['however'],
+        transitionWordCount: 1,
+        transitionsPerParagraph: 0.33,
+        cohesionScore: 20,
+        hasIntroAndConclusion: false,
+      },
+      parseEssayToAST('Paragraph 1.\n\nParagraph 2.\n\nParagraph 3.'),
+    );
     expect(ccReport.recommendations.length).toBeGreaterThan(0);
 
     // Lexical with low AWL and low TTR

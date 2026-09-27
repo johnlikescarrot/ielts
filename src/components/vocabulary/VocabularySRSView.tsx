@@ -5,16 +5,7 @@ import { getDueCards, getDeckSummary, reviewCard, initializeDeckWithVocabulary }
 import { storageService } from '../../storage/storageService';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
-import {
-  Layers,
-  Volume2,
-  RotateCw,
-  Search,
-  Plus,
-  Brain,
-  CheckCircle,
-  Sparkles
-} from 'lucide-react';
+import { Layers, Volume2, RotateCw, Search, Plus, Brain, CheckCircle, Sparkles } from 'lucide-react';
 
 export const VocabularySRSView: React.FC = () => {
   const { language, t } = useI18n();
@@ -63,8 +54,9 @@ export const VocabularySRSView: React.FC = () => {
   const deckSummary = getDeckSummary(srsCards);
 
   const currentDueCard = dueCards[reviewIndex];
-  const currentVocabItem: VocabularyItem | undefined =
-    currentDueCard ? vocabList.find(v => v.id === currentDueCard.wordId) : vocabList[0];
+  const currentVocabItem: VocabularyItem | undefined = currentDueCard
+    ? vocabList.find((v) => v.id === currentDueCard.wordId)
+    : vocabList[0];
 
   const handleGrade = async (grade: number) => {
     if (!currentDueCard) return;
@@ -72,12 +64,12 @@ export const VocabularySRSView: React.FC = () => {
     const updated = reviewCard(currentDueCard, currentDueCard.wordId, grade);
     await storageService.updateSingleSRSCard(updated);
 
-    const newSrsCards = srsCards.map(c => c.wordId === updated.wordId ? updated : c);
+    const newSrsCards = srsCards.map((c) => (c.wordId === updated.wordId ? updated : c));
     setSrsCards(newSrsCards);
     setIsFlipped(false);
 
     if (reviewIndex < dueCards.length - 1) {
-      setReviewIndex(prev => prev + 1);
+      setReviewIndex((prev) => prev + 1);
     } else {
       setReviewIndex(0);
     }
@@ -123,9 +115,10 @@ export const VocabularySRSView: React.FC = () => {
   };
 
   // Filtered Vocab Bank
-  const topics = Array.from(new Set(vocabList.map(v => v.topic)));
-  const filteredVocab = vocabList.filter(item => {
-    const matchesSearch = item.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const topics = Array.from(new Set(vocabList.map((v) => v.topic)));
+  const filteredVocab = vocabList.filter((item) => {
+    const matchesSearch =
+      item.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.definitionEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.definitionVi.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTopic = selectedTopic === 'all' || item.topic === selectedTopic;
@@ -135,7 +128,9 @@ export const VocabularySRSView: React.FC = () => {
   // Quiz helper
   const quizVocab = vocabList[quizIndex % vocabList.length];
   // Generate 3 wrong options
-  const otherDefs = vocabList.filter(v => v.id !== quizVocab.id).map(v => language === 'vi' ? v.definitionVi : v.definitionEn);
+  const otherDefs = vocabList
+    .filter((v) => v.id !== quizVocab.id)
+    .map((v) => (language === 'vi' ? v.definitionVi : v.definitionEn));
   const quizOptions = [
     language === 'vi' ? quizVocab.definitionVi : quizVocab.definitionEn,
     otherDefs[0] || 'Alternative definition 1',
@@ -149,12 +144,12 @@ export const VocabularySRSView: React.FC = () => {
     setQuizAnswered(true);
     const correctDef = language === 'vi' ? quizVocab.definitionVi : quizVocab.definitionEn;
     if (option === correctDef) {
-      setQuizScore(prev => prev + 1);
+      setQuizScore((prev) => prev + 1);
     }
   };
 
   const nextQuizQuestion = () => {
-    setQuizIndex(prev => prev + 1);
+    setQuizIndex((prev) => prev + 1);
     setQuizAnswered(false);
     setSelectedQuizOption(null);
   };
@@ -166,16 +161,12 @@ export const VocabularySRSView: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <Layers className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-              {t('vocab.title')}
-            </h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('vocab.title')}</h1>
             <Badge variant="primary" size="sm">
               SuperMemo SM-2
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t('vocab.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('vocab.subtitle')}</p>
         </div>
 
         {/* Tab switchers */}
@@ -183,7 +174,9 @@ export const VocabularySRSView: React.FC = () => {
           <button
             onClick={() => setActiveTab('flashcards')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activeTab === 'flashcards' ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activeTab === 'flashcards'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             SRS Deck ({deckSummary.dueToday} Due)
@@ -191,7 +184,9 @@ export const VocabularySRSView: React.FC = () => {
           <button
             onClick={() => setActiveTab('bank')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activeTab === 'bank' ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activeTab === 'bank'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             Word Bank ({vocabList.length})
@@ -199,7 +194,9 @@ export const VocabularySRSView: React.FC = () => {
           <button
             onClick={() => setActiveTab('quiz')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activeTab === 'quiz' ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs' : 'text-slate-600 dark:text-slate-300'
+              activeTab === 'quiz'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300'
             }`}
           >
             Mini Quiz
@@ -246,8 +243,12 @@ export const VocabularySRSView: React.FC = () => {
             <div className="space-y-4">
               {/* Progress */}
               <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-                <span>Review Card {reviewIndex + 1} of {dueCards.length}</span>
-                <span>Interval: {currentDueCard?.interval || 0}d | Reps: {currentDueCard?.repetition || 0}</span>
+                <span>
+                  Review Card {reviewIndex + 1} of {dueCards.length}
+                </span>
+                <span>
+                  Interval: {currentDueCard?.interval || 0}d | Reps: {currentDueCard?.repetition || 0}
+                </span>
               </div>
 
               {/* Flip Card Container */}
@@ -290,9 +291,7 @@ export const VocabularySRSView: React.FC = () => {
                     <p className="font-mono text-sm text-slate-500 dark:text-slate-400">
                       {currentVocabItem.phonetic} • <span className="italic">{currentVocabItem.partOfSpeech}</span>
                     </p>
-                    <p className="text-xs text-indigo-500 font-semibold pt-4">
-                      {t('vocab.flipCard')}
-                    </p>
+                    <p className="text-xs text-indigo-500 font-semibold pt-4">{t('vocab.flipCard')}</p>
                   </div>
                 ) : (
                   <div className="space-y-4 my-auto text-left">
@@ -311,7 +310,9 @@ export const VocabularySRSView: React.FC = () => {
 
                       <div>
                         <span className="font-bold text-indigo-600 dark:text-indigo-400">Tiếng Việt:</span>
-                        <p className="text-slate-800 dark:text-slate-100 font-medium">{currentVocabItem.definitionVi}</p>
+                        <p className="text-slate-800 dark:text-slate-100 font-medium">
+                          {currentVocabItem.definitionVi}
+                        </p>
                       </div>
 
                       <div>
@@ -326,7 +327,10 @@ export const VocabularySRSView: React.FC = () => {
                           <span className="font-bold text-slate-700 dark:text-slate-300">Collocations:</span>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {currentVocabItem.collocations.map((c, i) => (
-                              <span key={i} className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-[11px] text-indigo-700 dark:text-indigo-300 font-medium">
+                              <span
+                                key={i}
+                                className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-[11px] text-indigo-700 dark:text-indigo-300 font-medium"
+                              >
                                 {c}
                               </span>
                             ))}
@@ -337,9 +341,7 @@ export const VocabularySRSView: React.FC = () => {
                   </div>
                 )}
 
-                <div className="text-[10px] text-slate-400">
-                  IELTS Slayer SM-2 Algorithm
-                </div>
+                <div className="text-[10px] text-slate-400">IELTS Slayer SM-2 Algorithm</div>
               </div>
 
               {/* SM-2 Action Buttons */}
@@ -373,11 +375,10 @@ export const VocabularySRSView: React.FC = () => {
           ) : (
             <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-12 text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto" />
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-                All Cards Reviewed for Today!
-              </h2>
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white">All Cards Reviewed for Today!</h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Great job! You have completed all due spaced repetition reviews. Check the Word Bank or test yourself in Mini Quiz mode.
+                Great job! You have completed all due spaced repetition reviews. Check the Word Bank or test yourself in
+                Mini Quiz mode.
               </p>
               <button
                 onClick={() => setActiveTab('bank')}
@@ -413,7 +414,9 @@ export const VocabularySRSView: React.FC = () => {
               >
                 <option value="all">{t('common.filterAll')}</option>
                 {topics.map((tp, idx) => (
-                  <option key={idx} value={tp}>{tp}</option>
+                  <option key={idx} value={tp}>
+                    {tp}
+                  </option>
                 ))}
               </select>
 
@@ -428,7 +431,7 @@ export const VocabularySRSView: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredVocab.map(item => (
+            {filteredVocab.map((item) => (
               <div
                 key={item.id}
                 className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-3"
@@ -440,10 +443,14 @@ export const VocabularySRSView: React.FC = () => {
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
-                  <Badge variant="primary" size="sm">Band {item.bandScore.toFixed(1)}</Badge>
+                  <Badge variant="primary" size="sm">
+                    Band {item.bandScore.toFixed(1)}
+                  </Badge>
                 </div>
 
-                <p className="text-xs font-mono text-slate-400">{item.phonetic} • {item.partOfSpeech}</p>
+                <p className="text-xs font-mono text-slate-400">
+                  {item.phonetic} • {item.partOfSpeech}
+                </p>
 
                 <div className="text-xs space-y-1">
                   <p className="text-slate-700 dark:text-slate-300">{item.definitionEn}</p>
@@ -479,10 +486,14 @@ export const VocabularySRSView: React.FC = () => {
               const isSelected = selectedQuizOption === opt;
               const isCorrectOpt = opt === correctDef;
 
-              let btnStyle = 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200';
+              let btnStyle =
+                'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200';
               if (quizAnswered) {
-                if (isCorrectOpt) btnStyle = 'bg-emerald-100 dark:bg-emerald-950 border-emerald-500 text-emerald-900 dark:text-emerald-200 font-bold';
-                else if (isSelected) btnStyle = 'bg-rose-100 dark:bg-rose-950 border-rose-500 text-rose-900 dark:text-rose-200';
+                if (isCorrectOpt)
+                  btnStyle =
+                    'bg-emerald-100 dark:bg-emerald-950 border-emerald-500 text-emerald-900 dark:text-emerald-200 font-bold';
+                else if (isSelected)
+                  btnStyle = 'bg-rose-100 dark:bg-rose-950 border-rose-500 text-rose-900 dark:text-rose-200';
               }
 
               return (
@@ -513,9 +524,7 @@ export const VocabularySRSView: React.FC = () => {
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              {t('vocab.addCustom')}
-            </h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('vocab.addCustom')}</h3>
 
             <form onSubmit={handleAddCustomWord} className="space-y-3 text-xs">
               <div>

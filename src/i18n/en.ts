@@ -71,7 +71,8 @@ export const en: Record<string, string> = {
 
   // Reading Section
   'reading.title': 'IELTS Reading Practice',
-  'reading.subtitle': 'Practice authentic Academic & General passages with instant band scoring and bilingual explanation keys.',
+  'reading.subtitle':
+    'Practice authentic Academic & General passages with instant band scoring and bilingual explanation keys.',
   'reading.selectPassage': 'Select a Reading Passage',
   'reading.academic': 'Academic',
   'reading.general': 'General Training',
@@ -83,7 +84,8 @@ export const en: Record<string, string> = {
 
   // Listening Section
   'listening.title': 'IELTS Listening Practice',
-  'listening.subtitle': 'Interactive audio tracks across Sections 1 to 4 with synchronized transcripts and band conversion.',
+  'listening.subtitle':
+    'Interactive audio tracks across Sections 1 to 4 with synchronized transcripts and band conversion.',
   'listening.selectSection': 'Select a Listening Section',
   'listening.section': 'Section',
   'listening.showTranscript': 'Show Transcript',
@@ -93,7 +95,8 @@ export const en: Record<string, string> = {
 
   // Writing Section
   'writing.title': 'IELTS Writing Smart Evaluator',
-  'writing.subtitle': 'AST-driven automated essay analysis powered by syntax tree heuristics and official IELTS 4-criteria rubrics.',
+  'writing.subtitle':
+    'AST-driven automated essay analysis powered by syntax tree heuristics and official IELTS 4-criteria rubrics.',
   'writing.selectPrompt': 'Select a Writing Prompt',
   'writing.task1': 'Task 1 (Academic / General)',
   'writing.task2': 'Task 2 (Essay)',
@@ -120,7 +123,8 @@ export const en: Record<string, string> = {
 
   // Speaking Section
   'speaking.title': 'IELTS Speaking Simulator & Lab',
-  'speaking.subtitle': 'Complete 3-part mock interview with timer cues, voice recording, and standard IELTS band descriptors.',
+  'speaking.subtitle':
+    'Complete 3-part mock interview with timer cues, voice recording, and standard IELTS band descriptors.',
   'speaking.part1': 'Part 1: Introduction & Everyday Topics',
   'speaking.part2': 'Part 2: Individual Long Turn (Cue Card)',
   'speaking.part3': 'Part 3: Two-way Discussion',
@@ -158,9 +162,11 @@ export const en: Record<string, string> = {
 
   // Video Transcript Lab
   'video.title': 'Video Transcript Lab',
-  'video.subtitle': 'Turn any caption or transcript you already have into a private IELTS gap-fill workout — no account, API key, or upload required.',
+  'video.subtitle':
+    'Turn any caption or transcript you already have into a private IELTS gap-fill workout — no account, API key, or upload required.',
   'video.privacyTitle': 'Private by design',
-  'video.privacyDescription': 'The extension never fetches the video URL. Your pasted transcript and saved practice sets stay in Firefox local storage.',
+  'video.privacyDescription':
+    'The extension never fetches the video URL. Your pasted transcript and saved practice sets stay in Firefox local storage.',
   'video.createHeading': 'Create a practice set',
   'video.sourceTitle': 'Video title',
   'video.sourceTitleHelp': 'A label for your saved practice set.',
@@ -198,13 +204,15 @@ export const en: Record<string, string> = {
 
   // Analytics & History
   'analytics.title': 'Performance Analytics & History',
-  'analytics.subtitle': 'Track your skill distribution, test scores over time, study consistency, and export your offline data.',
+  'analytics.subtitle':
+    'Track your skill distribution, test scores over time, study consistency, and export your offline data.',
   'analytics.skillBreakdown': 'Skill Band Score Distribution',
   'analytics.totalStudyTime': 'Total Time Studied',
   'analytics.testsCompleted': 'Tests Completed',
   'analytics.scoreTrend': 'Score Progress Trend',
   'analytics.exportTitle': 'Data Backup & Privacy',
-  'analytics.exportDesc': 'Your data never leaves your browser. Export or restore your full test history and flashcards at any time.',
+  'analytics.exportDesc':
+    'Your data never leaves your browser. Export or restore your full test history and flashcards at any time.',
   'analytics.resetData': 'Clear All Local Data',
   'analytics.confirmReset': 'Are you sure you want to delete all local progress? This cannot be undone.',
 

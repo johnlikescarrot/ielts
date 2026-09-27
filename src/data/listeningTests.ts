@@ -22,13 +22,33 @@ Receptionist: Certainly. May I have your full name and contact number?
 Customer: Yes, my name is Arthur Pendelton, spelled P-E-N-D-E-L-T-O-N, and my mobile number is 07700 900342.
 Receptionist: Thank you Mr. Pendelton. I have noted that down.`,
     audioScript: [
-      { speaker: 'Receptionist', text: 'Good morning, Oakridge Sports and Wellness Club. How can I help you today?', time: 0 },
-      { speaker: 'Customer', text: 'Hi there, I recently moved to the neighborhood and I am looking to join the club. Could you give me some details about membership options?', time: 8 },
-      { speaker: 'Receptionist', text: 'Of course! We offer three main tiers: Bronze, Silver, and Gold. The Bronze package includes access to the fitness center and outdoor running track for 35 pounds per month.', time: 20 },
+      {
+        speaker: 'Receptionist',
+        text: 'Good morning, Oakridge Sports and Wellness Club. How can I help you today?',
+        time: 0,
+      },
+      {
+        speaker: 'Customer',
+        text: 'Hi there, I recently moved to the neighborhood and I am looking to join the club. Could you give me some details about membership options?',
+        time: 8,
+      },
+      {
+        speaker: 'Receptionist',
+        text: 'Of course! We offer three main tiers: Bronze, Silver, and Gold. The Bronze package includes access to the fitness center and outdoor running track for 35 pounds per month.',
+        time: 20,
+      },
       { speaker: 'Customer', text: 'What about the swimming pool and badminton courts?', time: 35 },
-      { speaker: 'Receptionist', text: 'Those are included in our Silver package, which is 52 pounds monthly.', time: 42 },
+      {
+        speaker: 'Receptionist',
+        text: 'Those are included in our Silver package, which is 52 pounds monthly.',
+        time: 42,
+      },
       { speaker: 'Customer', text: 'The Silver membership sounds ideal for me. Are there any joining fees?', time: 54 },
-      { speaker: 'Receptionist', text: 'There is a registration fee of 20 pounds, but it is completely waived before October 15th.', time: 64 },
+      {
+        speaker: 'Receptionist',
+        text: 'There is a registration fee of 20 pounds, but it is completely waived before October 15th.',
+        time: 64,
+      },
       { speaker: 'Customer', text: 'And what are your standard opening hours on weekends?', time: 76 },
       { speaker: 'Receptionist', text: 'On Saturdays and Sundays we are open from 7:00 AM until 9:00 PM.', time: 84 },
       { speaker: 'Customer', text: 'My name is Arthur Pendelton, spelled P-E-N-D-E-L-T-O-N.', time: 98 },
@@ -41,7 +61,8 @@ Receptionist: Thank you Mr. Pendelton. I have noted that down.`,
         prompt: 'Monthly price for the Silver membership tier: £ _____',
         options: ['35', '52', '75', '20'],
         correctAnswer: '52',
-        explanationEn: 'The receptionist confirms: "Those are included in our Silver package, which is 52 pounds monthly."',
+        explanationEn:
+          'The receptionist confirms: "Those are included in our Silver package, which is 52 pounds monthly."',
         explanationVi: 'Lễ tân xác nhận gói Silver có giá 52 bảng mỗi tháng.',
       },
       {
@@ -73,8 +94,8 @@ Receptionist: Thank you Mr. Pendelton. I have noted that down.`,
         correctAnswer: 'Pendelton',
         explanationEn: 'The customer spells his surname letter-by-letter: P-E-N-D-E-L-T-O-N.',
         explanationVi: 'Khách hàng đánh vần rõ họ của mình là P-E-N-D-E-L-T-O-N.',
-      }
-    ]
+      },
+    ],
   },
   {
     id: 'listen_sec_4',
@@ -89,10 +110,26 @@ At the molecular core of this phenomenon lies a light-emitting pigment known as 
 
 Deep-sea cephalopods, particularly species of squids inhabiting the mesopelagic twilight zone, leverage bioluminescence for three primary survival functions: counter-illumination camouflage, prey attraction, and conspecific communication. In counter-illumination, specialized photophores on the ventral underside of the squid generate light matching the exact wavelength and intensity of downwelling sunlight from the surface. Consequently, predators swimming beneath the squid are unable to discern its dark silhouette against the ocean sky.`,
     audioScript: [
-      { speaker: 'Lecturer', text: 'Welcome back, everyone. In today\'s lecture, we examine bioluminescence in deep-sea organisms.', time: 0 },
-      { speaker: 'Lecturer', text: 'At the molecular core lies a light-emitting pigment called luciferin, catalyzed by luciferase.', time: 25 },
-      { speaker: 'Lecturer', text: 'Nearly 90% of the energy is emitted as illumination rather than thermal heat.', time: 55 },
-      { speaker: 'Lecturer', text: 'Deep-sea squids leverage photophores on their ventral underside for counter-illumination camouflage.', time: 85 },
+      {
+        speaker: 'Lecturer',
+        text: "Welcome back, everyone. In today's lecture, we examine bioluminescence in deep-sea organisms.",
+        time: 0,
+      },
+      {
+        speaker: 'Lecturer',
+        text: 'At the molecular core lies a light-emitting pigment called luciferin, catalyzed by luciferase.',
+        time: 25,
+      },
+      {
+        speaker: 'Lecturer',
+        text: 'Nearly 90% of the energy is emitted as illumination rather than thermal heat.',
+        time: 55,
+      },
+      {
+        speaker: 'Lecturer',
+        text: 'Deep-sea squids leverage photophores on their ventral underside for counter-illumination camouflage.',
+        time: 85,
+      },
     ],
     questions: [
       {
@@ -102,14 +139,16 @@ Deep-sea cephalopods, particularly species of squids inhabiting the mesopelagic 
         prompt: 'Which pigment is responsible for light emission in bioluminescent organisms?',
         options: ['Chlorophyll', 'Luciferin', 'Luciferase', 'Hemoglobin'],
         correctAnswer: 'Luciferin',
-        explanationEn: 'The lecturer notes that the light-emitting pigment is luciferin, while luciferase is the enzyme catalyst.',
+        explanationEn:
+          'The lecturer notes that the light-emitting pigment is luciferin, while luciferase is the enzyme catalyst.',
         explanationVi: 'Giảng viên nêu rõ sắc tố phát sáng là luciferin, còn luciferase là enzyme xúc tác.',
       },
       {
         id: 'lq_s4_2',
         type: 'sentence-completion',
         questionNumber: 2,
-        prompt: 'Bioluminescence is highly efficient because nearly 90% of energy is released as light rather than _____.',
+        prompt:
+          'Bioluminescence is highly efficient because nearly 90% of energy is released as light rather than _____.',
         options: ['oxygen', 'heat', 'electricity', 'sound'],
         correctAnswer: 'heat',
         explanationEn: 'The lecturer notes that energy is emitted as illumination rather than thermal heat.',
@@ -122,9 +161,10 @@ Deep-sea cephalopods, particularly species of squids inhabiting the mesopelagic 
         prompt: 'Squids match downwelling sunlight using photophores on their _____ underside.',
         options: ['dorsal', 'ventral', 'lateral', 'cranial'],
         correctAnswer: 'ventral',
-        explanationEn: 'The lecturer describes photophores on the ventral (underside) of the squid for counter-illumination camouflage.',
+        explanationEn:
+          'The lecturer describes photophores on the ventral (underside) of the squid for counter-illumination camouflage.',
         explanationVi: 'Giảng viên nhắc đến các cơ quan phát sáng ở mặt bụng (ventral) của mực biển.',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

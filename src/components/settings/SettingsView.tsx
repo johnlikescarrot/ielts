@@ -10,7 +10,7 @@ export const SettingsView: React.FC = () => {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    storageService.getSettings().then(s => setSettings(s));
+    storageService.getSettings().then((s) => setSettings(s));
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -28,13 +28,9 @@ export const SettingsView: React.FC = () => {
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-1">
         <div className="flex items-center space-x-2">
           <Settings className="w-6 h-6 text-indigo-600" />
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-            {t('settings.title')}
-          </h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('settings.title')}</h1>
         </div>
-        <p className="text-xs text-slate-500">
-          Personalize your IELTS target bands, study preferences, and language.
-        </p>
+        <p className="text-xs text-slate-500">Personalize your IELTS target bands, study preferences, and language.</p>
       </div>
 
       {savedSuccess && (
@@ -44,7 +40,10 @@ export const SettingsView: React.FC = () => {
         </div>
       )}
 
-      <form onSubmit={handleSave} className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 text-xs">
+      <form
+        onSubmit={handleSave}
+        className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 text-xs"
+      >
         {/* Target Band */}
         <div className="space-y-1.5">
           <label className="font-bold text-slate-800 dark:text-slate-200">
@@ -63,9 +62,7 @@ export const SettingsView: React.FC = () => {
 
         {/* Exam Type */}
         <div className="space-y-1.5">
-          <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.preferredExam')}
-          </label>
+          <label className="font-bold text-slate-800 dark:text-slate-200">{t('settings.preferredExam')}</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -94,9 +91,7 @@ export const SettingsView: React.FC = () => {
 
         {/* Interface Language */}
         <div className="space-y-1.5">
-          <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.language')}
-          </label>
+          <label className="font-bold text-slate-800 dark:text-slate-200">{t('settings.language')}</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -125,9 +120,7 @@ export const SettingsView: React.FC = () => {
 
         {/* Daily Minutes */}
         <div className="space-y-1.5">
-          <label className="font-bold text-slate-800 dark:text-slate-200">
-            {t('settings.dailyMinutes')}
-          </label>
+          <label className="font-bold text-slate-800 dark:text-slate-200">{t('settings.dailyMinutes')}</label>
           <input
             type="number"
             min="10"
@@ -154,7 +147,8 @@ export const SettingsView: React.FC = () => {
           <span>100% Free & Privacy-First Architecture</span>
         </div>
         <p className="leading-relaxed">
-          IELTS Slayer operates locally in your browser. Zero tracking, zero ads, zero user accounts, zero remote analytics. Your test responses and flashcard states remain in Firefox local storage.
+          IELTS Slayer operates locally in your browser. Zero tracking, zero ads, zero user accounts, zero remote
+          analytics. Your test responses and flashcard states remain in Firefox local storage.
         </p>
 
         <div className="flex items-center space-x-2 font-bold text-slate-800 dark:text-slate-200 pt-2">
@@ -162,7 +156,8 @@ export const SettingsView: React.FC = () => {
           <span>Local AST Writing Engine</span>
         </div>
         <p className="leading-relaxed">
-          The automated essay evaluator uses transparent, on-device Abstract Syntax Tree (AST) grammar heuristics. It is a learning aid, not an official IELTS score.
+          The automated essay evaluator uses transparent, on-device Abstract Syntax Tree (AST) grammar heuristics. It is
+          a learning aid, not an official IELTS score.
         </p>
       </div>
     </div>

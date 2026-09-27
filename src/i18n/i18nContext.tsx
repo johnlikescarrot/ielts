@@ -16,7 +16,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [language, setLanguageState] = useState<Language>('en');
 
   useEffect(() => {
-    storageService.getSettings().then(settings => {
+    storageService.getSettings().then((settings) => {
       if (settings && (settings.language === 'en' || settings.language === 'vi')) {
         setLanguageState(settings.language);
       }
@@ -38,11 +38,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return text;
   };
 
-  return (
-    <I18nContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={{ language, setLanguage, t }}>{children}</I18nContext.Provider>;
 };
 
 export const useI18n = (): I18nContextValue => {

@@ -8,7 +8,13 @@ import { Heading, Text } from '@astryxdesign/core/Text';
 import { TextArea } from '@astryxdesign/core/TextArea';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { Captions, CheckCircle2, ListRestart, Plus, Sparkles } from 'lucide-react';
-import { createVocabularyFromQuestion, createVideoPracticeSession, getPracticeProgress, validateTranscriptInput, verifyAnswer } from '../../video/transcriptPractice';
+import {
+  createVocabularyFromQuestion,
+  createVideoPracticeSession,
+  getPracticeProgress,
+  validateTranscriptInput,
+  verifyAnswer,
+} from '../../video/transcriptPractice';
 import { VideoPracticeSession } from '../../video/types';
 import { storageService } from '../../storage/storageService';
 import { useI18n } from '../../i18n/i18nContext';
@@ -27,8 +33,12 @@ A sustainable approach can benefit learners and local authorities alike.`;
 type FeedbackState = 'idle' | 'correct' | 'incorrect' | 'revealed';
 
 function formatTimecode(seconds: number): string {
-  const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const remainder = Math.floor(seconds % 60).toString().padStart(2, '0');
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0');
+  const remainder = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, '0');
   return `${minutes}:${remainder}`;
 }
 
@@ -57,7 +67,10 @@ export const VideoPracticeView: React.FC = () => {
 
   const currentQuestion = session?.questions[activeQuestionIndex];
   const progress = useMemo(
-    () => (session ? getPracticeProgress(session.questions, answers) : { answered: 0, correct: 0, total: 0, accuracyPercent: 0 }),
+    () =>
+      session
+        ? getPracticeProgress(session.questions, answers)
+        : { answered: 0, correct: 0, total: 0, accuracyPercent: 0 },
     [answers, session],
   );
 
@@ -169,9 +182,13 @@ export const VideoPracticeView: React.FC = () => {
       <VStack gap={2}>
         <HStack gap={2} vAlign="center" wrap="wrap">
           <Captions aria-hidden="true" />
-          <Heading id="video-practice-title" level={1}>{t('video.title')}</Heading>
+          <Heading id="video-practice-title" level={1}>
+            {t('video.title')}
+          </Heading>
         </HStack>
-        <Text color="secondary" display="block">{t('video.subtitle')}</Text>
+        <Text color="secondary" display="block">
+          {t('video.subtitle')}
+        </Text>
       </VStack>
 
       <Banner
@@ -215,8 +232,18 @@ export const VideoPracticeView: React.FC = () => {
               status={error ? { type: 'error', message: error } : undefined}
             />
             <HStack gap={2} wrap="wrap">
-              <Button label={t('video.create')} variant="primary" icon={<Sparkles aria-hidden="true" />} onClick={() => void handleCreate()} />
-              <Button label={t('video.loadDemo')} variant="secondary" icon={<Plus aria-hidden="true" />} onClick={handleLoadDemo} />
+              <Button
+                label={t('video.create')}
+                variant="primary"
+                icon={<Sparkles aria-hidden="true" />}
+                onClick={() => void handleCreate()}
+              />
+              <Button
+                label={t('video.loadDemo')}
+                variant="secondary"
+                icon={<Plus aria-hidden="true" />}
+                onClick={handleLoadDemo}
+              />
             </HStack>
           </VStack>
         </Section>
@@ -224,11 +251,7 @@ export const VideoPracticeView: React.FC = () => {
 
       {!session && savedSessions.length > 0 && (
         <Section padding={0} variant="transparent">
-          <List
-            header={<Heading level={2}>{t('video.savedHeading')}</Heading>}
-            density="balanced"
-            hasDividers
-          >
+          <List header={<Heading level={2}>{t('video.savedHeading')}</Heading>} density="balanced" hasDividers>
             {savedSessions.map((savedSession) => (
               <ListItem
                 key={savedSession.id}
@@ -272,7 +295,9 @@ export const VideoPracticeView: React.FC = () => {
                   {t('video.timecode', { time: formatTimecode(currentQuestion.timestampSeconds) })}
                 </Text>
               )}
-              <Text type="large" display="block">{currentQuestion.clozeText}</Text>
+              <Text type="large" display="block">
+                {currentQuestion.clozeText}
+              </Text>
               <TextInput
                 label={t('video.answerLabel')}
                 value={answer}
@@ -322,7 +347,12 @@ export const VideoPracticeView: React.FC = () => {
               }
             />
           )}
-          <Button label={t('video.restart')} variant="ghost" icon={<ListRestart aria-hidden="true" />} onClick={resetPractice} />
+          <Button
+            label={t('video.restart')}
+            variant="ghost"
+            icon={<ListRestart aria-hidden="true" />}
+            onClick={resetPractice}
+          />
         </VStack>
       )}
 
@@ -338,7 +368,12 @@ export const VideoPracticeView: React.FC = () => {
               })}
             </Text>
             <HStack gap={2} wrap="wrap">
-              <Button label={t('video.restart')} variant="primary" icon={<ListRestart aria-hidden="true" />} onClick={resetPractice} />
+              <Button
+                label={t('video.restart')}
+                variant="primary"
+                icon={<ListRestart aria-hidden="true" />}
+                onClick={resetPractice}
+              />
               <Button label={t('video.createAnother')} variant="secondary" onClick={returnToCreator} />
             </HStack>
           </VStack>

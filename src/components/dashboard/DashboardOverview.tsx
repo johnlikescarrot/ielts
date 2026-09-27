@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Flame,
   Sparkles,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 
 export interface DashboardOverviewProps {
@@ -44,10 +44,9 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
   const deckSummary = getDeckSummary(srsCards);
 
   // Calculate average band from recent attempts
-  const validScores = history.filter(h => h.estimatedBand > 0).map(h => h.estimatedBand);
-  const avgBand = validScores.length > 0
-    ? (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1)
-    : '7.5';
+  const validScores = history.filter((h) => h.estimatedBand > 0).map((h) => h.estimatedBand);
+  const avgBand =
+    validScores.length > 0 ? (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1) : '7.5';
 
   const skillCards = [
     {
@@ -118,20 +117,17 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
               <Sparkles className="w-3.5 h-3.5" />
               <span>100% Free & Privacy-First IELTS Suite</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-              {t('dash.welcome')}
-            </h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t('dash.welcome')}</h1>
             <p className="text-xs sm:text-sm text-indigo-200 max-w-xl">
-              Equipped with AST syntax assessment, SM-2 Spaced Repetition, and full 4-skill testing modules for your target Band {settings.targetBand.toFixed(1)}.
+              Equipped with AST syntax assessment, SM-2 Spaced Repetition, and full 4-skill testing modules for your
+              target Band {settings.targetBand.toFixed(1)}.
             </p>
           </div>
 
           {/* Quick Stats Badges */}
           <div className="flex items-center gap-3">
             <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 text-center min-w-[100px]">
-              <span className="text-[10px] uppercase font-bold text-indigo-300 block">
-                {t('dash.dailyStreak')}
-              </span>
+              <span className="text-[10px] uppercase font-bold text-indigo-300 block">{t('dash.dailyStreak')}</span>
               <div className="flex items-center justify-center space-x-1 mt-1 text-2xl font-black text-amber-400">
                 <Flame className="w-6 h-6 fill-amber-400" />
                 <span>3 {t('dash.days')}</span>
@@ -139,12 +135,8 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
             </div>
 
             <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 text-center min-w-[100px]">
-              <span className="text-[10px] uppercase font-bold text-indigo-300 block">
-                Estimated Band
-              </span>
-              <div className="text-2xl font-black text-yellow-300 mt-1">
-                {avgBand}
-              </div>
+              <span className="text-[10px] uppercase font-bold text-indigo-300 block">Estimated Band</span>
+              <div className="text-2xl font-black text-yellow-300 mt-1">{avgBand}</div>
             </div>
           </div>
         </div>
@@ -181,9 +173,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
 
       {/* Feature Navigation Grid */}
       <div className="space-y-3">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white">
-          {t('dash.quickStart')}
-        </h2>
+        <h2 className="text-base font-bold text-slate-900 dark:text-white">{t('dash.quickStart')}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {skillCards.map((card) => {
@@ -196,7 +186,9 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${card.color} text-white flex items-center justify-center shadow-md`}>
+                    <div
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${card.color} text-white flex items-center justify-center shadow-md`}
+                    >
                       <Icon className="w-5 h-5" />
                     </div>
                     <Badge variant="neutral" size="sm">
@@ -227,9 +219,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       {/* Recent Activity Table */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            {t('dash.recentAttempts')}
-          </h2>
+          <h2 className="text-base font-bold text-slate-900 dark:text-white">{t('dash.recentAttempts')}</h2>
           <button
             onClick={() => onSelectSkill('analytics')}
             className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"

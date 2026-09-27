@@ -1,11 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./dashboard.html",
-    "./popup.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './dashboard.html', './popup.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -29,12 +24,12 @@ export default {
           amber: '#f59e0b',
           blue: '#2563eb',
           purple: '#9333ea',
-        }
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [],
-}
+};

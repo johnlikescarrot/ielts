@@ -4,17 +4,7 @@ import { VocabularyItem, UserSettings } from '../types';
 import { storageService, DEFAULT_SETTINGS } from '../storage/storageService';
 import { I18nProvider, useI18n } from '../i18n/i18nContext';
 import { Badge } from '../components/common/Badge';
-import {
-  Volume2,
-  ExternalLink,
-  BookOpen,
-  Headphones,
-  PenTool,
-  Mic,
-  Layers,
-  Flame,
-  CheckCircle
-} from 'lucide-react';
+import { Volume2, ExternalLink, BookOpen, Headphones, PenTool, Mic, Layers, Flame, CheckCircle } from 'lucide-react';
 
 const PopupContent: React.FC = () => {
   const { language, t } = useI18n();
@@ -23,9 +13,11 @@ const PopupContent: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    storageService.getSettings().then(s => setSettings(s));
+    storageService.getSettings().then((s) => setSettings(s));
     // Pick word based on day of year
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
+    const dayOfYear = Math.floor(
+      (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24,
+    );
     const word = INITIAL_VOCABULARY[dayOfYear % INITIAL_VOCABULARY.length] || INITIAL_VOCABULARY[0];
     setWordOfTheDay(word);
   }, []);
@@ -90,9 +82,7 @@ const PopupContent: React.FC = () => {
 
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-black text-slate-900 dark:text-white capitalize">
-              {wordOfTheDay.word}
-            </h3>
+            <h3 className="text-xl font-black text-slate-900 dark:text-white capitalize">{wordOfTheDay.word}</h3>
             <span className="text-[11px] font-mono text-slate-400">
               {wordOfTheDay.phonetic} • {wordOfTheDay.partOfSpeech}
             </span>

@@ -2,9 +2,9 @@ name: CI Quality & Test Suite
 
 on:
   push:
-    branches: [ main, 'arena/**' ]
+    branches: [main, 'arena/**']
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read

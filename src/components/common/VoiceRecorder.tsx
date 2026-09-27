@@ -7,10 +7,7 @@ export interface VoiceRecorderProps {
   className?: string;
 }
 
-export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
-  onRecordingComplete,
-  className = '',
-}) => {
+export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onRecordingComplete, className = '' }) => {
   const { t } = useI18n();
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -58,21 +55,21 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         if (onRecordingComplete) {
           onRecordingComplete(audioBlob, recordingTime);
         }
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorder.start();
       setIsRecording(true);
 
       timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
+        setRecordingTime((prev) => prev + 1);
       }, 1000);
     } catch (err: any) {
       console.warn('VoiceRecorder: mic access error', err);
       // Fallback mock recording for sandbox/tests or without mic hardware
       setIsRecording(true);
       timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
+        setRecordingTime((prev) => prev + 1);
       }, 1000);
     }
   };
@@ -111,7 +108,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   };
 
   return (
-    <div className={`p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm ${className}`}>
+    <div
+      className={`p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm ${className}`}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           {!isRecording ? (
@@ -142,12 +141,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
 
         {audioUrl && !isRecording && (
           <div className="flex items-center space-x-2">
-            <audio
-              ref={audioPlayerRef}
-              src={audioUrl}
-              onEnded={() => setIsPlayingAudio(false)}
-              className="hidden"
-            />
+            <audio ref={audioPlayerRef} src={audioUrl} onEnded={() => setIsPlayingAudio(false)} className="hidden" />
             <button
               onClick={togglePlayAudio}
               className="flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900 transition"

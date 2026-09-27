@@ -11,11 +11,14 @@ export function removeTooltip(): void {
 }
 
 export function lookupWord(rawWord: string) {
-  const normalized = rawWord.trim().toLowerCase().replace(/[^a-z]/g, '');
+  const normalized = rawWord
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
   if (!normalized || normalized.length < 3) return null;
 
   // Check initial vocab bank first
-  const bankMatch = INITIAL_VOCABULARY.find(v => v.word.toLowerCase() === normalized);
+  const bankMatch = INITIAL_VOCABULARY.find((v) => v.word.toLowerCase() === normalized);
   if (bankMatch) {
     return {
       word: bankMatch.word,
@@ -103,7 +106,7 @@ export function handleSelection(): void {
             bandScore: info.band,
             cefrLevel: info.cefr,
             isAWL: true,
-          }
+          },
         });
       }
       setTimeout(removeTooltip, 1200);

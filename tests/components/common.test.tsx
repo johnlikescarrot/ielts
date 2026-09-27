@@ -11,13 +11,25 @@ import { I18nProvider } from '../../src/i18n/i18nContext';
 
 describe('Common Components Suite', () => {
   it('renders Badge with various variants and sizes', () => {
-    const { rerender } = render(<Badge variant="primary" size="sm">Primary</Badge>);
+    const { rerender } = render(
+      <Badge variant="primary" size="sm">
+        Primary
+      </Badge>,
+    );
     expect(screen.getByText('Primary')).toBeInTheDocument();
 
-    rerender(<Badge variant="success" size="md">Success</Badge>);
+    rerender(
+      <Badge variant="success" size="md">
+        Success
+      </Badge>,
+    );
     expect(screen.getByText('Success')).toBeInTheDocument();
 
-    rerender(<Badge variant="warning" size="lg">Warning</Badge>);
+    rerender(
+      <Badge variant="warning" size="lg">
+        Warning
+      </Badge>,
+    );
     expect(screen.getByText('Warning')).toBeInTheDocument();
 
     rerender(<Badge variant="danger">Danger</Badge>);
@@ -39,19 +51,12 @@ describe('Common Components Suite', () => {
         sublabel="75/100"
         color="emerald"
         showPercentage={true}
-      />
+      />,
     );
     expect(screen.getByText('Task Progress')).toBeInTheDocument();
     expect(screen.getByText('75%')).toBeInTheDocument();
 
-    rerender(
-      <ProgressBar
-        value={50}
-        max={100}
-        color="amber"
-        showPercentage={false}
-      />
-    );
+    rerender(<ProgressBar value={50} max={100} color="amber" showPercentage={false} />);
 
     rerender(<ProgressBar value={20} color="rose" />);
     rerender(<ProgressBar value={90} color="purple" />);
@@ -65,7 +70,7 @@ describe('Common Components Suite', () => {
     render(
       <I18nProvider>
         <Timer initialSeconds={3} onTimeUp={onTimeUp} autoStart={true} />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     expect(screen.getByText('00:03')).toBeInTheDocument();
@@ -93,12 +98,8 @@ describe('Common Components Suite', () => {
     const onUpdate = vi.fn();
     render(
       <I18nProvider>
-        <AudioPlayer
-          transcriptText="Hello listening test."
-          durationSeconds={10}
-          onTimeUpdate={onUpdate}
-        />
-      </I18nProvider>
+        <AudioPlayer transcriptText="Hello listening test." durationSeconds={10} onTimeUpdate={onUpdate} />
+      </I18nProvider>,
     );
 
     const playPauseBtn = screen.getByRole('button', { name: /Play|Pause/i });
@@ -124,7 +125,7 @@ describe('Common Components Suite', () => {
     render(
       <I18nProvider>
         <VoiceRecorder onRecordingComplete={onComplete} />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     const startBtn = screen.getByText(/Start Voice Recording/i);
@@ -146,7 +147,7 @@ describe('Common Components Suite', () => {
     render(
       <I18nProvider>
         <Navbar activeTab="dashboard" onSelectTab={onSelect} targetBand={8.0} />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     expect(screen.getByText(/IELTS/i)).toBeInTheDocument();

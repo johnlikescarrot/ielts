@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  getDueCards,
-  getDeckSummary,
-  reviewCard,
-  initializeDeckWithVocabulary
-} from '../../src/srs/srsManager';
+import { getDueCards, getDeckSummary, reviewCard, initializeDeckWithVocabulary } from '../../src/srs/srsManager';
 import { SRSCard, VocabularyItem } from '../../src/types';
 
 describe('srsManager', () => {
@@ -17,8 +12,8 @@ describe('srsManager', () => {
   it('filters due cards based on reference date', () => {
     const due = getDueCards(sampleCards, '2026-09-27');
     expect(due.length).toBe(2);
-    expect(due.map(d => d.wordId)).toContain('w1');
-    expect(due.map(d => d.wordId)).toContain('w2');
+    expect(due.map((d) => d.wordId)).toContain('w1');
+    expect(due.map((d) => d.wordId)).toContain('w2');
   });
 
   it('generates accurate deck summary', () => {
@@ -50,13 +45,39 @@ describe('srsManager', () => {
 
   it('initializes deck merging with existing cards', () => {
     const vocabList: VocabularyItem[] = [
-      { id: 'w1', word: 'mitigate', phonetic: '', partOfSpeech: 'verb', definitionEn: '', definitionVi: '', example: '', collocations: [], synonyms: [], topic: '', bandScore: 8, cefrLevel: 'C1' },
-      { id: 'w_brand_new', word: 'ubiquitous', phonetic: '', partOfSpeech: 'adj', definitionEn: '', definitionVi: '', example: '', collocations: [], synonyms: [], topic: '', bandScore: 8, cefrLevel: 'C2' },
+      {
+        id: 'w1',
+        word: 'mitigate',
+        phonetic: '',
+        partOfSpeech: 'verb',
+        definitionEn: '',
+        definitionVi: '',
+        example: '',
+        collocations: [],
+        synonyms: [],
+        topic: '',
+        bandScore: 8,
+        cefrLevel: 'C1',
+      },
+      {
+        id: 'w_brand_new',
+        word: 'ubiquitous',
+        phonetic: '',
+        partOfSpeech: 'adj',
+        definitionEn: '',
+        definitionVi: '',
+        example: '',
+        collocations: [],
+        synonyms: [],
+        topic: '',
+        bandScore: 8,
+        cefrLevel: 'C2',
+      },
     ];
 
     const deck = initializeDeckWithVocabulary(vocabList, [sampleCards[0]]);
     expect(deck.length).toBe(2);
-    expect(deck.find(c => c.wordId === 'w1')?.repetition).toBe(0);
-    expect(deck.find(c => c.wordId === 'w_brand_new')?.wordId).toBe('w_brand_new');
+    expect(deck.find((c) => c.wordId === 'w1')?.repetition).toBe(0);
+    expect(deck.find((c) => c.wordId === 'w_brand_new')?.wordId).toBe('w_brand_new');
   });
 });

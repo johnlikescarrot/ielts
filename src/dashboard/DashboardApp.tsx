@@ -21,42 +21,34 @@ export const DashboardApp: React.FC = () => {
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
-    storageService.getSettings().then(s => setSettings(s));
+    storageService.getSettings().then((s) => setSettings(s));
   }, []);
 
   return (
     <Theme theme={neutralTheme} mode={settings.theme}>
       <I18nProvider>
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
-        <Navbar
-          activeTab={activeTab}
-          onSelectTab={setActiveTab}
-          targetBand={settings.targetBand}
-        />
+          <Navbar activeTab={activeTab} onSelectTab={setActiveTab} targetBand={settings.targetBand} />
 
-        <main className="flex-1 pb-16">
-          {activeTab === 'dashboard' && <DashboardOverview onSelectSkill={setActiveTab} />}
-          {activeTab === 'reading' && <ReadingPracticeView />}
-          {activeTab === 'listening' && <ListeningPracticeView />}
-          {activeTab === 'video' && <VideoPracticeView />}
-          {activeTab === 'writing' && <WritingEvaluatorView />}
-          {activeTab === 'speaking' && <SpeakingLabView />}
-          {activeTab === 'vocabulary' && <VocabularySRSView />}
-          {activeTab === 'mock-test' && <FullMockExamView />}
-          {activeTab === 'analytics' && <AnalyticsView />}
-          {activeTab === 'settings' && <SettingsView />}
-        </main>
+          <main className="flex-1 pb-16">
+            {activeTab === 'dashboard' && <DashboardOverview onSelectSkill={setActiveTab} />}
+            {activeTab === 'reading' && <ReadingPracticeView />}
+            {activeTab === 'listening' && <ListeningPracticeView />}
+            {activeTab === 'video' && <VideoPracticeView />}
+            {activeTab === 'writing' && <WritingEvaluatorView />}
+            {activeTab === 'speaking' && <SpeakingLabView />}
+            {activeTab === 'vocabulary' && <VocabularySRSView />}
+            {activeTab === 'mock-test' && <FullMockExamView />}
+            {activeTab === 'analytics' && <AnalyticsView />}
+            {activeTab === 'settings' && <SettingsView />}
+          </main>
 
-        <footer className="py-6 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center text-xs text-slate-400">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>
-              IELTS Slayer • 100% Free, Offline & Privacy-First Preparation Suite
-            </span>
-            <span>
-              AST Heuristics Engine & SuperMemo SM-2 • Dual English/Vietnamese
-            </span>
-          </div>
-        </footer>
+          <footer className="py-6 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center text-xs text-slate-400">
+            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+              <span>IELTS Slayer • 100% Free, Offline & Privacy-First Preparation Suite</span>
+              <span>AST Heuristics Engine & SuperMemo SM-2 • Dual English/Vietnamese</span>
+            </div>
+          </footer>
         </div>
       </I18nProvider>
     </Theme>

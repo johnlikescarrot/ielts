@@ -45,7 +45,7 @@ describe('background Suite', () => {
   it('executes context menu onClicked listener', () => {
     initializeBackground();
     const clickCallback = mockBrowser.contextMenus.onClicked.addListener.mock.calls[0][0];
-    
+
     clickCallback({ menuItemId: 'ielts-open-dashboard' });
     expect(mockBrowser.tabs.create).toHaveBeenCalledWith({ url: 'moz-extension://test/dashboard.html' });
 
@@ -74,7 +74,7 @@ describe('background Suite', () => {
         topic: 'Test',
         bandScore: 8.5,
         cefrLevel: 'C2',
-      }
+      },
     });
 
     expect(result).toEqual({ success: true });

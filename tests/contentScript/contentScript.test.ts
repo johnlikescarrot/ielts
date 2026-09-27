@@ -36,13 +36,14 @@ describe('contentScript Suite', () => {
     document.body.appendChild(div);
 
     // Mock window selection
-    window.getSelection = () => ({
-      isCollapsed: false,
-      toString: () => 'mitigate',
-      getRangeAt: () => ({
-        getBoundingClientRect: () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20 }),
-      }),
-    } as any);
+    window.getSelection = () =>
+      ({
+        isCollapsed: false,
+        toString: () => 'mitigate',
+        getRangeAt: () => ({
+          getBoundingClientRect: () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20 }),
+        }),
+      }) as any;
 
     handleSelection();
 
@@ -62,10 +63,11 @@ describe('contentScript Suite', () => {
   });
 
   it('removes tooltip when selection is empty or collapsed', () => {
-    window.getSelection = () => ({
-      isCollapsed: true,
-      toString: () => '',
-    } as any);
+    window.getSelection = () =>
+      ({
+        isCollapsed: true,
+        toString: () => '',
+      }) as any;
 
     handleSelection();
     expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();

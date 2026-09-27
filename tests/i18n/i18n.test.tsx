@@ -30,7 +30,15 @@ describe('i18n', () => {
     expect(enKeys.sort()).toEqual(viKeys.sort());
 
     // Verify critical navigation and UI keys exist in both
-    ['app.name', 'nav.dashboard', 'nav.reading', 'nav.listening', 'nav.writing', 'nav.speaking', 'nav.vocabulary'].forEach(k => {
+    [
+      'app.name',
+      'nav.dashboard',
+      'nav.reading',
+      'nav.listening',
+      'nav.writing',
+      'nav.speaking',
+      'nav.vocabulary',
+    ].forEach((k) => {
       expect(en[k]).toBeDefined();
       expect(vi[k]).toBeDefined();
     });
@@ -40,7 +48,7 @@ describe('i18n', () => {
     render(
       <I18nProvider>
         <TestComponent />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     expect(screen.getByTestId('title')).toHaveTextContent('IELTS Slayer');
@@ -55,7 +63,11 @@ describe('i18n', () => {
   it('provides safe fallback when useI18n is called outside provider', () => {
     const FallbackComponent = () => {
       const { t, language } = useI18n();
-      return <div data-testid="fallback">{language}:{t('app.name')}</div>;
+      return (
+        <div data-testid="fallback">
+          {language}:{t('app.name')}
+        </div>
+      );
     };
 
     render(<FallbackComponent />);

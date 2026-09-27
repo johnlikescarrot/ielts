@@ -4,16 +4,7 @@ import { storageService } from '../../storage/storageService';
 import { exportDataAsJSON, importDataFromJSON, triggerDownload } from '../../storage/exportImport';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
-import {
-  BarChart2,
-  Clock,
-  CheckCircle,
-  Download,
-  Upload,
-  Trash2,
-  Calendar,
-  FileText
-} from 'lucide-react';
+import { BarChart2, Clock, CheckCircle, Download, Upload, Trash2, Calendar, FileText } from 'lucide-react';
 
 export const AnalyticsView: React.FC = () => {
   const { t } = useI18n();
@@ -66,7 +57,7 @@ export const AnalyticsView: React.FC = () => {
     }
   };
 
-  const filteredHistory = history.filter(item => {
+  const filteredHistory = history.filter((item) => {
     if (filterSkill === 'all') return true;
     return item.skill === filterSkill;
   });
@@ -80,13 +71,9 @@ export const AnalyticsView: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <BarChart2 className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-              {t('analytics.title')}
-            </h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('analytics.title')}</h1>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t('analytics.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('analytics.subtitle')}</p>
         </div>
 
         {/* Export / Import buttons */}
@@ -127,7 +114,9 @@ export const AnalyticsView: React.FC = () => {
         <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 font-medium">{t('analytics.totalStudyTime')}</span>
-            <div className="text-2xl font-black text-indigo-600 mt-0.5">{totalTimeMinutes} {t('common.minutes')}</div>
+            <div className="text-2xl font-black text-indigo-600 mt-0.5">
+              {totalTimeMinutes} {t('common.minutes')}
+            </div>
           </div>
           <Clock className="w-6 h-6 text-indigo-400 opacity-70" />
         </div>
@@ -152,9 +141,7 @@ export const AnalyticsView: React.FC = () => {
       {/* Practice History Table */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h2 className="font-bold text-base text-slate-900 dark:text-white">
-            {t('dash.recentAttempts')}
-          </h2>
+          <h2 className="font-bold text-base text-slate-900 dark:text-white">{t('dash.recentAttempts')}</h2>
 
           <select
             value={filterSkill}
@@ -185,9 +172,7 @@ export const AnalyticsView: React.FC = () => {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {filteredHistory.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                    <td className="py-3 text-slate-500 font-mono">
-                      {new Date(item.date).toLocaleDateString()}
-                    </td>
+                    <td className="py-3 text-slate-500 font-mono">{new Date(item.date).toLocaleDateString()}</td>
                     <td className="py-3">
                       <Badge variant="primary" size="sm" className="capitalize">
                         {item.skill}

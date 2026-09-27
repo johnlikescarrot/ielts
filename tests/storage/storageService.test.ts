@@ -156,8 +156,8 @@ describe('StorageService Suite', () => {
           get: vi.fn(async (key: string) => ({ [key]: mockStorage[key] })),
           set: vi.fn(async (obj: any) => Object.assign(mockStorage, obj)),
           remove: vi.fn(async (key: string) => delete mockStorage[key]),
-        }
-      }
+        },
+      },
     };
 
     const browserService = new StorageService();

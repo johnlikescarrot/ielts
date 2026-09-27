@@ -71,7 +71,8 @@ export const vi: Record<string, string> = {
 
   // Reading Section
   'reading.title': 'Luyện thi IELTS Reading',
-  'reading.subtitle': 'Luyện tập các bài đọc Academic & General chuẩn đề thi thật kèm công cụ tra từ và giải thích chi tiết.',
+  'reading.subtitle':
+    'Luyện tập các bài đọc Academic & General chuẩn đề thi thật kèm công cụ tra từ và giải thích chi tiết.',
   'reading.selectPassage': 'Chọn bài đọc',
   'reading.academic': 'Học thuật (Academic)',
   'reading.general': 'Tổng quát (General Training)',
@@ -83,7 +84,8 @@ export const vi: Record<string, string> = {
 
   // Listening Section
   'listening.title': 'Luyện thi IELTS Listening',
-  'listening.subtitle': 'Luyện nghe tương tác từ Section 1 đến 4 với đồng bộ transcript và quy đổi Band score chính xác.',
+  'listening.subtitle':
+    'Luyện nghe tương tác từ Section 1 đến 4 với đồng bộ transcript và quy đổi Band score chính xác.',
   'listening.selectSection': 'Chọn Section nghe',
   'listening.section': 'Phần',
   'listening.showTranscript': 'Xem bản ghi âm (Transcript)',
@@ -120,7 +122,8 @@ export const vi: Record<string, string> = {
 
   // Speaking Section
   'speaking.title': 'Phòng luyện thi IELTS Speaking',
-  'speaking.subtitle': 'Mô phỏng trọn vẹn 3 Part phỏng vấn trực tiếp với đồng hồ bấm giờ, ghi âm ngoại tuyến và barem chấm.',
+  'speaking.subtitle':
+    'Mô phỏng trọn vẹn 3 Part phỏng vấn trực tiếp với đồng hồ bấm giờ, ghi âm ngoại tuyến và barem chấm.',
   'speaking.part1': 'Part 1: Giới thiệu & Chủ đề thường ngày',
   'speaking.part2': 'Part 2: Thuyết trình theo Cue Card',
   'speaking.part3': 'Part 3: Thảo luận chuyên sâu 2 chiều',
@@ -136,7 +139,8 @@ export const vi: Record<string, string> = {
 
   // Vocabulary & SRS Section
   'vocab.title': 'Từ vựng IELTS & Flashcard Lặp lại ngắt quãng (SRS)',
-  'vocab.subtitle': 'Ghi nhớ vĩnh viễn kho từ vựng Band 7-9, Academic Word List và Idioms với thuật toán SuperMemo SM-2.',
+  'vocab.subtitle':
+    'Ghi nhớ vĩnh viễn kho từ vựng Band 7-9, Academic Word List và Idioms với thuật toán SuperMemo SM-2.',
   'vocab.deckSummary': 'Trạng thái bộ nhớ từ vựng',
   'vocab.dueToday': 'Cần ôn hôm nay',
   'vocab.learning': 'Đang học',
@@ -158,9 +162,11 @@ export const vi: Record<string, string> = {
 
   // Video Transcript Lab
   'video.title': 'Phòng luyện IELTS từ video',
-  'video.subtitle': 'Biến phụ đề hoặc transcript bạn có thành bài điền từ IELTS riêng tư — không cần tài khoản, API key hay tải dữ liệu lên.',
+  'video.subtitle':
+    'Biến phụ đề hoặc transcript bạn có thành bài điền từ IELTS riêng tư — không cần tài khoản, API key hay tải dữ liệu lên.',
   'video.privacyTitle': 'Thiết kế riêng tư',
-  'video.privacyDescription': 'Tiện ích không tải hoặc truy cập URL video. Transcript đã dán và các bộ bài luyện chỉ được lưu trong bộ nhớ cục bộ của Firefox.',
+  'video.privacyDescription':
+    'Tiện ích không tải hoặc truy cập URL video. Transcript đã dán và các bộ bài luyện chỉ được lưu trong bộ nhớ cục bộ của Firefox.',
   'video.createHeading': 'Tạo bộ bài luyện',
   'video.sourceTitle': 'Tiêu đề video',
   'video.sourceTitleHelp': 'Nhãn để nhận diện bộ bài đã lưu.',
@@ -198,13 +204,15 @@ export const vi: Record<string, string> = {
 
   // Analytics & History
   'analytics.title': 'Phân tích kết quả & Tiến độ',
-  'analytics.subtitle': 'Theo dõi biểu đồ điểm các kỹ năng, độ chăm chỉ và toàn quyền sao lưu / khôi phục dữ liệu cục bộ.',
+  'analytics.subtitle':
+    'Theo dõi biểu đồ điểm các kỹ năng, độ chăm chỉ và toàn quyền sao lưu / khôi phục dữ liệu cục bộ.',
   'analytics.skillBreakdown': 'Phân bố điểm Band theo kỹ năng',
   'analytics.totalStudyTime': 'Tổng thời gian đã học',
   'analytics.testsCompleted': 'Bài thi đã hoàn thành',
   'analytics.scoreTrend': 'Biểu đồ tiến bộ điểm số',
   'analytics.exportTitle': 'Sao lưu dữ liệu & Quyền riêng tư',
-  'analytics.exportDesc': 'Dữ liệu của bạn được lưu 100% trong trình duyệt. Tự do xuất file JSON hoặc khôi phục bất cứ lúc nào.',
+  'analytics.exportDesc':
+    'Dữ liệu của bạn được lưu 100% trong trình duyệt. Tự do xuất file JSON hoặc khôi phục bất cứ lúc nào.',
   'analytics.resetData': 'Xóa toàn bộ dữ liệu trên máy',
   'analytics.confirmReset': 'Bạn có chắc chắn muốn xóa tất cả tiến trình học không? Hành động này không thể hoàn tác.',
 

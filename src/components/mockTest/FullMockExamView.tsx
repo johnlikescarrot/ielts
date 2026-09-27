@@ -44,11 +44,10 @@ export const FullMockExamView: React.FC = () => {
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white">
-              Full IELTS Mock Exam Simulation
-            </h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white">Full IELTS Mock Exam Simulation</h1>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Experience the complete timed examination simulation covering Listening, Reading, Writing AST Evaluator, and Speaking Lab with overall composite band scoring.
+              Experience the complete timed examination simulation covering Listening, Reading, Writing AST Evaluator,
+              and Speaking Lab with overall composite band scoring.
             </p>
           </div>
 
@@ -62,7 +61,7 @@ export const FullMockExamView: React.FC = () => {
                 min="1"
                 max="9"
                 value={skillScores.listening}
-                onChange={(e) => setSkillScores(s => ({ ...s, listening: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setSkillScores((s) => ({ ...s, listening: parseFloat(e.target.value) || 0 }))}
                 className="w-full text-base font-bold bg-transparent outline-none text-indigo-600"
               />
             </div>
@@ -74,7 +73,7 @@ export const FullMockExamView: React.FC = () => {
                 min="1"
                 max="9"
                 value={skillScores.reading}
-                onChange={(e) => setSkillScores(s => ({ ...s, reading: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setSkillScores((s) => ({ ...s, reading: parseFloat(e.target.value) || 0 }))}
                 className="w-full text-base font-bold bg-transparent outline-none text-indigo-600"
               />
             </div>
@@ -86,7 +85,7 @@ export const FullMockExamView: React.FC = () => {
                 min="1"
                 max="9"
                 value={skillScores.writing}
-                onChange={(e) => setSkillScores(s => ({ ...s, writing: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setSkillScores((s) => ({ ...s, writing: parseFloat(e.target.value) || 0 }))}
                 className="w-full text-base font-bold bg-transparent outline-none text-indigo-600"
               />
             </div>
@@ -98,7 +97,7 @@ export const FullMockExamView: React.FC = () => {
                 min="1"
                 max="9"
                 value={skillScores.speaking}
-                onChange={(e) => setSkillScores(s => ({ ...s, speaking: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setSkillScores((s) => ({ ...s, speaking: parseFloat(e.target.value) || 0 }))}
                 className="w-full text-base font-bold bg-transparent outline-none text-indigo-600"
               />
             </div>
@@ -123,13 +122,15 @@ export const FullMockExamView: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                   IELTS Slayer • Test Report Form
                 </span>
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white mt-0.5">
-                  Overall IELTS Band Result
-                </h2>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white mt-0.5">Overall IELTS Band Result</h2>
               </div>
               <div className="flex items-center space-x-2">
-                <Badge variant="success" size="lg">CEFR {cefr}</Badge>
-                <Badge variant="primary" size="lg">Band {overallBand.toFixed(1)}</Badge>
+                <Badge variant="success" size="lg">
+                  CEFR {cefr}
+                </Badge>
+                <Badge variant="primary" size="lg">
+                  Band {overallBand.toFixed(1)}
+                </Badge>
               </div>
             </div>
 
@@ -137,19 +138,27 @@ export const FullMockExamView: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl text-center space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Listening</span>
-                <div className="text-2xl font-black text-slate-900 dark:text-white">{skillScores.listening.toFixed(1)}</div>
+                <div className="text-2xl font-black text-slate-900 dark:text-white">
+                  {skillScores.listening.toFixed(1)}
+                </div>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl text-center space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Reading</span>
-                <div className="text-2xl font-black text-slate-900 dark:text-white">{skillScores.reading.toFixed(1)}</div>
+                <div className="text-2xl font-black text-slate-900 dark:text-white">
+                  {skillScores.reading.toFixed(1)}
+                </div>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl text-center space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Writing</span>
-                <div className="text-2xl font-black text-slate-900 dark:text-white">{skillScores.writing.toFixed(1)}</div>
+                <div className="text-2xl font-black text-slate-900 dark:text-white">
+                  {skillScores.writing.toFixed(1)}
+                </div>
               </div>
               <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl text-center space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Speaking</span>
-                <div className="text-2xl font-black text-slate-900 dark:text-white">{skillScores.speaking.toFixed(1)}</div>
+                <div className="text-2xl font-black text-slate-900 dark:text-white">
+                  {skillScores.speaking.toFixed(1)}
+                </div>
               </div>
             </div>
 
@@ -164,9 +173,7 @@ export const FullMockExamView: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-slate-400">
-                Verified locally via offline Band Calculator.
-              </span>
+              <span className="text-xs text-slate-400">Verified locally via offline Band Calculator.</span>
               <button
                 onClick={() => setStage('intro')}
                 className="flex items-center space-x-1.5 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl transition"

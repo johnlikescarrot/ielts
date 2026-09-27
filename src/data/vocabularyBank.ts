@@ -128,7 +128,8 @@ export const INITIAL_VOCABULARY: VocabularyItem[] = [
     partOfSpeech: 'adjective',
     definitionEn: 'Able to be perceived, recognized, or clearly distinguished.',
     definitionVi: 'Có thể nhận thức rõ, có thể phân biệt được.',
-    example: 'There was a discernible improvement in student performance following the introduction of interactive software.',
+    example:
+      'There was a discernible improvement in student performance following the introduction of interactive software.',
     collocations: ['discernible difference', 'discernible trend', 'barely discernible'],
     synonyms: ['perceptible', 'noticeable', 'detectable', 'evident'],
     topic: 'Education & Metrics',
@@ -225,5 +226,5 @@ export const INITIAL_VOCABULARY: VocabularyItem[] = [
     bandScore: 7.5,
     cefrLevel: 'B2',
     isAWL: true,
-  }
+  },
 ];

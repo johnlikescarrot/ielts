@@ -2,31 +2,35 @@ import { EssayAST, ParagraphNode, SentenceNode, ClauseNode, TokenNode, SentenceT
 import { ACADEMIC_WORD_LIST, DISCOURSE_TRANSITIONS } from './awlList';
 
 const SUBORDINATING_CONJUNCTIONS = new Set([
-  'although', 'because', 'since', 'unless', 'until', 'whereas', 'while',
-  'even though', 'provided that', 'inasmuch as', 'as long as', 'after', 'before', 'though'
+  'although',
+  'because',
+  'since',
+  'unless',
+  'until',
+  'whereas',
+  'while',
+  'even though',
+  'provided that',
+  'inasmuch as',
+  'as long as',
+  'after',
+  'before',
+  'though',
 ]);
 
-const COORDINATING_CONJUNCTIONS = new Set([
-  'and', 'but', 'or', 'nor', 'for', 'yet', 'so'
-]);
+const COORDINATING_CONJUNCTIONS = new Set(['and', 'but', 'or', 'nor', 'for', 'yet', 'so']);
 
-const RELATIVE_PRONOUNS = new Set([
-  'which', 'who', 'whom', 'whose', 'that', 'whereby', 'wherein'
-]);
+const RELATIVE_PRONOUNS = new Set(['which', 'who', 'whom', 'whose', 'that', 'whereby', 'wherein']);
 
-const CONDITIONAL_MARKERS = new Set([
-  'if', 'unless', 'provided', 'assuming', 'were', 'had', 'should'
-]);
+const CONDITIONAL_MARKERS = new Set(['if', 'unless', 'provided', 'assuming', 'were', 'had', 'should']);
 
-const PASSIVE_AUXILIARIES = new Set([
-  'is', 'are', 'was', 'were', 'been', 'being', 'be'
-]);
+const PASSIVE_AUXILIARIES = new Set(['is', 'are', 'was', 'were', 'been', 'being', 'be']);
 
-const MODAL_VERBS = new Set([
-  'can', 'could', 'may', 'might', 'must', 'shall', 'should', 'will', 'would', 'ought'
-]);
+const MODAL_VERBS = new Set(['can', 'could', 'may', 'might', 'must', 'shall', 'should', 'will', 'would', 'ought']);
 
-const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS).flat().map(p => p.toLowerCase());
+const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS)
+  .flat()
+  .map((p) => p.toLowerCase());
 
 export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNode[] {
   const tokens: TokenNode[] = [];
@@ -68,7 +72,7 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
     let pos = lowerSentence.indexOf(phrase);
     while (pos !== -1) {
       const pEnd = pos + phrase.length;
-      tokens.forEach(tok => {
+      tokens.forEach((tok) => {
         const tokRelStart = tok.startIndex - baseOffset;
         const tokRelEnd = tok.endIndex - baseOffset;
         if (tokRelStart >= pos && tokRelEnd <= pEnd) {
@@ -83,33 +87,42 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
 }
 
 export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
-  const words = tokens.filter(t => t.isWord);
+  const words = tokens.filter((t) => t.isWord);
   if (words.length === 0) {
-    return [{
-      type: 'Clause',
-      clauseType: 'independent',
-      tokens,
-      text: sentenceText,
-      hasPassive: false,
-      hasRelative: false,
-      hasConditional: false,
-    }];
+    return [
+      {
+        type: 'Clause',
+        clauseType: 'independent',
+        tokens,
+        text: sentenceText,
+        hasPassive: false,
+        hasRelative: false,
+        hasConditional: false,
+      },
+    ];
   }
 
   // Detect passive voice (Auxiliary + word ending with 'ed' or known irregular participle)
   let hasPassive = false;
   for (let i = 0; i < tokens.length - 1; i++) {
-    if (tokens[i].isPassiveAux && tokens[i + 1].isWord && (tokens[i + 1].normalized.endsWith('ed') || ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(tokens[i + 1].normalized))) {
+    if (
+      tokens[i].isPassiveAux &&
+      tokens[i + 1].isWord &&
+      (tokens[i + 1].normalized.endsWith('ed') ||
+        ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(
+          tokens[i + 1].normalized,
+        ))
+    ) {
       hasPassive = true;
       break;
     }
   }
 
   // Detect conditional
-  const hasConditional = words.some(w => CONDITIONAL_MARKERS.has(w.normalized));
+  const hasConditional = words.some((w) => CONDITIONAL_MARKERS.has(w.normalized));
 
   // Detect relative clause
-  const hasRelative = words.some(w => RELATIVE_PRONOUNS.has(w.normalized));
+  const hasRelative = words.some((w) => RELATIVE_PRONOUNS.has(w.normalized));
 
   // Split clauses by punctuation and conjunction boundaries
   const clauses: ClauseNode[] = [];
@@ -123,7 +136,7 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
 
     if (isSplitter || i === tokens.length - 1) {
       if (currentTokens.length > 0) {
-        const clauseWords = currentTokens.filter(t => t.isWord);
+        const clauseWords = currentTokens.filter((t) => t.isWord);
         const firstWord = clauseWords[0]?.normalized || '';
         let cType: ClauseType = 'independent';
 
@@ -139,7 +152,7 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
           type: 'Clause',
           clauseType: cType,
           tokens: [...currentTokens],
-          text: currentTokens.map(t => t.raw).join(' '),
+          text: currentTokens.map((t) => t.raw).join(' '),
           hasPassive,
           hasRelative,
           hasConditional,
@@ -165,13 +178,15 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
 }
 
 export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[]): SentenceType {
-  const words = tokens.filter(t => t.isWord);
+  const words = tokens.filter((t) => t.isWord);
   if (words.length < 4) return 'simple';
 
-  const hasSubordinate = clauses.some(c => c.clauseType === 'subordinate' || c.clauseType === 'relative' || c.clauseType === 'conditional') ||
-    words.some(w => SUBORDINATING_CONJUNCTIONS.has(w.normalized) || RELATIVE_PRONOUNS.has(w.normalized));
-  
-  const hasCoordination = words.some(w => COORDINATING_CONJUNCTIONS.has(w.normalized));
+  const hasSubordinate =
+    clauses.some(
+      (c) => c.clauseType === 'subordinate' || c.clauseType === 'relative' || c.clauseType === 'conditional',
+    ) || words.some((w) => SUBORDINATING_CONJUNCTIONS.has(w.normalized) || RELATIVE_PRONOUNS.has(w.normalized));
+
+  const hasCoordination = words.some((w) => COORDINATING_CONJUNCTIONS.has(w.normalized));
 
   if (hasSubordinate && hasCoordination && clauses.length >= 2) {
     return 'compound-complex';
@@ -199,7 +214,7 @@ export function splitIntoSentences(paragraphText: string, baseOffset = 0): Sente
     const tokens = tokenizeSentence(rawSentence, sentenceStartIndex);
     const clauses = parseClauses(rawSentence, tokens);
     const sentenceType = classifySentenceType(clauses, tokens);
-    const wordCount = tokens.filter(t => t.isWord).length;
+    const wordCount = tokens.filter((t) => t.isWord).length;
 
     if (wordCount > 0) {
       sentenceNodes.push({
@@ -231,7 +246,10 @@ export function parseEssayToAST(rawText: string): EssayAST {
   }
 
   // Split by double newline or single newline with indentation
-  const rawParagraphs = rawText.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 0);
+  const rawParagraphs = rawText
+    .split(/\n\s*\n|\r\n\s*\r\n/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
 
   let currentOffset = 0;
   const paragraphs: ParagraphNode[] = [];

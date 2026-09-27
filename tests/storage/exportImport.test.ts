@@ -3,7 +3,7 @@ import {
   exportDataAsJSON,
   validateImportData,
   importDataFromJSON,
-  triggerDownload
+  triggerDownload,
 } from '../../src/storage/exportImport';
 import { DEFAULT_STORAGE_DATA } from '../../src/storage/storageService';
 
@@ -21,9 +21,11 @@ describe('exportImport', () => {
     const validJson = JSON.stringify({
       data: {
         settings: { targetBand: 8.5 },
-        srsCards: [{ wordId: 'w1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-28', history: [] }],
+        srsCards: [
+          { wordId: 'w1', interval: 1, repetition: 1, easeFactor: 2.5, nextReviewDate: '2026-09-28', history: [] },
+        ],
         videoSessions: [{ id: 'video-1', title: 'Saved clip' }],
-      }
+      },
     });
 
     const validated = validateImportData(validJson);
@@ -42,7 +44,7 @@ describe('exportImport', () => {
       data: {
         settings: { targetBand: 8.0, language: 'vi' },
         srsCards: [],
-      }
+      },
     });
 
     const saved = await importDataFromJSON(payload);

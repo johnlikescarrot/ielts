@@ -23,7 +23,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <ReadingPracticeView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Test highlighter color clicks
@@ -64,7 +64,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <ListeningPracticeView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Switch section dropdown
@@ -97,7 +97,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <WritingEvaluatorView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Switch prompt dropdown
@@ -142,7 +142,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <SpeakingLabView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Switch to Part 1
@@ -181,7 +181,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <VocabularySRSView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Card review interaction
@@ -234,7 +234,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <FullMockExamView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     const numberInputs = screen.getAllByRole('spinbutton');
@@ -267,7 +267,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <AnalyticsView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     expect(screen.getByText(/Performance Analytics & History/i)).toBeInTheDocument();
@@ -291,7 +291,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <SettingsView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Target band slider
@@ -327,7 +327,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <DashboardOverview onSelectSkill={onSelect} />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     expect(screen.getByText(/Estimated Band/i)).toBeInTheDocument();
@@ -357,7 +357,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <VocabularySRSView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     // Click SRS Deck tab
@@ -398,7 +398,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     render(
       <I18nProvider>
         <AnalyticsView />
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     const validExport = JSON.stringify({
@@ -447,7 +447,7 @@ describe('Feature Views & Dashboard Extended Suite', () => {
       'Full Mock Exam',
       'Analytics & Progress',
       'Settings',
-      'Dashboard'
+      'Dashboard',
     ];
 
     for (const tab of tabs) {

@@ -79,9 +79,7 @@ export const Timer: React.FC<TimerProps> = ({
       } ${className}`}
     >
       <Clock className="w-4 h-4 text-indigo-500" />
-      <span className="font-mono font-semibold text-sm tracking-wider">
-        {formatTime(seconds)}
-      </span>
+      <span className="font-mono font-semibold text-sm tracking-wider">{formatTime(seconds)}</span>
       <button
         onClick={toggleTimer}
         aria-label={isRunning ? t('common.pause') : t('common.play')}

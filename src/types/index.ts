@@ -1,6 +1,14 @@
 export type Language = 'en' | 'vi';
 
-export type SkillType = 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary' | 'video' | 'mock-test' | 'analytics';
+export type SkillType =
+  | 'reading'
+  | 'listening'
+  | 'writing'
+  | 'speaking'
+  | 'vocabulary'
+  | 'video'
+  | 'mock-test'
+  | 'analytics';
 
 export type ExamType = 'academic' | 'general';
 
@@ -32,9 +40,9 @@ export interface VocabularyItem {
 
 export interface SRSCard {
   wordId: string;
-  interval: number;       // in days
-  repetition: number;     // number of consecutive successful reviews
-  easeFactor: number;     // SM-2 ease factor (default 2.5)
+  interval: number; // in days
+  repetition: number; // number of consecutive successful reviews
+  easeFactor: number; // SM-2 ease factor (default 2.5)
   nextReviewDate: string; // ISO date string
   lastReviewedDate?: string;
   history: {
@@ -44,7 +52,7 @@ export interface SRSCard {
 }
 
 // Reading types
-export type ReadingQuestionType = 
+export type ReadingQuestionType =
   | 'multiple-choice'
   | 'true-false-not-given'
   | 'yes-no-not-given'
@@ -75,7 +83,7 @@ export interface ReadingPassage {
 }
 
 // Listening types
-export type ListeningQuestionType = 
+export type ListeningQuestionType =
   | 'form-completion'
   | 'multiple-choice'
   | 'matching'

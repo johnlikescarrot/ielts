@@ -5,7 +5,7 @@ import {
   calculateOverallBand,
   getCEFRLevel,
   getBandDescriptor,
-  getScoreBreakdown
+  getScoreBreakdown,
 } from '../../src/calculator/bandCalculator';
 
 describe('bandCalculator', () => {

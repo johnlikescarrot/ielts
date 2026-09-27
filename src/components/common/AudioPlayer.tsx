@@ -60,7 +60,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      setCurrentTime(prev => {
+      setCurrentTime((prev) => {
         const next = prev + 1;
         if (onTimeUpdate) onTimeUpdate(next);
         if (next >= durationSeconds) {
@@ -110,9 +110,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <Volume2 className="w-5 h-5 text-indigo-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            IELTS Audio Simulation
-          </span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">IELTS Audio Simulation</span>
         </div>
 
         {/* Waveform graphic */}

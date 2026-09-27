@@ -20,7 +20,7 @@ import {
   BarChart,
   Layers,
   Copy,
-  Check
+  Check,
 } from 'lucide-react';
 
 export const WritingEvaluatorView: React.FC = () => {
@@ -31,8 +31,7 @@ export const WritingEvaluatorView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'editor' | 'sample9' | 'sample7' | 'vocab'>('editor');
   const [copied, setCopied] = useState(false);
 
-  const currentPrompt: WritingPrompt =
-    WRITING_PROMPTS.find(p => p.id === selectedPromptId) || WRITING_PROMPTS[0];
+  const currentPrompt: WritingPrompt = WRITING_PROMPTS.find((p) => p.id === selectedPromptId) || WRITING_PROMPTS[0];
 
   const wordCount = essayText.trim() ? essayText.trim().split(/\s+/).length : 0;
   const isWordCountValid = wordCount >= currentPrompt.minWordCount;
@@ -74,16 +73,12 @@ export const WritingEvaluatorView: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <PenTool className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-              {t('writing.title')}
-            </h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('writing.title')}</h1>
             <Badge variant="purple" size="sm">
               AST Writing Engine
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t('writing.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('writing.subtitle')}</p>
         </div>
 
         {/* Prompt selector & Timer */}
@@ -97,7 +92,7 @@ export const WritingEvaluatorView: React.FC = () => {
             }}
             className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-100"
           >
-            {WRITING_PROMPTS.map(p => (
+            {WRITING_PROMPTS.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.title} ({p.type === 'task2-essay' ? 'Task 2' : 'Task 1'})
               </option>
@@ -118,7 +113,8 @@ export const WritingEvaluatorView: React.FC = () => {
             <span className="text-xs font-medium text-slate-500">{currentPrompt.category}</span>
           </div>
           <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-            {t('writing.targetMin')}: {currentPrompt.minWordCount} {t('common.words')} ({currentPrompt.timeLimitMinutes} {t('common.minutes')})
+            {t('writing.targetMin')}: {currentPrompt.minWordCount} {t('common.words')} ({currentPrompt.timeLimitMinutes}{' '}
+            {t('common.minutes')})
           </span>
         </div>
 
@@ -127,9 +123,7 @@ export const WritingEvaluatorView: React.FC = () => {
             {currentPrompt.prompt}
           </p>
           {currentPrompt.chartDescription && (
-            <p className="text-xs italic text-slate-500 mt-2">
-              Note: {currentPrompt.chartDescription}
-            </p>
+            <p className="text-xs italic text-slate-500 mt-2">Note: {currentPrompt.chartDescription}</p>
           )}
         </div>
 
@@ -239,7 +233,10 @@ export const WritingEvaluatorView: React.FC = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {currentPrompt.keyVocabulary.map((kv, idx) => (
-              <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div
+                key={idx}
+                className="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800"
+              >
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-bold text-sm text-indigo-600 dark:text-indigo-400">{kv.word}</span>
                   <span className="text-xs text-slate-500">{kv.meaning}</span>
@@ -276,8 +273,12 @@ export const WritingEvaluatorView: React.FC = () => {
           />
 
           <div className="flex items-center justify-between pt-2">
-            <span className={`text-xs font-semibold ${isWordCountValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-              {isWordCountValid ? '✓ Minimum length satisfied' : `Needs ${Math.max(0, currentPrompt.minWordCount - wordCount)} more words`}
+            <span
+              className={`text-xs font-semibold ${isWordCountValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
+            >
+              {isWordCountValid
+                ? '✓ Minimum length satisfied'
+                : `Needs ${Math.max(0, currentPrompt.minWordCount - wordCount)} more words`}
             </span>
 
             <button
@@ -352,19 +353,27 @@ export const WritingEvaluatorView: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
                     <span className="text-slate-500">Lexical Diversity (TTR):</span>
-                    <p className="font-bold text-slate-800 dark:text-slate-100">{evaluationReport.metrics.lexical.ttr}</p>
+                    <p className="font-bold text-slate-800 dark:text-slate-100">
+                      {evaluationReport.metrics.lexical.ttr}
+                    </p>
                   </div>
                   <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
                     <span className="text-slate-500">AWL Word Density:</span>
-                    <p className="font-bold text-indigo-600 dark:text-indigo-400">{evaluationReport.metrics.lexical.awlDensityPercent}%</p>
+                    <p className="font-bold text-indigo-600 dark:text-indigo-400">
+                      {evaluationReport.metrics.lexical.awlDensityPercent}%
+                    </p>
                   </div>
                   <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
                     <span className="text-slate-500">Complex Sentence Ratio:</span>
-                    <p className="font-bold text-emerald-600 dark:text-emerald-400">{(evaluationReport.metrics.grammatical.complexSentenceRatio * 100).toFixed(0)}%</p>
+                    <p className="font-bold text-emerald-600 dark:text-emerald-400">
+                      {(evaluationReport.metrics.grammatical.complexSentenceRatio * 100).toFixed(0)}%
+                    </p>
                   </div>
                   <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
                     <span className="text-slate-500">Flesch-Kincaid Grade:</span>
-                    <p className="font-bold text-slate-800 dark:text-slate-100">Grade {evaluationReport.metrics.readability.fleschKincaidGrade}</p>
+                    <p className="font-bold text-slate-800 dark:text-slate-100">
+                      Grade {evaluationReport.metrics.readability.fleschKincaidGrade}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -379,7 +388,10 @@ export const WritingEvaluatorView: React.FC = () => {
                 <div className="space-y-2 text-xs">
                   {/* Strengths */}
                   {evaluationReport.lexicalResource.strengths.slice(0, 1).map((s, i) => (
-                    <div key={i} className="flex items-start space-x-2 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg">
+                    <div
+                      key={i}
+                      className="flex items-start space-x-2 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg"
+                    >
                       <CheckCircle className="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-500" />
                       <span>{s}</span>
                     </div>
@@ -387,14 +399,20 @@ export const WritingEvaluatorView: React.FC = () => {
 
                   {/* Recommendations */}
                   {evaluationReport.grammaticalRange.recommendations.slice(0, 1).map((r, i) => (
-                    <div key={i} className="flex items-start space-x-2 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 p-2 rounded-lg">
+                    <div
+                      key={i}
+                      className="flex items-start space-x-2 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 p-2 rounded-lg"
+                    >
                       <Lightbulb className="w-3.5 h-3.5 mt-0.5 shrink-0 text-indigo-500" />
                       <span>{r}</span>
                     </div>
                   ))}
 
                   {evaluationReport.taskAchievement.weaknesses.slice(0, 1).map((w, i) => (
-                    <div key={i} className="flex items-start space-x-2 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2 rounded-lg">
+                    <div
+                      key={i}
+                      className="flex items-start space-x-2 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2 rounded-lg"
+                    >
                       <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-500" />
                       <span>{w}</span>
                     </div>
@@ -406,7 +424,8 @@ export const WritingEvaluatorView: React.FC = () => {
             <div className="h-full bg-slate-50 dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-8 flex flex-col items-center justify-center text-center space-y-3 text-slate-400">
               <Layers className="w-10 h-10 text-slate-300 dark:text-slate-700" />
               <p className="text-xs font-medium max-w-xs">
-                Write your response or load a model sample, then click <strong>"Evaluate Essay"</strong> to trigger the AST rubric analyzer.
+                Write your response or load a model sample, then click <strong>"Evaluate Essay"</strong> to trigger the
+                AST rubric analyzer.
               </p>
             </div>
           )}

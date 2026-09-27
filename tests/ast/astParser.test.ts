@@ -4,31 +4,31 @@ import {
   parseClauses,
   classifySentenceType,
   splitIntoSentences,
-  parseEssayToAST
+  parseEssayToAST,
 } from '../../src/ast/astParser';
 
 describe('astParser', () => {
   it('tokenizes sentence and marks AWL words and transitions', () => {
     const tokens = tokenizeSentence('Furthermore, we must analyze the significant impact of technology.');
     expect(tokens.length).toBeGreaterThan(0);
-    
-    const furthermoreTok = tokens.find(t => t.normalized === 'furthermore');
+
+    const furthermoreTok = tokens.find((t) => t.normalized === 'furthermore');
     expect(furthermoreTok).toBeDefined();
     expect(furthermoreTok?.isTransition).toBe(true);
 
-    const analyzeTok = tokens.find(t => t.normalized === 'analyze');
+    const analyzeTok = tokens.find((t) => t.normalized === 'analyze');
     expect(analyzeTok).toBeDefined();
     expect(analyzeTok?.isAcademic).toBe(true);
     expect(analyzeTok?.awlSublist).toBe(1);
 
-    const punctuationTok = tokens.find(t => t.raw === '.');
+    const punctuationTok = tokens.find((t) => t.raw === '.');
     expect(punctuationTok?.isPunctuation).toBe(true);
     expect(punctuationTok?.isWord).toBe(false);
   });
 
   it('handles empty or multi-word transitions', () => {
     const tokens = tokenizeSentence('On the other hand, empirical evidence was shown.');
-    expect(tokens.some(t => t.isTransition)).toBe(true);
+    expect(tokens.some((t) => t.isTransition)).toBe(true);
   });
 
   it('parses clauses correctly for simple and complex structures', () => {
@@ -37,7 +37,7 @@ describe('astParser', () => {
     const clauses = parseClauses(sentence, tokens);
 
     expect(clauses.length).toBeGreaterThanOrEqual(2);
-    expect(clauses.some(c => c.clauseType === 'subordinate')).toBe(true);
+    expect(clauses.some((c) => c.clauseType === 'subordinate')).toBe(true);
   });
 
   it('handles empty tokens in clause parser', () => {
@@ -51,8 +51,8 @@ describe('astParser', () => {
     const tokens = tokenizeSentence(sentence);
     const clauses = parseClauses(sentence, tokens);
 
-    expect(clauses.some(c => c.hasPassive)).toBe(true);
-    expect(clauses.some(c => c.hasConditional)).toBe(true);
+    expect(clauses.some((c) => c.hasPassive)).toBe(true);
+    expect(clauses.some((c) => c.hasConditional)).toBe(true);
   });
 
   it('classifies sentence types: simple, compound, complex, compound-complex', () => {
@@ -61,15 +61,26 @@ describe('astParser', () => {
     expect(classifySentenceType(simpleClauses, simpleTokens)).toBe('simple');
 
     const complexTokens = tokenizeSentence('Because solar power is sustainable, governments allocate funds to it.');
-    const complexClauses = parseClauses('Because solar power is sustainable, governments allocate funds to it.', complexTokens);
+    const complexClauses = parseClauses(
+      'Because solar power is sustainable, governments allocate funds to it.',
+      complexTokens,
+    );
     expect(classifySentenceType(complexClauses, complexTokens)).toBe('complex');
 
     const compoundTokens = tokenizeSentence('Solar power is clean, but fossil fuels are still widely used.');
-    const compoundClauses = parseClauses('Solar power is clean, but fossil fuels are still widely used.', compoundTokens);
+    const compoundClauses = parseClauses(
+      'Solar power is clean, but fossil fuels are still widely used.',
+      compoundTokens,
+    );
     expect(classifySentenceType(compoundClauses, compoundTokens)).toBe('compound');
 
-    const compComplexTokens = tokenizeSentence('Although solar energy is clean, fossil fuels are still used, and economies depend on them.');
-    const compComplexClauses = parseClauses('Although solar energy is clean, fossil fuels are still used, and economies depend on them.', compComplexTokens);
+    const compComplexTokens = tokenizeSentence(
+      'Although solar energy is clean, fossil fuels are still used, and economies depend on them.',
+    );
+    const compComplexClauses = parseClauses(
+      'Although solar energy is clean, fossil fuels are still used, and economies depend on them.',
+      compComplexTokens,
+    );
     expect(classifySentenceType(compComplexClauses, compComplexTokens)).toBe('compound-complex');
 
     // Short sentences default to simple

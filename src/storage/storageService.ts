@@ -129,7 +129,7 @@ export class StorageService {
 
   async updateSingleSRSCard(updatedCard: SRSCard): Promise<void> {
     const cards = await this.getSRSCards();
-    const idx = cards.findIndex(c => c.wordId === updatedCard.wordId);
+    const idx = cards.findIndex((c) => c.wordId === updatedCard.wordId);
     let newCards: SRSCard[];
     if (idx >= 0) {
       newCards = [...cards];
@@ -145,7 +145,9 @@ export class StorageService {
     return data.testHistory || [];
   }
 
-  async addTestAttempt(attempt: Omit<TestAttempt, 'id' | 'date'> & { id?: string; date?: string }): Promise<TestAttempt> {
+  async addTestAttempt(
+    attempt: Omit<TestAttempt, 'id' | 'date'> & { id?: string; date?: string },
+  ): Promise<TestAttempt> {
     const data = await this.getData();
     const newAttempt: TestAttempt = {
       ...attempt,
@@ -185,13 +187,13 @@ export class StorageService {
   async addCustomVocabulary(vocab: VocabularyItem): Promise<void> {
     const data = await this.getData();
     const existing = data.customVocabulary || [];
-    const filtered = existing.filter(v => v.id !== vocab.id && v.word.toLowerCase() !== vocab.word.toLowerCase());
+    const filtered = existing.filter((v) => v.id !== vocab.id && v.word.toLowerCase() !== vocab.word.toLowerCase());
     await this.saveData({ customVocabulary: [vocab, ...filtered] });
   }
 
   async removeCustomVocabulary(vocabId: string): Promise<void> {
     const data = await this.getData();
-    const filtered = (data.customVocabulary || []).filter(v => v.id !== vocabId);
+    const filtered = (data.customVocabulary || []).filter((v) => v.id !== vocabId);
     await this.saveData({ customVocabulary: filtered });
   }
 
@@ -202,11 +204,11 @@ export class StorageService {
   }): Promise<boolean> {
     const data = await this.getData();
     const bookmarks = data.bookmarks || [];
-    const exists = bookmarks.some(b => b.type === bookmark.type && b.itemId === bookmark.itemId);
+    const exists = bookmarks.some((b) => b.type === bookmark.type && b.itemId === bookmark.itemId);
 
     let updatedBookmarks;
     if (exists) {
-      updatedBookmarks = bookmarks.filter(b => !(b.type === bookmark.type && b.itemId === bookmark.itemId));
+      updatedBookmarks = bookmarks.filter((b) => !(b.type === bookmark.type && b.itemId === bookmark.itemId));
     } else {
       updatedBookmarks = [
         ...bookmarks,

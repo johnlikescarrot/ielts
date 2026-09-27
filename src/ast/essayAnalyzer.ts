@@ -9,12 +9,12 @@ import {
   CoherenceMetrics,
   TaskMetrics,
   CriterionFeedback,
-  SentenceType
+  SentenceType,
 } from './types';
 
 export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
-  const allTokens = ast.paragraphs.flatMap(p => p.sentences.flatMap(s => s.tokens));
-  const words = allTokens.filter(t => t.isWord).map(t => t.normalized);
+  const allTokens = ast.paragraphs.flatMap((p) => p.sentences.flatMap((s) => s.tokens));
+  const words = allTokens.filter((t) => t.isWord).map((t) => t.normalized);
   const totalWords = words.length;
 
   if (totalWords === 0) {
@@ -33,11 +33,11 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
   const wordFrequencies: Record<string, number> = {};
   const awlSet = new Set<string>();
 
-  words.forEach(w => {
+  words.forEach((w) => {
     wordFrequencies[w] = (wordFrequencies[w] || 0) + 1;
   });
 
-  allTokens.forEach(t => {
+  allTokens.forEach((t) => {
     if (t.isWord && t.isAcademic) {
       awlSet.add(t.normalized);
     }
@@ -48,7 +48,25 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
   const awlDensityPercent = Math.round((awlSet.size / totalWords) * 1000) / 10;
 
   // Identify high frequency repeated content words (excluding standard stop words)
-  const stopWords = new Set(['the', 'and', 'to', 'of', 'a', 'in', 'that', 'is', 'for', 'it', 'with', 'as', 'are', 'on', 'this', 'by', 'be']);
+  const stopWords = new Set([
+    'the',
+    'and',
+    'to',
+    'of',
+    'a',
+    'in',
+    'that',
+    'is',
+    'for',
+    'it',
+    'with',
+    'as',
+    'are',
+    'on',
+    'this',
+    'by',
+    'be',
+  ]);
   const repeatedWords = Object.entries(wordFrequencies)
     .filter(([word, count]) => !stopWords.has(word) && count >= 4 && word.length > 3)
     .map(([word, count]) => ({ word, count }))
@@ -56,7 +74,7 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
 
   // Check Collocations
   const rawLower = ast.rawText.toLowerCase();
-  const collocationMatches = COMMON_COLLOCATIONS.filter(c => rawLower.includes(c));
+  const collocationMatches = COMMON_COLLOCATIONS.filter((c) => rawLower.includes(c));
 
   return {
     totalWords,
@@ -71,7 +89,7 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
 }
 
 export function extractGrammaticalMetrics(ast: EssayAST): GrammaticalMetrics {
-  const allSentences = ast.paragraphs.flatMap(p => p.sentences);
+  const allSentences = ast.paragraphs.flatMap((p) => p.sentences);
   const sentenceCount = allSentences.length;
 
   if (sentenceCount === 0) {
@@ -102,18 +120,18 @@ export function extractGrammaticalMetrics(ast: EssayAST): GrammaticalMetrics {
 
   const nominalizationSuffixes = ['tion', 'sion', 'ment', 'ance', 'ence', 'ity', 'ism'];
 
-  allSentences.forEach(s => {
+  allSentences.forEach((s) => {
     sentenceTypeCounts[s.sentenceType] = (sentenceTypeCounts[s.sentenceType] || 0) + 1;
     totalSentenceLength += s.wordCount;
 
-    s.clauses.forEach(c => {
+    s.clauses.forEach((c) => {
       if (c.hasPassive) passiveVoiceCount++;
       if (c.hasConditional) conditionalCount++;
       if (c.hasRelative) relativeClauseCount++;
     });
 
-    s.tokens.forEach(t => {
-      if (t.isWord && nominalizationSuffixes.some(suf => t.normalized.endsWith(suf)) && t.normalized.length > 5) {
+    s.tokens.forEach((t) => {
+      if (t.isWord && nominalizationSuffixes.some((suf) => t.normalized.endsWith(suf)) && t.normalized.length > 5) {
         nominalizationCount++;
       }
     });
@@ -139,9 +157,9 @@ export function extractCoherenceMetrics(ast: EssayAST): CoherenceMetrics {
   const paragraphCount = ast.paragraphs.length;
   const transitionWordsSet = new Set<string>();
 
-  ast.paragraphs.forEach(p => {
-    p.sentences.forEach(s => {
-      s.tokens.forEach(t => {
+  ast.paragraphs.forEach((p) => {
+    p.sentences.forEach((s) => {
+      s.tokens.forEach((t) => {
         if (t.isTransition) {
           transitionWordsSet.add(t.normalized);
         }
@@ -184,10 +202,9 @@ export function extractTaskMetrics(ast: EssayAST, targetWordCount = 250, promptK
   else if (wordCount < targetWordCount) wordCountPenalty = 0.5;
 
   const rawLower = ast.rawText.toLowerCase();
-  const matchedKeywords = promptKeywords.filter(kw => rawLower.includes(kw.toLowerCase()));
-  const keywordCoveragePercent = promptKeywords.length > 0 
-    ? Math.round((matchedKeywords.length / promptKeywords.length) * 100) 
-    : 100;
+  const matchedKeywords = promptKeywords.filter((kw) => rawLower.includes(kw.toLowerCase()));
+  const keywordCoveragePercent =
+    promptKeywords.length > 0 ? Math.round((matchedKeywords.length / promptKeywords.length) * 100) : 100;
 
   return {
     wordCount,
@@ -263,11 +280,13 @@ export function evaluateCoherenceCohesion(coherence: CoherenceMetrics, ast: Essa
     strengths.push('Uses some transition markers.');
   } else {
     weaknesses.push('Under-use of discourse markers linking ideas together.');
-    recommendations.push('Incorporate discourse markers such as "Furthermore", "In contrast", "Consequently", and "For instance".');
+    recommendations.push(
+      'Incorporate discourse markers such as "Furthermore", "In contrast", "Consequently", and "For instance".',
+    );
   }
 
   // Check topic sentences
-  const topicSentencesCount = ast.paragraphs.filter(p => p.hasTopicSentence).length;
+  const topicSentencesCount = ast.paragraphs.filter((p) => p.hasTopicSentence).length;
   if (topicSentencesCount >= 2) {
     strengths.push('Clear topic sentences introduce main ideas in body paragraphs.');
   } else {
@@ -300,7 +319,9 @@ export function evaluateLexicalResource(lexical: LexicalMetrics): CriterionFeedb
     strengths.push(`Good academic vocabulary repertoire (${lexical.awlWords.length} AWL terms).`);
   } else {
     weaknesses.push('Limited academic vocabulary. Too reliant on informal/everyday language.');
-    recommendations.push('Incorporate more Academic Word List (AWL) terms such as "facilitate", "substantiate", "comprehensive".');
+    recommendations.push(
+      'Incorporate more Academic Word List (AWL) terms such as "facilitate", "substantiate", "comprehensive".',
+    );
   }
 
   if (lexical.ttr >= 0.55) {
@@ -315,7 +336,9 @@ export function evaluateLexicalResource(lexical: LexicalMetrics): CriterionFeedb
     band += 0.5;
     strengths.push(`Natural collocations detected: "${lexical.collocationMatches.slice(0, 2).join('", "')}".`);
   } else {
-    recommendations.push('Use natural academic collocations (e.g., "play a vital role", "reap the benefits", "tackle the problem").');
+    recommendations.push(
+      'Use natural academic collocations (e.g., "play a vital role", "reap the benefits", "tackle the problem").',
+    );
   }
 
   band = Math.max(3.0, Math.min(9.0, Math.round(band * 2) / 2));
@@ -340,13 +363,17 @@ export function evaluateGrammaticalRange(grammatical: GrammaticalMetrics): Crite
 
   if (complexRatio >= 0.55 && grammatical.sentenceCount >= 8) {
     band += 2.0;
-    strengths.push(`Exceptional sentence variety with ${(complexRatio * 100).toFixed(0)}% complex/compound-complex structures.`);
+    strengths.push(
+      `Exceptional sentence variety with ${(complexRatio * 100).toFixed(0)}% complex/compound-complex structures.`,
+    );
   } else if (complexRatio >= 0.35) {
     band += 1.0;
     strengths.push(`Good syntactic variety with ${(complexRatio * 100).toFixed(0)}% complex sentences.`);
   } else {
     weaknesses.push('High proportion of simple sentences limits grammatical score.');
-    recommendations.push('Combine simple sentences into complex structures using subordinators ("although", "whereas", "while").');
+    recommendations.push(
+      'Combine simple sentences into complex structures using subordinators ("although", "whereas", "while").',
+    );
   }
 
   if (grammatical.passiveVoiceCount >= 2) {
@@ -360,7 +387,9 @@ export function evaluateGrammaticalRange(grammatical: GrammaticalMetrics): Crite
     band += 0.5;
     strengths.push('Demonstrates advanced structures including relative clauses and conditionals.');
   } else {
-    recommendations.push('Add relative clauses ("which", "who") or conditional sentences ("If..., ...") to boost grammatical score.');
+    recommendations.push(
+      'Add relative clauses ("which", "who") or conditional sentences ("If..., ...") to boost grammatical score.',
+    );
   }
 
   band = Math.max(3.0, Math.min(9.0, Math.round(band * 2) / 2));
@@ -375,10 +404,16 @@ export function evaluateGrammaticalRange(grammatical: GrammaticalMetrics): Crite
   };
 }
 
-export function analyzeEssay(essayText: string, targetWordCount = 250, promptKeywords: string[] = []): EssayEvaluationReport {
+export function analyzeEssay(
+  essayText: string,
+  targetWordCount = 250,
+  promptKeywords: string[] = [],
+): EssayEvaluationReport {
   const ast = parseEssayToAST(essayText);
-  const words = ast.paragraphs.flatMap(p => p.sentences.flatMap(s => s.tokens.filter(t => t.isWord).map(t => t.raw)));
-  const sentences = ast.paragraphs.flatMap(p => p.sentences.map(s => s.text));
+  const words = ast.paragraphs.flatMap((p) =>
+    p.sentences.flatMap((s) => s.tokens.filter((t) => t.isWord).map((t) => t.raw)),
+  );
+  const sentences = ast.paragraphs.flatMap((p) => p.sentences.map((s) => s.text));
 
   const readability = calculateReadability(essayText, words, sentences);
   const lexical = extractLexicalMetrics(ast);

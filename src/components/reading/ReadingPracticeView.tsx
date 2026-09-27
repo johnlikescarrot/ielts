@@ -15,19 +15,19 @@ export const ReadingPracticeView: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [activeHighlightColor, setActiveHighlightColor] = useState<'yellow' | 'green' | 'blue' | null>(null);
 
-  const currentPassage: ReadingPassage = 
-    READING_PASSAGES.find(p => p.id === selectedPassageId) || READING_PASSAGES[0];
+  const currentPassage: ReadingPassage =
+    READING_PASSAGES.find((p) => p.id === selectedPassageId) || READING_PASSAGES[0];
 
   const handleAnswerChange = (questionId: string, value: string) => {
     if (isSubmitted) return;
-    setUserAnswers(prev => ({ ...prev, [questionId]: value }));
+    setUserAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
   const handleSubmit = async () => {
     setIsSubmitted(true);
 
     let rawScore = 0;
-    currentPassage.questions.forEach(q => {
+    currentPassage.questions.forEach((q) => {
       if (userAnswers[q.id]?.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()) {
         rawScore++;
       }
@@ -56,7 +56,7 @@ export const ReadingPracticeView: React.FC = () => {
   // Calculate score breakdown when submitted
   let rawCorrect = 0;
   if (isSubmitted) {
-    currentPassage.questions.forEach(q => {
+    currentPassage.questions.forEach((q) => {
       if (userAnswers[q.id]?.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()) {
         rawCorrect++;
       }
@@ -73,9 +73,7 @@ export const ReadingPracticeView: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-              {t('reading.title')}
-            </h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('reading.title')}</h1>
             <Badge variant="primary" size="sm">
               {currentPassage.examType === 'academic' ? t('reading.academic') : t('reading.general')}
             </Badge>
@@ -83,9 +81,7 @@ export const ReadingPracticeView: React.FC = () => {
               {currentPassage.difficulty}
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t('reading.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('reading.subtitle')}</p>
         </div>
 
         {/* Passage switcher & Timer */}
@@ -98,7 +94,7 @@ export const ReadingPracticeView: React.FC = () => {
             }}
             className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-100"
           >
-            {READING_PASSAGES.map(p => (
+            {READING_PASSAGES.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.title} ({p.examType.toUpperCase()})
               </option>
@@ -149,9 +145,7 @@ export const ReadingPracticeView: React.FC = () => {
         {/* Left column: Passage text */}
         <div className="lg:col-span-7 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col">
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-700">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              {currentPassage.title}
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{currentPassage.title}</h2>
 
             {/* Highlighter selector */}
             <div className="flex items-center space-x-1.5">
@@ -188,7 +182,9 @@ export const ReadingPracticeView: React.FC = () => {
           <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                <span>{t('common.questions')} 1–{currentPassage.questions.length}</span>
+                <span>
+                  {t('common.questions')} 1–{currentPassage.questions.length}
+                </span>
               </h3>
               <span className="text-xs text-slate-500">
                 {Object.keys(userAnswers).length} / {currentPassage.questions.length} answered
@@ -196,7 +192,8 @@ export const ReadingPracticeView: React.FC = () => {
             </div>
 
             {currentPassage.questions.map((q) => {
-              const isCorrect = isSubmitted && userAnswers[q.id]?.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase();
+              const isCorrect =
+                isSubmitted && userAnswers[q.id]?.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase();
 
               return (
                 <div
@@ -230,9 +227,7 @@ export const ReadingPracticeView: React.FC = () => {
                     )}
                   </div>
 
-                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200 mb-3">
-                    {q.prompt}
-                  </p>
+                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200 mb-3">{q.prompt}</p>
 
                   {/* Options (Multiple choice / True False / Sentence completion) */}
                   {q.options && q.options.length > 0 ? (
@@ -277,7 +272,9 @@ export const ReadingPracticeView: React.FC = () => {
                     <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs space-y-1">
                       <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-400 font-semibold">
                         <HelpCircle className="w-3.5 h-3.5 text-indigo-500" />
-                        <span>{t('common.explanation')}: (Key: {q.correctAnswer})</span>
+                        <span>
+                          {t('common.explanation')}: (Key: {q.correctAnswer})
+                        </span>
                       </div>
                       <p className="text-slate-700 dark:text-slate-300">
                         {language === 'vi' ? q.explanationVi : q.explanationEn}

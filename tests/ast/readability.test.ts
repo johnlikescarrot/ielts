@@ -14,8 +14,12 @@ describe('readability', () => {
   });
 
   it('calculates readability metrics for sample academic text', () => {
-    const text = 'Technology transforms modern education. Students learn with computers and improve their daily skills.';
-    const sentences = ['Technology transforms modern education.', 'Students learn with computers and improve their daily skills.'];
+    const text =
+      'Technology transforms modern education. Students learn with computers and improve their daily skills.';
+    const sentences = [
+      'Technology transforms modern education.',
+      'Students learn with computers and improve their daily skills.',
+    ];
     const words = text.split(/\s+/);
 
     const metrics = calculateReadability(text, words, sentences);

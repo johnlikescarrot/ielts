@@ -49,7 +49,10 @@ export async function importDataFromJSON(rawJson: string): Promise<StorageData> 
   return await storageService.saveData(validated);
 }
 
-export function triggerDownload(content: string, filename: string = `ielts-slayer-backup-${new Date().toISOString().split('T')[0]}.json`): void {
+export function triggerDownload(
+  content: string,
+  filename: string = `ielts-slayer-backup-${new Date().toISOString().split('T')[0]}.json`,
+): void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
   const blob = new Blob([content], { type: 'application/json' });

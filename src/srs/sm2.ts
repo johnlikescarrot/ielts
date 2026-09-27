@@ -16,7 +16,7 @@ export interface SM2Result {
 export function calculateSM2(
   card: { interval: number; repetition: number; easeFactor: number },
   grade: number,
-  currentDate: Date = new Date()
+  currentDate: Date = new Date(),
 ): SM2Result {
   const boundedGrade = Math.max(0, Math.min(5, Math.round(grade)));
   let interval: number;

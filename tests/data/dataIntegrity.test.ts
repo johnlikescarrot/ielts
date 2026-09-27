@@ -8,7 +8,7 @@ import { SPEAKING_QUESTIONS } from '../../src/data/speakingPrompts';
 describe('Data Integrity', () => {
   it('validates vocabulary items structure', () => {
     expect(INITIAL_VOCABULARY.length).toBeGreaterThanOrEqual(10);
-    INITIAL_VOCABULARY.forEach(item => {
+    INITIAL_VOCABULARY.forEach((item) => {
       expect(item.id).toBeTruthy();
       expect(item.word).toBeTruthy();
       expect(item.phonetic).toBeTruthy();
@@ -21,13 +21,13 @@ describe('Data Integrity', () => {
 
   it('validates reading passages and questions structure', () => {
     expect(READING_PASSAGES.length).toBeGreaterThanOrEqual(2);
-    READING_PASSAGES.forEach(passage => {
+    READING_PASSAGES.forEach((passage) => {
       expect(passage.id).toBeTruthy();
       expect(passage.title).toBeTruthy();
       expect(passage.passageText.length).toBeGreaterThan(100);
       expect(passage.questions.length).toBeGreaterThan(0);
 
-      passage.questions.forEach(q => {
+      passage.questions.forEach((q) => {
         expect(q.id).toBeTruthy();
         expect(q.prompt).toBeTruthy();
         expect(q.correctAnswer).toBeTruthy();
@@ -39,7 +39,7 @@ describe('Data Integrity', () => {
 
   it('validates listening sections and audio script structure', () => {
     expect(LISTENING_SECTIONS.length).toBeGreaterThanOrEqual(2);
-    LISTENING_SECTIONS.forEach(sec => {
+    LISTENING_SECTIONS.forEach((sec) => {
       expect(sec.id).toBeTruthy();
       expect(sec.title).toBeTruthy();
       expect(sec.transcript.length).toBeGreaterThan(100);
@@ -50,7 +50,7 @@ describe('Data Integrity', () => {
 
   it('validates writing prompts and model essays structure', () => {
     expect(WRITING_PROMPTS.length).toBeGreaterThanOrEqual(2);
-    WRITING_PROMPTS.forEach(wp => {
+    WRITING_PROMPTS.forEach((wp) => {
       expect(wp.id).toBeTruthy();
       expect(wp.title).toBeTruthy();
       expect(wp.prompt).toBeTruthy();
@@ -61,12 +61,12 @@ describe('Data Integrity', () => {
 
   it('validates speaking questions structure across all parts', () => {
     expect(SPEAKING_QUESTIONS.length).toBeGreaterThanOrEqual(3);
-    const parts = SPEAKING_QUESTIONS.map(q => q.part);
+    const parts = SPEAKING_QUESTIONS.map((q) => q.part);
     expect(parts).toContain(1);
     expect(parts).toContain(2);
     expect(parts).toContain(3);
 
-    SPEAKING_QUESTIONS.forEach(sq => {
+    SPEAKING_QUESTIONS.forEach((sq) => {
       expect(sq.id).toBeTruthy();
       expect(sq.topic).toBeTruthy();
       expect(sq.prompt).toBeTruthy();

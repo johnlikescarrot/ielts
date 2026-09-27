@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-  BookOpen, 
-  Headphones, 
+import {
+  BookOpen,
+  Headphones,
   Captions,
-  PenTool, 
-  Mic, 
-  Layers, 
-  Award, 
-  BarChart2, 
-  Settings, 
-  Globe, 
-  LayoutDashboard
+  PenTool,
+  Mic,
+  Layers,
+  Award,
+  BarChart2,
+  Settings,
+  Globe,
+  LayoutDashboard,
 } from 'lucide-react';
 import { SkillType } from '../../types';
 import { useI18n } from '../../i18n/i18nContext';
@@ -22,11 +22,7 @@ export interface NavbarProps {
   targetBand?: number;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  activeTab,
-  onSelectTab,
-  targetBand = 7.5,
-}) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, onSelectTab, targetBand = 7.5 }) => {
   const { language, setLanguage, t } = useI18n();
 
   const navItems = [
