@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReadingPracticeView } from '../../src/components/reading/ReadingPracticeView';
 import { ListeningPracticeView } from '../../src/components/listening/ListeningPracticeView';
@@ -161,8 +161,9 @@ describe('Feature Views & Dashboard Extended Suite', () => {
 
     // Toggle self-assessment rubric check
     const checkboxes = screen.getAllByRole('checkbox');
-    await userEvent.click(checkboxes[0]);
-    await userEvent.click(checkboxes[1]);
+    for (const checkbox of checkboxes) {
+      await userEvent.click(checkbox);
+    }
 
     // Change slider
     const slider = screen.getByRole('slider');
@@ -287,6 +288,31 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     await userEvent.click(trashBtn);
   });
 
+  it('shows and clears export and local-data status messages', async () => {
+    vi.useFakeTimers();
+    render(
+      <I18nProvider>
+        <AnalyticsView />
+      </I18nProvider>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Export Backup'));
+      await Promise.resolve();
+    });
+    expect(screen.getByText('Backup JSON exported successfully!')).toBeInTheDocument();
+    act(() => vi.runAllTimers());
+
+    window.confirm = () => true;
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('Clear All Local Data'));
+      await Promise.resolve();
+    });
+    expect(screen.getByText('All local data cleared.')).toBeInTheDocument();
+    act(() => vi.runAllTimers());
+    vi.useRealTimers();
+  });
+
   it('renders SettingsView with adjustments to targetBand and minutes', async () => {
     render(
       <I18nProvider>
@@ -302,9 +328,11 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     const generalBtn = screen.getByText('General Training');
     await userEvent.click(generalBtn);
 
-    // Language
+    // Language can be switched in either direction before persisting.
     const viBtn = screen.getByText(/Tiếng Việt/i);
     await userEvent.click(viBtn);
+    await userEvent.click(screen.getByText(/English \(UK \/ US\)/i));
+    await userEvent.click(screen.getByText('Academic'));
 
     // Daily minutes input
     const minutesInput = screen.getByRole('spinbutton');

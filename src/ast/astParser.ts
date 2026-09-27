@@ -149,18 +149,6 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
     }
   }
 
-  if (clauses.length === 0) {
-    clauses.push({
-      type: 'Clause',
-      clauseType: 'independent',
-      tokens,
-      text: sentenceText,
-      hasPassive,
-      hasRelative,
-      hasConditional,
-    });
-  }
-
   return clauses;
 }
 

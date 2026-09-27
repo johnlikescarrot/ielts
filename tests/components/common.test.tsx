@@ -89,6 +89,21 @@ describe('Common Components Suite', () => {
     vi.useRealTimers();
   });
 
+  it('counts upward when configured as a stopwatch', () => {
+    vi.useFakeTimers();
+    render(
+      <I18nProvider>
+        <Timer initialSeconds={0} countUp autoStart />
+      </I18nProvider>
+    );
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.getByText('00:01')).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
   it('interacts with AudioPlayer: play, pause, speed cycles, time updates and restart', async () => {
     const onUpdate = vi.fn();
     render(
@@ -119,6 +134,49 @@ describe('Common Components Suite', () => {
     await userEvent.click(resetBtn);
   });
 
+  it('advances an audio simulation to its duration and reports time updates', () => {
+    vi.useFakeTimers();
+    const onTimeUpdate = vi.fn();
+    const originalSpeak = window.speechSynthesis.speak;
+    window.speechSynthesis.speak = () => {};
+
+    render(
+      <I18nProvider>
+        <AudioPlayer transcriptText="Timed practice" durationSeconds={2} onTimeUpdate={onTimeUpdate} />
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(onTimeUpdate).toHaveBeenLastCalledWith(2);
+    expect(screen.getByText('0:02 / 0:02')).toBeInTheDocument();
+    window.speechSynthesis.speak = originalSpeak;
+    vi.useRealTimers();
+  });
+
+  it('restarts playing audio when its speed changes and pauses from the main control', () => {
+    vi.useFakeTimers();
+    render(
+      <I18nProvider>
+        <AudioPlayer transcriptText="Speed control practice" durationSeconds={10} />
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+    fireEvent.click(screen.getByText('1x'));
+    expect(screen.getByRole('button', { name: 'Play' })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+    expect(screen.getByRole('button', { name: 'Play' })).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
   it('interacts with VoiceRecorder: recording lifecycle and audio playback', async () => {
     const onComplete = vi.fn();
     render(
@@ -139,6 +197,70 @@ describe('Common Components Suite', () => {
     const playAudioBtn = screen.getByText(/Listen to Your Recording|Nghe lại/i);
     await userEvent.click(playAudioBtn);
     await userEvent.click(playAudioBtn);
+  });
+
+  it('records through MediaRecorder and reports elapsed recording time', async () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    render(
+      <I18nProvider>
+        <VoiceRecorder onRecordingComplete={onComplete} />
+      </I18nProvider>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Start Voice Recording/i));
+      await Promise.resolve();
+    });
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    fireEvent.click(screen.getByText(/Stop Recording/i));
+    expect(onComplete).toHaveBeenCalledWith(expect.any(Blob), 1);
+    vi.useRealTimers();
+  });
+
+  it('falls back to a local recording when microphone access is denied', async () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    navigator.mediaDevices.getUserMedia = vi.fn().mockRejectedValue(new Error('Permission denied'));
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder onRecordingComplete={onComplete} />
+      </I18nProvider>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Start Voice Recording/i));
+      await Promise.resolve();
+    });
+    expect(screen.getByText(/Stop Recording/i)).toBeInTheDocument();
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    fireEvent.click(screen.getByText(/Stop Recording/i));
+    expect(onComplete).toHaveBeenCalledWith(expect.any(Blob), 1);
+
+    warn.mockRestore();
+    navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+    vi.useRealTimers();
+  });
+
+  it('stops displaying recorded-audio playback after its audio element ends', async () => {
+    render(
+      <I18nProvider>
+        <VoiceRecorder />
+      </I18nProvider>
+    );
+
+    await userEvent.click(screen.getByText(/Start Voice Recording/i));
+    await userEvent.click(screen.getByText(/Stop Recording/i));
+    await userEvent.click(screen.getByText(/Listen to Your Recording|Nghe lại/i));
+    fireEvent.ended(document.querySelector('audio')!);
+    expect(screen.getByText(/Listen to Your Recording|Nghe lại/i)).toBeInTheDocument();
   });
 
   it('renders Navbar on desktop and mobile', async () => {

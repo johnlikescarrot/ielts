@@ -21,6 +21,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<any>(null);
+  const recordingTimeRef = useRef(0);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
     setErrorMessage(null);
     setAudioUrl(null);
     audioChunksRef.current = [];
+    recordingTimeRef.current = 0;
     setRecordingTime(0);
 
     try {
@@ -56,7 +58,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         if (onRecordingComplete) {
-          onRecordingComplete(audioBlob, recordingTime);
+          onRecordingComplete(audioBlob, recordingTimeRef.current);
         }
         stream.getTracks().forEach(track => track.stop());
       };
@@ -65,14 +67,22 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       setIsRecording(true);
 
       timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
+        setRecordingTime(prev => {
+          const next = prev + 1;
+          recordingTimeRef.current = next;
+          return next;
+        });
       }, 1000);
     } catch (err: any) {
       console.warn('VoiceRecorder: mic access error', err);
       // Fallback mock recording for sandbox/tests or without mic hardware
       setIsRecording(true);
       timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
+        setRecordingTime(prev => {
+          const next = prev + 1;
+          recordingTimeRef.current = next;
+          return next;
+        });
       }, 1000);
     }
   };
@@ -89,7 +99,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       const mockBlob = new Blob(['mock-audio-data'], { type: 'audio/webm' });
       const url = URL.createObjectURL(mockBlob);
       setAudioUrl(url);
-      if (onRecordingComplete) onRecordingComplete(mockBlob, recordingTime);
+      if (onRecordingComplete) onRecordingComplete(mockBlob, recordingTimeRef.current);
     }
   };
 

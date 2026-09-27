@@ -84,6 +84,10 @@ describe('astParser', () => {
     expect(sentences[0].wordCount).toBe(3);
   });
 
+  it('skips whitespace-only sentence fragments', () => {
+    expect(splitIntoSentences('   ')).toEqual([]);
+  });
+
   it('parses full essay text to AST', () => {
     const essay = `First paragraph introduces the topic of climate mitigation. Furthermore, policies are required.
 

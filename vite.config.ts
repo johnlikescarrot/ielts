@@ -12,6 +12,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Allow Arena's proxied preview hostname without weakening extension builds.
+    allowedHosts: ['.e2b.app'],
     cors: true,
     // The Arena preview is served through a unique, proxied host.
     allowedHosts: true,

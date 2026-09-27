@@ -55,6 +55,42 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
     expect(report.taskAchievement.weaknesses.length).toBeGreaterThan(0);
   });
 
+  it('awards top bands for comprehensive task, lexical, and grammar signals', () => {
+    const fullyDevelopedTask = {
+      wordCount: 300,
+      targetWordCount: 250,
+      isWordCountSufficient: true,
+      wordCountPenalty: 0,
+      promptKeywordsMatched: ['education'],
+      keywordCoveragePercent: 100,
+    };
+    expect(evaluateTaskResponse(fullyDevelopedTask, 4).band).toBe(8);
+
+    const advancedLexical = {
+      totalWords: 300,
+      uniqueWords: 200,
+      ttr: 0.67,
+      awlWords: Array.from({ length: 10 }, (_, index) => `academic-${index}`),
+      awlDensityPercent: 10,
+      repeatedWords: [],
+      rareWordCount: 10,
+      collocationMatches: ['play a vital role', 'tackle the problem', 'reap the benefits'],
+    };
+    expect(evaluateLexicalResource(advancedLexical).band).toBe(8.5);
+
+    const advancedGrammar = {
+      sentenceCount: 8,
+      averageSentenceLength: 20,
+      sentenceTypeCounts: { simple: 0, compound: 1, complex: 5, 'compound-complex': 2 },
+      passiveVoiceCount: 2,
+      conditionalCount: 1,
+      relativeClauseCount: 1,
+      complexSentenceRatio: 0.875,
+      nominalizationCount: 5,
+    };
+    expect(evaluateGrammaticalRange(advancedGrammar).band).toBeGreaterThanOrEqual(8);
+  });
+
   it('evaluates criteria under different conditions', () => {
     // Under-length task response
     const taskUnder = {
