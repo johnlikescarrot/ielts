@@ -1,0 +1,52 @@
+name: CI Quality & Test Suite
+
+on:
+  push:
+    branches: [ main, 'arena/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Typecheck, Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck TypeScript
+        run: npm run typecheck
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Test Suite with Coverage (100% Target)
+        run: npm run test:coverage
+
+      - name: Build Firefox WebExtension
+        run: npm run build
+
+      - name: Upload Test Coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+      - name: Upload Firefox Extension Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ielts-slayer-firefox-build
+          path: dist/
+          retention-days: 14
