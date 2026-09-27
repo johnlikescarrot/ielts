@@ -54,9 +54,23 @@ export function timestampToSeconds(timestamp: string): number | null {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
+function stripAngleMarkup(text: string): string {
+  let result = '';
+  let insideTag = false;
+  for (const character of text) {
+    if (character === '<') {
+      insideTag = true;
+    } else if (character === '>') {
+      insideTag = false;
+    } else if (!insideTag) {
+      result += character;
+    }
+  }
+  return result;
+}
+
 function cleanCaption(text: string): string {
-  return text
-    .replace(/<[^>]*>/g, '')
+  return stripAngleMarkup(text)
     .replace(/\{\\[^}]+}/g, '')
     .replace(/\s+/g, ' ')
     .trim();
