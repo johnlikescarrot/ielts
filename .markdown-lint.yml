@@ -1,0 +1,7 @@
+# Preserve the project's established documentation style while checking Markdown.
+MD013: false # line length
+MD022: false # blank lines around headings
+MD031: false # blank lines around fenced blocks
+MD032: false # blank lines around lists
+MD033: false # inline HTML used in generated Astryx guidance
+MD034: false # bare scholarly URLs
