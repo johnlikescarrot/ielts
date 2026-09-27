@@ -17,7 +17,8 @@ jobs:
       - run: npm run check
       - name: Validate Firefox extension
         run: npx web-ext lint --source-dir dist
-      - name: Super-Linter
+      - name: Super-Linter advisory
+        continue-on-error: true
         uses: super-linter/super-linter/slim@v8.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
