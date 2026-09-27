@@ -35,6 +35,24 @@ describe('exportImport', () => {
     expect(() => validateImportData('invalid json text')).toThrow();
   });
 
+  it('normalizes legacy and malformed import arrays to safe defaults', () => {
+    const validated = validateImportData(JSON.stringify({
+      settings: { targetBand: 7.0 },
+      srsCards: 'bad',
+      customVocabulary: 'bad',
+      testHistory: [],
+      bookmarks: [],
+      notes: 'bad',
+    }));
+
+    expect(validated.settings.targetBand).toBe(7.0);
+    expect(validated.srsCards).toEqual([]);
+    expect(validated.customVocabulary).toEqual([]);
+    expect(validated.testHistory).toEqual([]);
+    expect(validated.bookmarks).toEqual([]);
+    expect(validated.notes).toEqual([]);
+  });
+
   it('imports valid JSON and saves to storage service', async () => {
     const payload = JSON.stringify({
       data: {

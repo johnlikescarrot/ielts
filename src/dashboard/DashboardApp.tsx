@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Theme } from '@astryxdesign/core/theme';
+import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 import { SkillType, UserSettings } from '../types';
 import { storageService, DEFAULT_SETTINGS } from '../storage/storageService';
 import { I18nProvider } from '../i18n/i18nContext';
@@ -22,8 +24,9 @@ export const DashboardApp: React.FC = () => {
   }, []);
 
   return (
-    <I18nProvider>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+    <Theme theme={neutralTheme} mode={settings.theme}>
+      <I18nProvider>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
         <Navbar
           activeTab={activeTab}
           onSelectTab={setActiveTab}
@@ -52,7 +55,8 @@ export const DashboardApp: React.FC = () => {
             </span>
           </div>
         </footer>
-      </div>
-    </I18nProvider>
+        </div>
+      </I18nProvider>
+    </Theme>
   );
 };

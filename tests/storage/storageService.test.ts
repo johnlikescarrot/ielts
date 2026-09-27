@@ -149,4 +149,72 @@ describe('StorageService Suite', () => {
     await browserService.resetAll();
     delete (globalThis as any).browser;
   });
+
+  it('hydrates from persisted localStorage and normalizes malformed array fields', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', JSON.stringify({
+      settings: { language: 'vi', targetBand: 8.5 },
+      srsCards: 'bad',
+      customVocabulary: [{ id: 'v1', word: 'test' }],
+      testHistory: 'bad',
+      bookmarks: [{ id: 'b1' }],
+      notes: 'bad',
+    }));
+
+    const localService = new StorageService();
+    const data = await localService.getData();
+
+    expect(data.settings.language).toBe('vi');
+    expect(data.srsCards).toEqual([]);
+    expect(data.customVocabulary).toHaveLength(1);
+    expect(data.testHistory).toEqual([]);
+    expect(data.bookmarks).toHaveLength(1);
+    expect(data.notes).toEqual([]);
+  });
+
+  it('hydrates from browser storage and survives storage API failures', async () => {
+    const stored = {
+      settings: { targetBand: 9.0 },
+      srsCards: [{ wordId: 'w1', interval: 0, repetition: 0, easeFactor: 2.5, nextReviewDate: '2026-09-27', history: [] }],
+      customVocabulary: 'bad',
+      testHistory: [],
+      bookmarks: 'bad',
+      notes: [],
+    };
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async (key: string) => ({ [key]: stored })),
+          set: vi.fn(async () => { throw new Error('write failed'); }),
+          remove: vi.fn(async () => { throw new Error('remove failed'); }),
+        }
+      }
+    };
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const browserService = new StorageService();
+    const data = await browserService.getData();
+    expect(data.settings.targetBand).toBe(9.0);
+    expect(data.srsCards).toHaveLength(1);
+    expect(data.customVocabulary).toEqual([]);
+    expect(data.bookmarks).toEqual([]);
+
+    await browserService.updateSettings({ targetBand: 7.0 });
+    await browserService.resetAll();
+    expect(errorSpy).toHaveBeenCalled();
+
+    errorSpy.mockRestore();
+    delete (globalThis as any).browser;
+  });
+
+  it('falls back to defaults when persisted storage is corrupt or inaccessible', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', '{bad json');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const localService = new StorageService();
+    const data = await localService.getData();
+
+    expect(data.settings).toEqual(DEFAULT_SETTINGS);
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
 });

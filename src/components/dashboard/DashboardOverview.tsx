@@ -5,6 +5,7 @@ import { getDeckSummary } from '../../srs/srsManager';
 import { buildStudyPlan } from '../../progress/studyPlan';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
+import { ResearchCredibilityPanel } from '../research/ResearchCredibilityPanel';
 import {
   BookOpen,
   Headphones,
@@ -149,6 +150,11 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
         {/* Decorative background glow */}
         <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl" />
       </div>
+
+      <ResearchCredibilityPanel
+        targetBand={settings.targetBand}
+        onSelectSkill={onSelectSkill}
+      />
 
       {/* Spaced Repetition Due Alert (if any cards due) */}
       {deckSummary.dueToday > 0 && (

@@ -73,6 +73,18 @@ export const en: Record<string, string> = {
   'dash.featureSpeakingDesc': 'Timed 3-part mock interview with built-in voice recorder and self-rubrics.',
   'dash.featureVocabDesc': 'Spaced Repetition (SM-2) flashcard engine with Band 7-9 wordlists.',
 
+  // Research Evidence Panel
+  'research.eyebrow': 'Evidence-first IELTS learning',
+  'research.title': 'Scholar-ready practice design for serious Band 7-9 candidates',
+  'research.subtitle': 'A curated evidence layer links IELTS drills to language-testing, vocabulary, listening, speaking, reading, and writing research — without login, telemetry, or paid APIs.',
+  'research.references': 'Research sources',
+  'research.yearRange': 'Evidence range',
+  'research.skillCoverage': 'Skill coverage',
+  'research.ctaWriting': 'Analyze a writing sample',
+  'research.ctaVocabulary': 'Review vocabulary SRS',
+  'research.downloadKit': 'Download Scholar kit',
+  'research.planTitle': '150-minute weekly evidence plan',
+
   // Reading Section
   'reading.title': 'IELTS Reading Practice',
   'reading.subtitle': 'Practice authentic Academic & General passages with instant band scoring and bilingual explanation keys.',

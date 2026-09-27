@@ -104,6 +104,9 @@ describe('Common Components Suite', () => {
     const playPauseBtn = screen.getByRole('button', { name: /Play|Pause/i });
     await userEvent.click(playPauseBtn);
 
+    // Pause branch
+    await userEvent.click(screen.getByRole('button', { name: /Pause/i }));
+
     // Cycle speeds: 1x -> 1.25x -> 1.5x -> 0.75x -> 1x
     const speedBtn = screen.getByText('1x');
     await userEvent.click(speedBtn);
@@ -117,6 +120,35 @@ describe('Common Components Suite', () => {
 
     const resetBtn = screen.getByTitle('Reset');
     await userEvent.click(resetBtn);
+  });
+
+  it('advances AudioPlayer timers and restarts when speed changes mid-play', async () => {
+    vi.useFakeTimers();
+    const onUpdate = vi.fn();
+    const originalSpeak = window.speechSynthesis.speak;
+    window.speechSynthesis.speak = vi.fn();
+
+    render(
+      <I18nProvider>
+        <AudioPlayer transcriptText="Timer branch coverage." durationSeconds={2} onTimeUpdate={onUpdate} />
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Play/i }));
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(onUpdate).toHaveBeenCalledWith(1);
+
+    fireEvent.click(screen.getByText('1x'));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Pause/i }));
+
+    window.speechSynthesis.speak = originalSpeak;
+    vi.useRealTimers();
   });
 
   it('interacts with VoiceRecorder: recording lifecycle and audio playback', async () => {
@@ -135,10 +167,47 @@ describe('Common Components Suite', () => {
 
     expect(onComplete).toHaveBeenCalled();
 
-    // Play recorded audio
+    // Play recorded audio, pause it, and exercise the audio ended callback.
     const playAudioBtn = screen.getByText(/Listen to Your Recording|Nghe lại/i);
     await userEvent.click(playAudioBtn);
     await userEvent.click(playAudioBtn);
+    const hiddenAudio = document.querySelector('audio') as HTMLAudioElement;
+    fireEvent.ended(hiddenAudio);
+    expect(screen.getByTitle('Download recording')).toBeInTheDocument();
+  });
+
+  it('falls back to mock VoiceRecorder mode when microphone APIs are unavailable', async () => {
+    vi.useFakeTimers();
+    const originalMediaDevices = navigator.mediaDevices;
+    Object.defineProperty(navigator, 'mediaDevices', {
+      writable: true,
+      value: undefined,
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const onComplete = vi.fn();
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder onRecordingComplete={onComplete} />
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Start Voice Recording/i));
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.getByText('0:01')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText(/Stop Recording/i));
+    expect(onComplete).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
+
+    Object.defineProperty(navigator, 'mediaDevices', {
+      writable: true,
+      value: originalMediaDevices,
+    });
+    warnSpy.mockRestore();
+    vi.useRealTimers();
   });
 
   it('renders Navbar on desktop and mobile', async () => {

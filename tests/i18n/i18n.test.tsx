@@ -13,7 +13,8 @@ const TestComponent = () => {
       <span data-testid="lang">{language}</span>
       <span data-testid="title">{t('app.name')}</span>
       <span data-testid="greeting">{t('dash.welcome')}</span>
-      <span data-testid="param-test">{t('reading.timeAllowed')}</span>
+      <span data-testid="param-test">{t('Hello {name}', { name: 'Mai' })}</span>
+      <span data-testid="missing-key">{t('missing.translation.key')}</span>
       <button onClick={() => setLanguage('vi')}>Switch VI</button>
       <button onClick={() => setLanguage('en')}>Switch EN</button>
     </div>
@@ -43,6 +44,8 @@ describe('i18n', () => {
     );
 
     expect(screen.getByTestId('title')).toHaveTextContent('IELTS Slayer');
+    expect(screen.getByTestId('param-test')).toHaveTextContent('Hello Mai');
+    expect(screen.getByTestId('missing-key')).toHaveTextContent('missing.translation.key');
 
     const viBtn = screen.getByText('Switch VI');
     await userEvent.click(viBtn);
@@ -51,13 +54,19 @@ describe('i18n', () => {
     expect(screen.getByTestId('greeting')).toHaveTextContent('Chào mừng bạn quay lại với IELTS Slayer!');
   });
 
-  it('provides safe fallback when useI18n is called outside provider', () => {
+  it('provides safe fallback when useI18n is called outside provider', async () => {
     const FallbackComponent = () => {
-      const { t, language } = useI18n();
-      return <div data-testid="fallback">{language}:{t('app.name')}</div>;
+      const { t, language, setLanguage } = useI18n();
+      return (
+        <div>
+          <div data-testid="fallback">{language}:{t('app.name')}</div>
+          <button onClick={() => setLanguage('vi')}>Fallback Switch</button>
+        </div>
+      );
     };
 
     render(<FallbackComponent />);
     expect(screen.getByTestId('fallback')).toHaveTextContent('en:IELTS Slayer');
+    await userEvent.click(screen.getByText('Fallback Switch'));
   });
 });

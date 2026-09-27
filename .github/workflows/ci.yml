@@ -2,9 +2,9 @@ name: CI Quality & Test Suite
 
 on:
   push:
-    branches: [ main, 'arena/**' ]
+    branches: [main, "arena/**"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -22,10 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Validate Astryx component registry
+        run: npm run astryx -- component --list --json
 
       - name: Typecheck TypeScript
         run: npm run typecheck

@@ -16,6 +16,13 @@ describe('contentScript Suite', () => {
     const awlMatch = lookupWord('analyze');
     expect(awlMatch).toBeDefined();
     expect(awlMatch?.word).toBe('analyze');
+    expect(awlMatch?.band).toBe(6.5);
+
+    const c1Match = lookupWord('constitute');
+    expect(c1Match?.band).toBe(7.5);
+
+    const c2Match = lookupWord('paradigm');
+    expect(c2Match?.band).toBe(8.5);
 
     const nonMatch = lookupWord('zzzznonexistentword');
     expect(nonMatch).toBeNull();
@@ -61,10 +68,18 @@ describe('contentScript Suite', () => {
     document.body.dispatchEvent(outsideEvent);
   });
 
-  it('removes tooltip when selection is empty or collapsed', () => {
+  it('removes tooltip when selection is empty, collapsed, or not IELTS vocabulary', () => {
     window.getSelection = () => ({
       isCollapsed: true,
       toString: () => '',
+    } as any);
+
+    handleSelection();
+    expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
+
+    window.getSelection = () => ({
+      isCollapsed: false,
+      toString: () => 'zzzznonexistentword',
     } as any);
 
     handleSelection();

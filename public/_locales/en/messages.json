@@ -1,0 +1,14 @@
+{
+  "extensionName": {
+    "message": "IELTS Slayer - The Ultimate Preparation Suite",
+    "description": "English extension name"
+  },
+  "extensionDescription": {
+    "message": "100% free, offline and privacy-first IELTS preparation for Firefox with AST writing analysis, SRS vocabulary, Google Scholar evidence kit, and English/Vietnamese support.",
+    "description": "English extension description"
+  },
+  "browserActionTitle": {
+    "message": "IELTS Slayer",
+    "description": "Toolbar button title"
+  }
+}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Theme } from '@astryxdesign/core/theme';
+import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 import { VocabularyItem, UserSettings } from '../types';
 import { storageService, DEFAULT_SETTINGS } from '../storage/storageService';
@@ -184,8 +186,10 @@ const PopupContent: React.FC = () => {
 
 export const PopupApp: React.FC = () => {
   return (
-    <I18nProvider>
-      <PopupContent />
-    </I18nProvider>
+    <Theme theme={neutralTheme} mode="system">
+      <I18nProvider>
+        <PopupContent />
+      </I18nProvider>
+    </Theme>
   );
 };

@@ -1,0 +1,14 @@
+{
+  "extensionName": {
+    "message": "IELTS Slayer - Bộ luyện thi IELTS toàn diện",
+    "description": "Tên tiện ích tiếng Việt"
+  },
+  "extensionDescription": {
+    "message": "Bộ luyện thi IELTS miễn phí 100%, ngoại tuyến và bảo mật cho Firefox với phân tích Writing bằng AST, từ vựng SRS, Scholar kit và giao diện Anh/Việt.",
+    "description": "Mô tả tiện ích tiếng Việt"
+  },
+  "browserActionTitle": {
+    "message": "IELTS Slayer",
+    "description": "Tiêu đề nút trên thanh công cụ"
+  }
+}

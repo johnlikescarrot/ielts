@@ -73,6 +73,18 @@ export const vi: Record<string, string> = {
   'dash.featureSpeakingDesc': 'Mô phỏng 3 phần phỏng vấn bấm giờ thực tế kèm công cụ ghi âm và chấm điểm.',
   'dash.featureVocabDesc': 'Thuật toán lặp lại ngắt quãng SM-2 với kho từ vựng học thuật Band 7-9.',
 
+  // Research Evidence Panel
+  'research.eyebrow': 'Luyện IELTS dựa trên bằng chứng',
+  'research.title': 'Thiết kế luyện tập sẵn sàng cho Google Scholar dành cho mục tiêu Band 7-9',
+  'research.subtitle': 'Lớp bằng chứng học thuật liên kết bài luyện IELTS với nghiên cứu về kiểm tra ngôn ngữ, từ vựng, nghe, nói, đọc và viết — không đăng nhập, không theo dõi, không API trả phí.',
+  'research.references': 'Nguồn nghiên cứu',
+  'research.yearRange': 'Khoảng năm',
+  'research.skillCoverage': 'Kỹ năng bao phủ',
+  'research.ctaWriting': 'Phân tích bài Writing',
+  'research.ctaVocabulary': 'Ôn từ vựng SRS',
+  'research.downloadKit': 'Tải Scholar kit',
+  'research.planTitle': 'Kế hoạch 150 phút/tuần',
+
   // Reading Section
   'reading.title': 'Luyện thi IELTS Reading',
   'reading.subtitle': 'Luyện tập các bài đọc Academic & General chuẩn đề thi thật kèm công cụ tra từ và giải thích chi tiết.',

@@ -1,7 +1,7 @@
 {
   "name": "ielts-slayer-firefox",
-  "version": "1.0.0",
-  "description": "Top-tier, 100% Free & Privacy-first IELTS Preparation Suite for Firefox with AST Analysis and Dual English/Vietnamese Support",
+  "version": "1.1.0",
+  "description": "Firefox-first, 100% free, no-login IELTS preparation suite with Astryx UI, AST writing analysis, bilingual English/Vietnamese UX, SRS vocabulary, and Scholar-ready evidence kit",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,21 +12,26 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs"
   },
   "dependencies": {
+    "@astryxdesign/core": "^0.6.3",
+    "@astryxdesign/theme-neutral": "^0.6.3",
+    "@stylexjs/stylex": "^0.19.1",
     "lucide-react": "^0.475.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "^0.6.3",
     "@eslint/js": "^9.20.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.13.4",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^5.0.2",
     "autoprefixer": "^10.4.20",

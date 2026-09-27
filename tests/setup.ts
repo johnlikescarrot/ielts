@@ -1,4 +1,23 @@
 import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
+
+// Keep jsdom focused on component behavior instead of trying to perform real browser navigation.
+Object.defineProperty(window, 'open', {
+  writable: true,
+  value: vi.fn(),
+});
+
+document.addEventListener(
+  'click',
+  (event) => {
+    const target = event.target as HTMLElement | null;
+    const link = target?.closest?.('a[href]');
+    if (link) {
+      event.preventDefault();
+    }
+  },
+  true
+);
 
 // Polyfill window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

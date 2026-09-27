@@ -55,6 +55,18 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
     expect(report.taskAchievement.weaknesses.length).toBeGreaterThan(0);
   });
 
+  it('extracts task penalties and keyword coverage across boundary ranges', () => {
+    const astShort = parseEssayToAST('Technology helps education because online classes help students learn faster.');
+    expect(extractTaskMetrics(astShort, 100, ['technology', 'education']).wordCountPenalty).toBe(2.0);
+    expect(extractTaskMetrics(astShort, 100, ['technology', 'education']).keywordCoveragePercent).toBe(100);
+
+    const eightyWords = parseEssayToAST(Array.from({ length: 75 }, (_, index) => `word${index}`).join(' '));
+    expect(extractTaskMetrics(eightyWords, 100).wordCountPenalty).toBe(1.0);
+
+    const nearTarget = parseEssayToAST(Array.from({ length: 90 }, (_, index) => `term${index}`).join(' '));
+    expect(extractTaskMetrics(nearTarget, 100).wordCountPenalty).toBe(0.5);
+  });
+
   it('evaluates criteria under different conditions', () => {
     // Under-length task response
     const taskUnder = {
@@ -93,6 +105,19 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
     });
     expect(lrReport.weaknesses.length).toBeGreaterThan(0);
 
+    // Lexical with medium AWL, strong diversity, and collocations
+    const lrStrongReport = evaluateLexicalResource({
+      totalWords: 180,
+      uniqueWords: 110,
+      ttr: 0.61,
+      awlWords: ['analyze', 'approach', 'assessment', 'constitute', 'derive'],
+      awlDensityPercent: 2.8,
+      repeatedWords: [],
+      rareWordCount: 5,
+      collocationMatches: ['play a vital role', 'reap the benefits', 'tackle the problem'],
+    });
+    expect(lrStrongReport.strengths.length).toBeGreaterThan(2);
+
     // Grammatical with simple sentences only
     const graReport = evaluateGrammaticalRange({
       sentenceCount: 10,
@@ -105,5 +130,17 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
       nominalizationCount: 0,
     });
     expect(graReport.band).toBeLessThanOrEqual(5.5);
+
+    const graAdvancedReport = evaluateGrammaticalRange({
+      sentenceCount: 8,
+      averageSentenceLength: 18,
+      sentenceTypeCounts: { simple: 1, compound: 1, complex: 4, 'compound-complex': 2 },
+      passiveVoiceCount: 2,
+      conditionalCount: 1,
+      relativeClauseCount: 2,
+      complexSentenceRatio: 0.75,
+      nominalizationCount: 4,
+    });
+    expect(graAdvancedReport.band).toBeGreaterThanOrEqual(8.0);
   });
 });
