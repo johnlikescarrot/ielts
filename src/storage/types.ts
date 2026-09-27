@@ -1,4 +1,4 @@
-import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import { UserSettings, SRSCard, TestAttempt, VideoClip, VocabularyItem } from '../types';
 
 export interface StorageData {
   settings: UserSettings;
@@ -12,6 +12,7 @@ export interface StorageData {
     title: string;
     createdAt: string;
   }[];
+  videoClips: VideoClip[];
   notes: {
     id: string;
     itemId: string;

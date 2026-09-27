@@ -11,6 +11,7 @@ import { ListeningPracticeView } from '../components/listening/ListeningPractice
 import { WritingEvaluatorView } from '../components/writing/WritingEvaluatorView';
 import { SpeakingLabView } from '../components/speaking/SpeakingLabView';
 import { VocabularySRSView } from '../components/vocabulary/VocabularySRSView';
+import { VideoStudyView } from '../components/video/VideoStudyView';
 import { FullMockExamView } from '../components/mockTest/FullMockExamView';
 import { AnalyticsView } from '../components/analytics/AnalyticsView';
 import { SettingsView } from '../components/settings/SettingsView';
@@ -40,6 +41,7 @@ export const DashboardApp: React.FC = () => {
             {activeTab === 'writing' && <WritingEvaluatorView />}
             {activeTab === 'speaking' && <SpeakingLabView />}
             {activeTab === 'vocabulary' && <VocabularySRSView />}
+            {activeTab === 'video-lab' && <VideoStudyView />}
             {activeTab === 'mock-test' && <FullMockExamView />}
             {activeTab === 'analytics' && <AnalyticsView />}
             {activeTab === 'settings' && <SettingsView />}

@@ -8,6 +8,7 @@ export const en: Record<string, string> = {
   'nav.writing': 'Writing Evaluator',
   'nav.speaking': 'Speaking Lab',
   'nav.vocabulary': 'Vocabulary & SRS',
+  'nav.videoLab': 'Video Lab',
   'nav.mockTest': 'Full Mock Exam',
   'nav.analytics': 'Analytics & Progress',
   'nav.settings': 'Settings',
@@ -48,6 +49,17 @@ export const en: Record<string, string> = {
   'common.noData': 'No data found',
   'common.bookmark': 'Bookmark',
   'common.bookmarked': 'Bookmarked',
+
+  // Video Lab
+  'videoLab.title': 'Saved Video Clips',
+  'videoLab.subtitle': 'Practise short listening loops from YouTube and Bilibili — entirely in your browser.',
+  'videoLab.emptyTitle': 'Your clip library is ready',
+  'videoLab.emptyDescription': 'Open a supported video, use the IELTS Video Lab panel to loop a short segment, then choose Save clip. No account or API key is needed.',
+  'videoLab.open': 'Open at timestamp',
+  'videoLab.delete': 'Remove clip',
+  'videoLab.privacy': 'Clips store only a page link and timestamps in Firefox local storage. Video and audio never leave your browser.',
+  'videoLab.savedCount': '{count} saved clip(s)',
+  'videoLab.from': 'From {provider}',
 
   // Dashboard Overview
   'dash.welcome': 'Welcome back, IELTS Slayer!',

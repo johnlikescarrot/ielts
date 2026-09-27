@@ -17,6 +17,23 @@ describe('StorageService Suite', () => {
     expect(data.testHistory).toEqual([]);
   });
 
+  it('migrates saved local data while keeping every persisted collection usable', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', JSON.stringify({
+      settings: { language: 'vi', targetBand: 8 },
+      srsCards: 'invalid',
+      customVocabulary: [],
+      testHistory: [],
+      bookmarks: [],
+      videoClips: [{ id: 'clip_saved', provider: 'bilibili', sourceUrl: 'https://bilibili.com/video/1', sourceTitle: 'Saved', startSeconds: 3, endSeconds: 8, createdAt: '2026-09-27T00:00:00.000Z' }],
+      notes: [],
+    }));
+
+    const data = await service.getData();
+    expect(data.settings.language).toBe('vi');
+    expect(data.srsCards).toEqual([]);
+    expect(data.videoClips).toHaveLength(1);
+  });
+
   it('saves and retrieves updated settings', async () => {
     const updated = await service.updateSettings({ targetBand: 8.5, language: 'vi' });
     expect(updated.targetBand).toBe(8.5);
@@ -104,6 +121,31 @@ describe('StorageService Suite', () => {
     });
     cards = await service.getSRSCards();
     expect(cards.length).toBe(2);
+  });
+
+  it('deduplicates and removes locally saved video clips', async () => {
+    const first = await service.addVideoClip({
+      provider: 'youtube',
+      sourceUrl: 'https://www.youtube.com/watch?v=abc',
+      sourceTitle: 'Listening loop',
+      startSeconds: 10,
+      endSeconds: 20,
+    });
+    await service.addVideoClip({
+      provider: 'youtube',
+      sourceUrl: 'https://www.youtube.com/watch?v=abc',
+      sourceTitle: 'Listening loop updated',
+      startSeconds: 10,
+      endSeconds: 20,
+    });
+
+    const clips = await service.getVideoClips();
+    expect(clips).toHaveLength(1);
+    expect(clips[0].sourceTitle).toBe('Listening loop updated');
+
+    await service.removeVideoClip(clips[0].id);
+    expect(await service.getVideoClips()).toEqual([]);
+    expect(first.id).toBeDefined();
   });
 
   it('toggles bookmarks', async () => {
@@ -206,6 +248,18 @@ describe('StorageService Suite', () => {
         }
       }
     };
+
+    mockStorage.ielts_slayer_v1_data = {
+      settings: { language: 'vi' },
+      srsCards: [],
+      customVocabulary: [],
+      testHistory: [],
+      bookmarks: [],
+      videoClips: [],
+      notes: [],
+    };
+    const loadedBrowserService = new StorageService();
+    expect((await loadedBrowserService.getSettings()).language).toBe('vi');
 
     const browserService = new StorageService();
     await browserService.updateSettings({ targetBand: 8.0 });

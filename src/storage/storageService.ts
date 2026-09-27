@@ -1,5 +1,5 @@
 import { StorageData } from './types';
-import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import { UserSettings, SRSCard, TestAttempt, VideoClip, VocabularyItem } from '../types';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   language: 'en',
@@ -17,6 +17,7 @@ export const DEFAULT_STORAGE_DATA: StorageData = {
   customVocabulary: [],
   testHistory: [],
   bookmarks: [],
+  videoClips: [],
   notes: [],
 };
 
@@ -51,6 +52,7 @@ export class StorageService {
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+            videoClips: Array.isArray(parsed.videoClips) ? parsed.videoClips : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
           return { ...this.inMemoryCache };
@@ -66,6 +68,7 @@ export class StorageService {
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+            videoClips: Array.isArray(parsed.videoClips) ? parsed.videoClips : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
           return { ...this.inMemoryCache };
@@ -202,6 +205,33 @@ export class StorageService {
   async getBookmarks() {
     const data = await this.getData();
     return data.bookmarks || [];
+  }
+
+  async getVideoClips(): Promise<VideoClip[]> {
+    const data = await this.getData();
+    return data.videoClips || [];
+  }
+
+  async addVideoClip(clip: Omit<VideoClip, 'id' | 'createdAt'> & Partial<Pick<VideoClip, 'id' | 'createdAt'>>): Promise<VideoClip> {
+    const data = await this.getData();
+    const newClip: VideoClip = {
+      ...clip,
+      id: clip.id || `clip_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      createdAt: clip.createdAt || new Date().toISOString(),
+    };
+    const existing = data.videoClips || [];
+    const isDuplicate = (saved: VideoClip) =>
+      saved.sourceUrl === newClip.sourceUrl &&
+      saved.startSeconds === newClip.startSeconds &&
+      saved.endSeconds === newClip.endSeconds;
+    const nextClips = [newClip, ...existing.filter(saved => !isDuplicate(saved))];
+    await this.saveData({ videoClips: nextClips });
+    return newClip;
+  }
+
+  async removeVideoClip(clipId: string): Promise<void> {
+    const data = await this.getData();
+    await this.saveData({ videoClips: (data.videoClips || []).filter(clip => clip.id !== clipId) });
   }
 
   async resetAll(): Promise<void> {
