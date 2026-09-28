@@ -107,7 +107,7 @@ function detectPassiveVoice(tokens: TokenNode[]): boolean {
   return false;
 }
 
-function splitTokensIntoClauses(
+function splitTokensIntoClauses(sentenceText: string,
   tokens: TokenNode[],
   hasPassive: boolean,
   hasRelative: boolean,
@@ -155,7 +155,7 @@ function splitTokensIntoClauses(
       type: 'Clause',
       clauseType: 'independent',
       tokens,
-      text: tokens.map(t => t.raw).join(' '), // better fallback
+      text: sentenceText,
       hasPassive,
       hasRelative,
       hasConditional,
@@ -166,6 +166,10 @@ function splitTokensIntoClauses(
 }
 
 export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
+  return parseClausesInternal(sentenceText, tokens);
+}
+
+function parseClausesInternal(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
   const words = tokens.filter(t => t.isWord);
   if (words.length === 0) {
     return [{
@@ -183,7 +187,7 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
   const hasConditional = words.some(w => CONDITIONAL_MARKERS.has(w.normalized));
   const hasRelative = words.some(w => RELATIVE_PRONOUNS.has(w.normalized));
 
-  return splitTokensIntoClauses(tokens, hasPassive, hasRelative, hasConditional);
+  return splitTokensIntoClauses(sentenceText, tokens, hasPassive, hasRelative, hasConditional);
 }
 
 export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[]): SentenceType {
