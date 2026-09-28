@@ -10,6 +10,11 @@ export function removeTooltip(): void {
     activeTooltip.parentNode.removeChild(activeTooltip);
     activeTooltip = null;
   }
+
+  const existing = document.getElementById('ielts-slayer-tooltip-root');
+  if (existing) {
+    existing.remove();
+  }
 }
 
 export function lookupWord(rawWord: string) {
