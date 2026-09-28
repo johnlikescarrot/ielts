@@ -149,4 +149,25 @@ describe('StorageService Suite', () => {
     await browserService.resetAll();
     delete (globalThis as any).browser;
   });
+
+  it('logs an error when writing to storage fails', async () => {
+    const mockError = new Error('Storage write failed');
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async () => ({})),
+          set: vi.fn().mockRejectedValue(mockError),
+        }
+      }
+    };
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const browserService = new StorageService();
+
+    await browserService.updateSettings({ targetBand: 7.0 });
+
+    expect(consoleSpy).toHaveBeenCalledWith('StorageService: error writing storage', mockError);
+    consoleSpy.mockRestore();
+    delete (globalThis as any).browser;
+  });
 });
