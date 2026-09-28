@@ -21,6 +21,14 @@ describe('srsManager', () => {
     expect(due.map(d => d.wordId)).toContain('w2');
   });
 
+  it('returns all cards as due with a far future date', () => {
+    const due = getDueCards(sampleCards, '2030-01-01');
+    expect(due.length).toBe(3);
+    expect(due.map(d => d.wordId)).toContain('w1');
+    expect(due.map(d => d.wordId)).toContain('w2');
+    expect(due.map(d => d.wordId)).toContain('w3');
+  });
+
   it('generates accurate deck summary', () => {
     const summary = getDeckSummary(sampleCards, '2026-09-27');
     expect(summary.totalCards).toBe(3);
