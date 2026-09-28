@@ -27,6 +27,9 @@ const MODAL_VERBS = new Set([
 ]);
 
 const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS).flat().map(p => p.toLowerCase());
+const sortedPhrases = [...allTransitionPhrases].sort((a, b) => b.length - a.length);
+const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const transitionRegex = new RegExp(`\\b(${sortedPhrases.map(escapeRegExp).join('|')})\\b`, 'gi');
 
 export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNode[] {
   const tokens: TokenNode[] = [];
@@ -64,18 +67,20 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
 
   // Multi-word & single-word transition identification
   const lowerSentence = sentenceText.toLowerCase();
-  for (const phrase of allTransitionPhrases) {
-    let pos = lowerSentence.indexOf(phrase);
-    while (pos !== -1) {
-      const pEnd = pos + phrase.length;
-      tokens.forEach(tok => {
-        const tokRelStart = tok.startIndex - baseOffset;
-        const tokRelEnd = tok.endIndex - baseOffset;
-        if (tokRelStart >= pos && tokRelEnd <= pEnd) {
-          tok.isTransition = true;
-        }
-      });
-      pos = lowerSentence.indexOf(phrase, pos + 1);
+  transitionRegex.lastIndex = 0;
+  while ((match = transitionRegex.exec(lowerSentence)) !== null) {
+    const pos = match.index;
+    const pEnd = pos + match[0].length;
+    for (let i = 0; i < tokens.length; i++) {
+      const tok = tokens[i];
+      const tokRelStart = tok.startIndex - baseOffset;
+      const tokRelEnd = tok.endIndex - baseOffset;
+      if (tokRelStart >= pos && tokRelEnd <= pEnd) {
+        tok.isTransition = true;
+      }
+      if (tokRelStart >= pEnd) {
+        break;
+      }
     }
   }
 
