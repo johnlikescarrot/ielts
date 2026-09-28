@@ -1,6 +1,10 @@
 import { ACADEMIC_WORD_LIST } from '../ast/awlList';
 import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 
+const initialVocabMap = new Map(
+  INITIAL_VOCABULARY.map(v => [v.word.toLowerCase(), v])
+);
+
 let activeTooltip: HTMLElement | null = null;
 
 export function removeTooltip(): void {
@@ -15,7 +19,7 @@ export function lookupWord(rawWord: string) {
   if (!normalized || normalized.length < 3) return null;
 
   // Check initial vocab bank first
-  const bankMatch = INITIAL_VOCABULARY.find(v => v.word.toLowerCase() === normalized);
+  const bankMatch = initialVocabMap.get(normalized);
   if (bankMatch) {
     return {
       word: bankMatch.word,
