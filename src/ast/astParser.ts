@@ -68,10 +68,16 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
   // Multi-word & single-word transition identification
   const lowerSentence = sentenceText.toLowerCase();
   transitionRegex.lastIndex = 0;
+  let startTokenIdx = 0;
   while ((match = transitionRegex.exec(lowerSentence)) !== null) {
     const pos = match.index;
     const pEnd = pos + match[0].length;
-    for (let i = 0; i < tokens.length; i++) {
+
+    while (startTokenIdx < tokens.length && (tokens[startTokenIdx].endIndex - baseOffset) <= pos) {
+      startTokenIdx++;
+    }
+
+    for (let i = startTokenIdx; i < tokens.length; i++) {
       const tok = tokens[i];
       const tokRelStart = tok.startIndex - baseOffset;
       const tokRelEnd = tok.endIndex - baseOffset;
