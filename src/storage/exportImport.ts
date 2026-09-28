@@ -13,7 +13,7 @@ export function exportDataAsJSON(data: StorageData): string {
 
 export function validateImportData(rawJson: string): StorageData {
   const parsed = JSON.parse(rawJson);
-  const data = parsed.data || parsed;
+  const data = parsed?.data || parsed;
 
   if (typeof data !== 'object' || data === null) {
     throw new Error('Invalid backup file format: not a valid object');
