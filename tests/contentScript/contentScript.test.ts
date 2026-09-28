@@ -22,6 +22,9 @@ describe('contentScript Suite', () => {
 
     const shortWord = lookupWord('ab');
     expect(shortWord).toBeNull();
+
+    const emptyWord = lookupWord('   ');
+    expect(emptyWord).toBeNull();
   });
 
   it('handles selection on DOM and displays tooltip with save action', () => {
