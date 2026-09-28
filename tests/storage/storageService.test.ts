@@ -129,6 +129,41 @@ describe('StorageService Suite', () => {
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
   });
 
+
+  it('handles localStorage setItem successfully when browser is undefined', async () => {
+    const originalBrowser = (globalThis as any).browser;
+    delete (globalThis as any).browser;
+
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+
+    try {
+      await service.updateSettings({ targetBand: 6.5 });
+      expect(setItemSpy).toHaveBeenCalled();
+    } finally {
+      setItemSpy.mockRestore();
+      (globalThis as any).browser = originalBrowser;
+    }
+  });
+
+  it('handles localStorage errors gracefully when browser is undefined', async () => {
+    const originalBrowser = (globalThis as any).browser;
+    delete (globalThis as any).browser;
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Quota exceeded');
+    });
+
+    try {
+      await service.updateSettings({ targetBand: 6.0 });
+      expect(errorSpy).toHaveBeenCalledWith('StorageService: error writing storage', expect.any(Error));
+    } finally {
+      errorSpy.mockRestore();
+      setItemSpy.mockRestore();
+      (globalThis as any).browser = originalBrowser;
+    }
+  });
+
   it('works with browser.storage.local mock', async () => {
     const mockStorage: Record<string, any> = {};
     (globalThis as any).browser = {
