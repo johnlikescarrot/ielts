@@ -24,6 +24,7 @@ describe('readability', () => {
     expect(countSyllables('proliferation')).toBe(5);
     expect(countSyllables('developed')).toBe(3);
     expect(countSyllables('allocated')).toBe(4);
+    expect(countSyllables('word123!@#')).toBe(1);
   });
 
   it('calculates readability metrics for sample academic text', () => {
