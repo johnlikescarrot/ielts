@@ -39,6 +39,10 @@ export interface SentenceNode {
   wordCount: number;
   startIndex: number;
   endIndex: number;
+  passiveVoiceCount: number;
+  conditionalCount: number;
+  relativeClauseCount: number;
+  nominalizationCount: number;
 }
 
 export interface ParagraphNode {

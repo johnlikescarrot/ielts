@@ -108,24 +108,14 @@ export function extractGrammaticalMetrics(ast: EssayAST): GrammaticalMetrics {
   let totalSentenceLength = 0;
   let nominalizationCount = 0;
 
-  const nominalizationSuffixes = ['tion', 'sion', 'ment', 'ance', 'ence', 'ity', 'ism'];
-
-  allSentences.forEach(s => {
+  for (const s of allSentences) {
     sentenceTypeCounts[s.sentenceType] = (sentenceTypeCounts[s.sentenceType] || 0) + 1;
     totalSentenceLength += s.wordCount;
-
-    s.clauses.forEach(c => {
-      if (c.hasPassive) passiveVoiceCount++;
-      if (c.hasConditional) conditionalCount++;
-      if (c.hasRelative) relativeClauseCount++;
-    });
-
-    s.tokens.forEach(t => {
-      if (t.isWord && nominalizationSuffixes.some(suf => t.normalized.endsWith(suf)) && t.normalized.length > 5) {
-        nominalizationCount++;
-      }
-    });
-  });
+    passiveVoiceCount += s.passiveVoiceCount;
+    conditionalCount += s.conditionalCount;
+    relativeClauseCount += s.relativeClauseCount;
+    nominalizationCount += s.nominalizationCount;
+  }
 
   const complexSentenceCount = sentenceTypeCounts.complex + sentenceTypeCounts['compound-complex'];
   const complexSentenceRatio = Math.round((complexSentenceCount / sentenceCount) * 100) / 100;
