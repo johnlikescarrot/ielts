@@ -70,4 +70,15 @@ describe('contentScript Suite', () => {
     handleSelection();
     expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
   });
+  it('removes explicit ielts-slayer-tooltip-root from DOM', () => {
+    const div = document.createElement('div');
+    div.id = 'ielts-slayer-tooltip-root';
+    document.body.appendChild(div);
+
+    expect(document.getElementById('ielts-slayer-tooltip-root')).not.toBeNull();
+
+    removeTooltip();
+
+    expect(document.getElementById('ielts-slayer-tooltip-root')).toBeNull();
+  });
 });
