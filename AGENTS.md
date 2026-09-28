@@ -17,6 +17,7 @@ WORKFLOW — discover, don't guess. Before writing UI:
 3. `astryx component <Name>` — props + examples for every component you use.
 
 RULES:
+
 - No `<div>` — components do all layout/spacing, page frame included.
 - Frame first: read `astryx docs layout` before writing any page or screen — page frame, region widths, breakpoint behavior.
 - Dense data = rows (Table, List/Item), never Card-wrapped list items; Card is for standalone widgets. Status = StatusDot/Token; Badge = counts only.
@@ -25,6 +26,7 @@ RULES:
 - SELF-CHECK before you finish: re-read the file and replace any style={{…}}, raw `<div>`/`<span>` layout, imported .css/@apply, or hardcoded/arbitrary value (e.g. bg-[#fff], p-[13px]) with the component or a token-backed utility. If unsure a component/prop exists, run `astryx component <Name>` / `astryx search "<thing>"`; don't hand-roll CSS.
 
 MORE CLI:
+
 ```text
   search "<query>"   find any component / hook / doc / template / block
   component --list   164 components by category
