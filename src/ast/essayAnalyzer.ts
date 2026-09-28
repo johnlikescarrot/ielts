@@ -1,6 +1,6 @@
 import { parseEssayToAST } from './astParser';
 import { calculateReadability } from './readability';
-import { COMMON_COLLOCATIONS } from './awlList';
+import { COMMON_COLLOCATIONS, COMMON_COLLOCATIONS_REGEX } from './awlList';
 import {
   EssayAST,
   EssayEvaluationReport,
@@ -56,7 +56,15 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
 
   // Check Collocations
   const rawLower = ast.rawText.toLowerCase();
-  const collocationMatches = COMMON_COLLOCATIONS.filter(c => rawLower.includes(c));
+
+  let collocationMatches: string[] = [];
+  const matches = rawLower.match(COMMON_COLLOCATIONS_REGEX);
+
+  if (matches) {
+    const matchedSet = new Set(matches);
+    // Keep the original order of COMMON_COLLOCATIONS
+    collocationMatches = COMMON_COLLOCATIONS.filter(c => matchedSet.has(c));
+  }
 
   return {
     totalWords,
