@@ -12,6 +12,9 @@ import { VocabularySRSView } from '../components/vocabulary/VocabularySRSView';
 import { FullMockExamView } from '../components/mockTest/FullMockExamView';
 import { AnalyticsView } from '../components/analytics/AnalyticsView';
 import { SettingsView } from '../components/settings/SettingsView';
+import { VideoLabView } from '../components/video/VideoLabView';
+import { Theme } from '@astryxdesign/core/theme';
+import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 
 export const DashboardApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SkillType | 'dashboard' | 'settings'>('dashboard');
@@ -22,8 +25,9 @@ export const DashboardApp: React.FC = () => {
   }, []);
 
   return (
-    <I18nProvider>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+    <Theme theme={neutralTheme} mode="system">
+      <I18nProvider>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
         <Navbar
           activeTab={activeTab}
           onSelectTab={setActiveTab}
@@ -37,6 +41,7 @@ export const DashboardApp: React.FC = () => {
           {activeTab === 'writing' && <WritingEvaluatorView />}
           {activeTab === 'speaking' && <SpeakingLabView />}
           {activeTab === 'vocabulary' && <VocabularySRSView />}
+          {activeTab === 'video-lab' && <VideoLabView />}
           {activeTab === 'mock-test' && <FullMockExamView />}
           {activeTab === 'analytics' && <AnalyticsView />}
           {activeTab === 'settings' && <SettingsView />}
@@ -52,7 +57,8 @@ export const DashboardApp: React.FC = () => {
             </span>
           </div>
         </footer>
-      </div>
-    </I18nProvider>
+        </div>
+      </I18nProvider>
+    </Theme>
   );
 };

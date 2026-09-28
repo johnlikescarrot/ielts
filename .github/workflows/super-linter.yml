@@ -22,6 +22,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install project lint configuration dependencies
+        run: npm ci
+
       - name: Lint Code Base
         uses: super-linter/super-linter@v8.3.1
         env:
@@ -35,3 +44,7 @@ jobs:
           VALIDATE_CSS: true
           VALIDATE_HTML: true
           LINTER_RULES_PATH: /
+          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
+          CSS_CONFIG_FILE: .stylelintrc.json
+          HTML_CONFIG_FILE: .htmlhintrc
+          MARKDOWN_CONFIG_FILE: .markdownlint.json
