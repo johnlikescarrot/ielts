@@ -1,34 +1,36 @@
 import { describe, expect, it } from 'vitest';
-import { getPracticeStreak } from '../../src/analytics/streak';
+import { calculateStudyStreak, getStudyDayKeys } from '../../src/analytics/streak';
 
-const now = new Date(2026, 8, 28, 12, 0, 0);
 const attempt = (date: string) => ({ date });
+const now = new Date(2026, 8, 28, 12, 0, 0);
 
-describe('getPracticeStreak', () => {
-  it('counts unique consecutive calendar days including today', () => {
-    expect(getPracticeStreak([
-      attempt('2026-09-28T08:00:00Z'),
-      attempt('2026-09-28T10:00:00Z'),
-      attempt('2026-09-27T22:00:00Z'),
-      attempt('2026-09-26T09:00:00Z'),
+describe('study streaks', () => {
+  it('counts consecutive practice days including today', () => {
+    expect(calculateStudyStreak([
+      attempt('2026-09-28T08:00:00'),
+      attempt('2026-09-27T20:00:00'),
+      attempt('2026-09-26T09:00:00'),
+      attempt('2026-09-24T09:00:00'),
     ], now)).toBe(3);
   });
 
-  it('keeps yesterday active when there is no attempt today', () => {
-    expect(getPracticeStreak([
-      attempt('2026-09-27T09:00:00'),
+  it('keeps yesterday active when today has not been practiced', () => {
+    expect(calculateStudyStreak([
+      attempt('2026-09-27T20:00:00'),
       attempt('2026-09-26T09:00:00'),
     ], now)).toBe(2);
   });
 
-  it('expires after a missed day and ignores malformed dates', () => {
-    expect(getPracticeStreak([
-      attempt('not-a-date'),
-      attempt('2026-09-25T09:00:00'),
-    ], now)).toBe(0);
+  it('deduplicates attempts and ignores future dates', () => {
+    expect(getStudyDayKeys([
+      attempt('2026-09-28T08:00:00'),
+      attempt('2026-09-28T09:00:00'),
+      attempt('2026-09-29T09:00:00'),
+    ], now)).toEqual(['2026-09-28']);
   });
 
-  it('returns zero for an empty history', () => {
-    expect(getPracticeStreak([], now)).toBe(0);
+  it('returns zero for no valid practice days', () => {
+    expect(calculateStudyStreak([], now)).toBe(0);
+    expect(calculateStudyStreak([attempt('not-a-date')], now)).toBe(0);
   });
 });

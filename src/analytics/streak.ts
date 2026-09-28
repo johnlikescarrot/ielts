@@ -1,45 +1,31 @@
 import { TestAttempt } from '../types';
 
-/**
- * Returns the number of consecutive calendar days with at least one completed
- * practice attempt. A streak is active when the learner practiced today or
- * yesterday; otherwise it has naturally expired.
- */
-export function getPracticeStreak(attempts: Pick<TestAttempt, 'date'>[], now = new Date()): number {
-  const activeDays = new Set(
-    attempts
-      .map(({ date }) => new Date(date))
-      .filter(date => !Number.isNaN(date.getTime()))
-      .map(toDayKey),
-  );
+/** Returns local calendar-day keys for attempts, newest first and deduplicated. */
+export function getStudyDayKeys(attempts: Pick<TestAttempt, 'date'>[], now = new Date()): string[] {
+  const today = toDayKey(now);
+  return [...new Set(attempts.map((attempt) => toDayKey(new Date(attempt.date))))]
+    .filter((day) => day <= today)
+    .sort((a, b) => b.localeCompare(a));
+}
 
-  if (activeDays.size === 0) return 0;
-
-  const today = startOfDay(now);
-  const todayKey = toDayKey(today);
-  const yesterdayKey = toDayKey(addDays(today, -1));
-  if (!activeDays.has(todayKey) && !activeDays.has(yesterdayKey)) return 0;
+/** Counts the active streak, allowing a missed current day while the day is still fresh. */
+export function calculateStudyStreak(attempts: Pick<TestAttempt, 'date'>[], now = new Date()): number {
+  const days = new Set(getStudyDayKeys(attempts, now));
+  const cursor = new Date(now);
+  if (!days.has(toDayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
 
   let streak = 0;
-  let cursor = activeDays.has(todayKey) ? today : addDays(today, -1);
-  while (activeDays.has(toDayKey(cursor))) {
+  while (days.has(toDayKey(cursor))) {
     streak += 1;
-    cursor = addDays(cursor, -1);
+    cursor.setDate(cursor.getDate() - 1);
   }
   return streak;
 }
 
-function startOfDay(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date: Date, days: number): Date {
-  const next = new Date(date);
-  next.setDate(next.getDate() + days);
-  return next;
-}
-
 function toDayKey(date: Date): string {
-  const day = startOfDay(date);
-  return `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+  if (Number.isNaN(date.getTime())) return '';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

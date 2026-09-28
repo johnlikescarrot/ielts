@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SkillType, UserSettings, TestAttempt, SRSCard } from '../../types';
 import { storageService, DEFAULT_SETTINGS } from '../../storage/storageService';
 import { getDeckSummary } from '../../srs/srsManager';
-import { getPracticeStreak } from '../../analytics/streak';
+import { calculateStudyStreak } from '../../analytics/streak';
 import { useI18n } from '../../i18n/i18nContext';
 import { Badge } from '../common/Badge';
 import {
@@ -43,13 +43,13 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
   };
 
   const deckSummary = getDeckSummary(srsCards);
+  const studyStreak = calculateStudyStreak(history);
 
   // Calculate average band from recent attempts
   const validScores = history.filter(h => h.estimatedBand > 0).map(h => h.estimatedBand);
   const avgBand = validScores.length > 0
     ? (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1)
-    : '—';
-  const practiceStreak = getPracticeStreak(history);
+    : '7.5';
 
   const skillCards = [
     {
@@ -136,7 +136,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
               </span>
               <div className="flex items-center justify-center space-x-1 mt-1 text-2xl font-black text-amber-400">
                 <Flame className="w-6 h-6 fill-amber-400" />
-                <span>{practiceStreak} {t('dash.days')}</span>
+                <span>{studyStreak} {t('dash.days')}</span>
               </div>
             </div>
 
