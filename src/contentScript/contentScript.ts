@@ -78,20 +78,40 @@ export function handleSelection(): void {
   tooltip.style.left = `${window.scrollX + rect.left}px`;
   tooltip.style.top = `${window.scrollY + rect.bottom + 8}px`;
 
-  tooltip.innerHTML = `
-    <div class="ielts-slayer-tooltip-header">
-      <span class="ielts-slayer-tooltip-title">${info.word}</span>
-      <span class="ielts-slayer-tooltip-badge">Band ${info.band.toFixed(1)} (${info.cefr})</span>
-    </div>
-    <div class="ielts-slayer-tooltip-def">${info.defEn}</div>
-    <div class="ielts-slayer-tooltip-def-vi">${info.defVi}</div>
-    <button class="ielts-slayer-tooltip-btn" id="ielts-save-btn">+ Add to IELTS Flashcards</button>
-  `;
+  const header = document.createElement('div');
+  header.className = 'ielts-slayer-tooltip-header';
+
+  const title = document.createElement('span');
+  title.className = 'ielts-slayer-tooltip-title';
+  title.textContent = info.word;
+
+  const badge = document.createElement('span');
+  badge.className = 'ielts-slayer-tooltip-badge';
+  badge.textContent = `Band ${info.band.toFixed(1)} (${info.cefr})`;
+
+  header.appendChild(title);
+  header.appendChild(badge);
+
+  const defEn = document.createElement('div');
+  defEn.className = 'ielts-slayer-tooltip-def';
+  defEn.textContent = info.defEn;
+
+  const defVi = document.createElement('div');
+  defVi.className = 'ielts-slayer-tooltip-def-vi';
+  defVi.textContent = info.defVi;
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'ielts-slayer-tooltip-btn';
+  saveBtn.id = 'ielts-save-btn';
+  saveBtn.textContent = '+ Add to IELTS Flashcards';
+
+  tooltip.appendChild(header);
+  tooltip.appendChild(defEn);
+  tooltip.appendChild(defVi);
+  tooltip.appendChild(saveBtn);
 
   document.body.appendChild(tooltip);
   activeTooltip = tooltip;
-
-  const saveBtn = tooltip.querySelector('#ielts-save-btn');
   if (saveBtn) {
     saveBtn.addEventListener('click', (e) => {
       e.stopPropagation();
