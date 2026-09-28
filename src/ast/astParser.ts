@@ -88,8 +88,33 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
 }
 
 export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
-  const words = tokens.filter(t => t.isWord);
-  if (words.length === 0) {
+  let hasWords = false;
+  let hasPassive = false;
+  let hasConditional = false;
+  let hasRelative = false;
+
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.isWord) {
+      hasWords = true;
+      if (!hasConditional && CONDITIONAL_MARKERS.has(t.normalized)) {
+        hasConditional = true;
+      }
+      if (!hasRelative && RELATIVE_PRONOUNS.has(t.normalized)) {
+        hasRelative = true;
+      }
+    }
+
+    // Detect passive voice
+    if (!hasPassive && i < tokens.length - 1 && t.isPassiveAux) {
+      const nextT = tokens[i + 1];
+      if (nextT.isWord && (nextT.normalized.endsWith('ed') || ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(nextT.normalized))) {
+        hasPassive = true;
+      }
+    }
+  }
+
+  if (!hasWords) {
     return [{
       type: 'Clause',
       clauseType: 'independent',
@@ -100,21 +125,6 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
       hasConditional: false,
     }];
   }
-
-  // Detect passive voice (Auxiliary + word ending with 'ed' or known irregular participle)
-  let hasPassive = false;
-  for (let i = 0; i < tokens.length - 1; i++) {
-    if (tokens[i].isPassiveAux && tokens[i + 1].isWord && (tokens[i + 1].normalized.endsWith('ed') || ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(tokens[i + 1].normalized))) {
-      hasPassive = true;
-      break;
-    }
-  }
-
-  // Detect conditional
-  const hasConditional = words.some(w => CONDITIONAL_MARKERS.has(w.normalized));
-
-  // Detect relative clause
-  const hasRelative = words.some(w => RELATIVE_PRONOUNS.has(w.normalized));
 
   // Split clauses by punctuation and conjunction boundaries
   const clauses: ClauseNode[] = [];
@@ -128,8 +138,13 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
 
     if (isSplitter || i === tokens.length - 1) {
       if (currentTokens.length > 0) {
-        const clauseWords = currentTokens.filter(t => t.isWord);
-        const firstWord = clauseWords[0]?.normalized || '';
+        let firstWord = '';
+        for (let j = 0; j < currentTokens.length; j++) {
+          if (currentTokens[j].isWord) {
+            firstWord = currentTokens[j].normalized;
+            break;
+          }
+        }
         let cType: ClauseType = 'independent';
 
         if (SUBORDINATING_CONJUNCTIONS.has(firstWord)) {
@@ -170,13 +185,26 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
 }
 
 export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[]): SentenceType {
-  const words = tokens.filter(t => t.isWord);
-  if (words.length < 4) return 'simple';
+  let wordCount = 0;
+  let hasSubordinateWord = false;
+  let hasCoordination = false;
 
-  const hasSubordinate = clauses.some(c => c.clauseType === 'subordinate' || c.clauseType === 'relative' || c.clauseType === 'conditional') ||
-    words.some(w => SUBORDINATING_CONJUNCTIONS.has(w.normalized) || RELATIVE_PRONOUNS.has(w.normalized));
-  
-  const hasCoordination = words.some(w => COORDINATING_CONJUNCTIONS.has(w.normalized));
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.isWord) {
+      wordCount++;
+      if (!hasSubordinateWord && (SUBORDINATING_CONJUNCTIONS.has(t.normalized) || RELATIVE_PRONOUNS.has(t.normalized))) {
+        hasSubordinateWord = true;
+      }
+      if (!hasCoordination && COORDINATING_CONJUNCTIONS.has(t.normalized)) {
+        hasCoordination = true;
+      }
+    }
+  }
+
+  if (wordCount < 4) return 'simple';
+
+  const hasSubordinate = clauses.some(c => c.clauseType === 'subordinate' || c.clauseType === 'relative' || c.clauseType === 'conditional') || hasSubordinateWord;
 
   if (hasSubordinate && hasCoordination && clauses.length >= 2) {
     return 'compound-complex';
@@ -204,7 +232,10 @@ export function splitIntoSentences(paragraphText: string, baseOffset = 0): Sente
     const tokens = tokenizeSentence(rawSentence, sentenceStartIndex);
     const clauses = parseClauses(rawSentence, tokens);
     const sentenceType = classifySentenceType(clauses, tokens);
-    const wordCount = tokens.filter(t => t.isWord).length;
+    let wordCount = 0;
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].isWord) wordCount++;
+    }
 
     if (wordCount > 0) {
       sentenceNodes.push({
