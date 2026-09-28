@@ -33,6 +33,7 @@ describe('exportImport', () => {
   it('throws an error on invalid import payload', () => {
     expect(() => validateImportData('null')).toThrow();
     expect(() => validateImportData('invalid json text')).toThrow();
+    expect(() => validateImportData(JSON.stringify({ data: 123 }))).toThrow('Invalid backup file format: not a valid object');
   });
 
   it('imports valid JSON and saves to storage service', async () => {
