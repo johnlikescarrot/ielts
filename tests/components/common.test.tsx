@@ -222,7 +222,8 @@ describe('Common Components Suite', () => {
     const mockMediaRecorder = {
       start: vi.fn(),
       stop: vi.fn(),
-      state: 'inactive'
+      state: 'inactive',
+      onstop: null as any
     };
 
     const mockStream = {
