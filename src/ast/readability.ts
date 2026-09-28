@@ -22,8 +22,12 @@ export function countSyllables(word: string): number {
   }
 
   // Adjust for silent 'e' at end
-  if (cleanWord.endsWith('e') && !cleanWord.endsWith('le') && count > 1) {
+  if (cleanWord.endsWith('e') && count > 1) {
     count--;
+  }
+  // Add syllable for words ending in "le" preceded by a consonant
+  if (cleanWord.endsWith('le') && cleanWord.length > 2 && !vowels.includes(cleanWord.charAt(cleanWord.length - 3))) {
+    count++;
   }
   // Adjust for 'ed' endings
   if (cleanWord.endsWith('ed') && count > 1 && !cleanWord.endsWith('ted') && !cleanWord.endsWith('ded')) {
