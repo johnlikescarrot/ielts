@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReadingPracticeView } from '../../src/components/reading/ReadingPracticeView';
 import { ListeningPracticeView } from '../../src/components/listening/ListeningPracticeView';
@@ -432,6 +432,23 @@ describe('Feature Views & Dashboard Extended Suite', () => {
     if (fileInput) {
       await userEvent.upload(fileInput, file);
     }
+  });
+
+  it('shows error alert on invalid JSON backup import in AnalyticsView', async () => {
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    render(
+      <I18nProvider>
+        <AnalyticsView />
+      </I18nProvider>
+    );
+
+    const file = new File(['invalid json data'], 'backup.json', { type: 'application/json' });
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      await userEvent.upload(fileInput, file);
+    }
+    await waitFor(() => expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('Failed to import backup')));
+    alertMock.mockRestore();
   });
 
   it('navigates through every skill tab in DashboardApp', async () => {
