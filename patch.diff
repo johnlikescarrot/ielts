@@ -1,0 +1,37 @@
+--- tests/contentScript/contentScript.test.ts
++++ tests/contentScript/contentScript.test.ts
+@@ -82,4 +82,34 @@
+
+     expect(document.getElementById('ielts-slayer-tooltip-root')).toBeNull();
+   });
++
++  it('removes active tooltip correctly when removeTooltip is called', () => {
++    const div = document.createElement('div');
++    div.textContent = 'mitigate';
++    document.body.appendChild(div);
++
++    window.getSelection = () => ({
++      isCollapsed: false,
++      toString: () => 'mitigate',
++      getRangeAt: () => ({
++        getBoundingClientRect: () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20 }),
++      }),
++    } as any);
++
++    handleSelection();
++    expect(document.querySelector('.ielts-slayer-tooltip')).not.toBeNull();
++
++    removeTooltip();
++    expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
++  });
++
++  it('removes tooltip and returns early when word is not found in dictionary', () => {
++    window.getSelection = () => ({
++      isCollapsed: false,
++      toString: () => 'nonexistentword',
++    } as any);
++
++    handleSelection();
++    expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
++  });
+ });
