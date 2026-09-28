@@ -258,7 +258,7 @@ export const WritingEvaluatorView: React.FC = () => {
           {/* Word count progress */}
           <div className="space-y-1">
             <ProgressBar
-              value={wordCount}
+              progress={wordCount}
               max={currentPrompt.minWordCount}
               label={t('writing.wordCount')}
               sublabel={`${wordCount} / ${currentPrompt.minWordCount} words`}
