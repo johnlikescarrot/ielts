@@ -95,4 +95,16 @@ describe('background Suite', () => {
     await updateReviewBadge();
     expect(mockBrowser.action.setBadgeText).toHaveBeenCalledWith({ text: '' });
   });
+
+  it('handles errors when updating review badge', async () => {
+    const error = new Error('Storage error');
+    vi.spyOn(storageService, 'getSRSCards').mockRejectedValueOnce(error);
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await updateReviewBadge();
+
+    expect(consoleSpy).toHaveBeenCalledWith('Could not update review badge', error);
+
+    consoleSpy.mockRestore();
+  });
 });
