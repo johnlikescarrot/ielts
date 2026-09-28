@@ -3,7 +3,10 @@ import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 
 let activeTooltip: HTMLElement | null = null;
 
-const VOCAB_MAP = new Map(INITIAL_VOCABULARY.map(v => [v.word.toLowerCase(), v]));
+const VOCAB_DICT: Record<string, typeof INITIAL_VOCABULARY[0]> = Object.create(null);
+for (const v of INITIAL_VOCABULARY) {
+  VOCAB_DICT[v.word.toLowerCase()] = v;
+}
 
 export function removeTooltip(): void {
   if (activeTooltip && activeTooltip.parentNode) {
@@ -22,7 +25,7 @@ export function lookupWord(rawWord: string) {
   if (!normalized || normalized.length < 3) return null;
 
   // Check initial vocab bank first
-  const bankMatch = VOCAB_MAP.get(normalized);
+  const bankMatch = VOCAB_DICT[normalized];
   if (bankMatch) {
     return {
       word: bankMatch.word,

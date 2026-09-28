@@ -1,6 +1,8 @@
 import { ACADEMIC_WORD_LIST } from '../ast/awlList';
 import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 
+const VOCAB_MAP = new Map(INITIAL_VOCABULARY.map(v => [v.word.toLowerCase(), v]));
+
 export interface TranscriptCue {
   id: string;
   startSeconds: number;
@@ -133,7 +135,7 @@ export function cefrToBand(cefr: string): number {
 }
 
 function lookupVocabulary(word: string): VideoVocabulary | null {
-  const bankEntry = INITIAL_VOCABULARY.find(item => item.word.toLowerCase() === word);
+  const bankEntry = VOCAB_MAP.get(word.toLowerCase());
   if (bankEntry) {
     return {
       word: bankEntry.word,
