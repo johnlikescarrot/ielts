@@ -31,12 +31,11 @@ const sortedPhrases = [...allTransitionPhrases].sort((a, b) => b.length - a.leng
 const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const transitionRegex = new RegExp(`\\b(${sortedPhrases.map(escapeRegExp).join('|')})\\b`, 'gi');
 
-export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNode[] {
+function extractTokens(sentenceText: string, baseOffset: number): TokenNode[] {
   const tokens: TokenNode[] = [];
   const regex = /([a-zA-Z0-9'-]+)|([.,!?;:()[\]"“”'’—–-])/g;
-  let match;
 
-  while ((match = regex.exec(sentenceText)) !== null) {
+  for (const match of sentenceText.matchAll(regex)) {
     const raw = match[0];
     const isPunctuation = /^[.,!?;:()[\]"“”'’—–-]+$/.test(raw);
     const isWord = !isPunctuation;
@@ -64,17 +63,20 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
       endIndex,
     });
   }
+  return tokens;
+}
 
-  // Multi-word & single-word transition identification
+function markTransitions(tokens: TokenNode[], sentenceText: string, baseOffset: number): void {
   const lowerSentence = sentenceText.toLowerCase();
-  transitionRegex.lastIndex = 0;
-  while ((match = transitionRegex.exec(lowerSentence)) !== null) {
+
+  for (const match of lowerSentence.matchAll(transitionRegex)) {
     const pos = match.index;
     const pEnd = pos + match[0].length;
-    for (let i = 0; i < tokens.length; i++) {
-      const tok = tokens[i];
+
+    for (const tok of tokens) {
       const tokRelStart = tok.startIndex - baseOffset;
       const tokRelEnd = tok.endIndex - baseOffset;
+
       if (tokRelStart >= pos && tokRelEnd <= pEnd) {
         tok.isTransition = true;
       }
@@ -83,40 +85,34 @@ export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNod
       }
     }
   }
+}
 
+export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNode[] {
+  const tokens = extractTokens(sentenceText, baseOffset);
+  markTransitions(tokens, sentenceText, baseOffset);
   return tokens;
 }
 
-export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
-  const words = tokens.filter(t => t.isWord);
-  if (words.length === 0) {
-    return [{
-      type: 'Clause',
-      clauseType: 'independent',
-      tokens,
-      text: sentenceText,
-      hasPassive: false,
-      hasRelative: false,
-      hasConditional: false,
-    }];
-  }
-
-  // Detect passive voice (Auxiliary + word ending with 'ed' or known irregular participle)
-  let hasPassive = false;
+function detectPassiveVoice(tokens: TokenNode[]): boolean {
   for (let i = 0; i < tokens.length - 1; i++) {
-    if (tokens[i].isPassiveAux && tokens[i + 1].isWord && (tokens[i + 1].normalized.endsWith('ed') || ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(tokens[i + 1].normalized))) {
-      hasPassive = true;
-      break;
+    if (
+      tokens[i].isPassiveAux &&
+      tokens[i + 1].isWord &&
+      (tokens[i + 1].normalized.endsWith('ed') ||
+       ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(tokens[i + 1].normalized))
+    ) {
+      return true;
     }
   }
+  return false;
+}
 
-  // Detect conditional
-  const hasConditional = words.some(w => CONDITIONAL_MARKERS.has(w.normalized));
-
-  // Detect relative clause
-  const hasRelative = words.some(w => RELATIVE_PRONOUNS.has(w.normalized));
-
-  // Split clauses by punctuation and conjunction boundaries
+function splitTokensIntoClauses(
+  tokens: TokenNode[],
+  hasPassive: boolean,
+  hasRelative: boolean,
+  hasConditional: boolean
+): ClauseNode[] {
   const clauses: ClauseNode[] = [];
   let currentTokens: TokenNode[] = [];
 
@@ -159,7 +155,7 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
       type: 'Clause',
       clauseType: 'independent',
       tokens,
-      text: sentenceText,
+      text: tokens.map(t => t.raw).join(' '), // better fallback
       hasPassive,
       hasRelative,
       hasConditional,
@@ -167,6 +163,27 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
   }
 
   return clauses;
+}
+
+export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseNode[] {
+  const words = tokens.filter(t => t.isWord);
+  if (words.length === 0) {
+    return [{
+      type: 'Clause',
+      clauseType: 'independent',
+      tokens,
+      text: sentenceText,
+      hasPassive: false,
+      hasRelative: false,
+      hasConditional: false,
+    }];
+  }
+
+  const hasPassive = detectPassiveVoice(tokens);
+  const hasConditional = words.some(w => CONDITIONAL_MARKERS.has(w.normalized));
+  const hasRelative = words.some(w => RELATIVE_PRONOUNS.has(w.normalized));
+
+  return splitTokensIntoClauses(tokens, hasPassive, hasRelative, hasConditional);
 }
 
 export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[]): SentenceType {
@@ -190,11 +207,9 @@ export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[])
 
 export function splitIntoSentences(paragraphText: string, baseOffset = 0): SentenceNode[] {
   const sentenceNodes: SentenceNode[] = [];
-  // Match sentence ending punctuation followed by space or end of string
   const sentenceRegex = /([^.!?]+(?:[.!?]+|$))/g;
-  let match;
 
-  while ((match = sentenceRegex.exec(paragraphText)) !== null) {
+  for (const match of paragraphText.matchAll(sentenceRegex)) {
     const rawSentence = match[0].trim();
     if (!rawSentence) continue;
 
@@ -235,7 +250,6 @@ export function parseEssayToAST(rawText: string): EssayAST {
     };
   }
 
-  // Split by double newline or single newline with indentation
   const rawParagraphs = rawText.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 0);
 
   let currentOffset = 0;
@@ -253,7 +267,6 @@ export function parseEssayToAST(rawText: string): EssayAST {
     totalWordCount += pWordCount;
     totalSentenceCount += sentences.length;
 
-    // Check topic sentence (first sentence has substantive structure)
     const hasTopicSentence = sentences.length > 0 && sentences[0].wordCount >= 8;
 
     paragraphs.push({
