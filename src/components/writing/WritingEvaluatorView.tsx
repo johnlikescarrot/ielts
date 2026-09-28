@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { WRITING_PROMPTS } from '../../data/writingPrompts';
 import { WritingPrompt } from '../../types';
 import { analyzeEssay } from '../../ast/essayAnalyzer';
+import { parseEssayToAST } from '../../ast/astParser';
 import { EssayEvaluationReport } from '../../ast/types';
 import { storageService } from '../../storage/storageService';
 import { useI18n } from '../../i18n/i18nContext';
@@ -34,7 +35,9 @@ export const WritingEvaluatorView: React.FC = () => {
   const currentPrompt: WritingPrompt =
     WRITING_PROMPTS.find(p => p.id === selectedPromptId) || WRITING_PROMPTS[0];
 
-  const wordCount = essayText.trim() ? essayText.trim().split(/\s+/).length : 0;
+  const wordCount = useMemo(() => {
+    return parseEssayToAST(essayText).totalWords;
+  }, [essayText]);
   const isWordCountValid = wordCount >= currentPrompt.minWordCount;
 
   const handleAnalyze = async () => {
