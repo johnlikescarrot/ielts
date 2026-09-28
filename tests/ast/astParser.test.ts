@@ -112,4 +112,21 @@ In conclusion, concerted global efforts are indispensable.`;
     expect(emptyAst.totalParagraphs).toBe(0);
     expect(emptyAst.paragraphs.length).toBe(0);
   });
+
+  it('does not detect passive voice when auxiliary is missing', () => {
+    const sentence = 'I drawn a picture and played outside.';
+    const tokens = tokenizeSentence(sentence);
+    const clauses = parseClauses(sentence, tokens);
+
+    expect(clauses.some(c => c.hasPassive)).toBe(false);
+  });
+
+  it('detects irregular passive voice successfully', () => {
+    const sentence = 'The map was drawn by an expert.';
+    const tokens = tokenizeSentence(sentence);
+    const clauses = parseClauses(sentence, tokens);
+
+    expect(clauses.some(c => c.hasPassive)).toBe(true);
+  });
+
 });
