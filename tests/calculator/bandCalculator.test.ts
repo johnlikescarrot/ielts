@@ -122,5 +122,17 @@ describe('bandCalculator', () => {
     // Test invalid skill defaults to clamped raw score
     const invalidSkillReport = getScoreBreakdown('invalid-skill' as any, 5.5, 9);
     expect(invalidSkillReport.bandScore).toBe(5.5);
+
+    // Test zero total questions
+    const zeroQuestionsReport = getScoreBreakdown('listening', 0, 0);
+    expect(zeroQuestionsReport.percentage).toBe(0);
+
+    // Test invalid skill with clamped bounds (max 9.0)
+    const invalidSkillHigh = getScoreBreakdown('invalid-skill' as any, 10, 9);
+    expect(invalidSkillHigh.bandScore).toBe(9.0);
+
+    // Test invalid skill with clamped bounds (min 1.0)
+    const invalidSkillLow = getScoreBreakdown('invalid-skill' as any, 0, 9);
+    expect(invalidSkillLow.bandScore).toBe(1.0);
   });
 });
