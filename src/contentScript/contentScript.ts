@@ -3,6 +3,8 @@ import { INITIAL_VOCABULARY } from '../data/vocabularyBank';
 
 let activeTooltip: HTMLElement | null = null;
 
+const VOCAB_MAP = new Map(INITIAL_VOCABULARY.map(v => [v.word.toLowerCase(), v]));
+
 export function removeTooltip(): void {
   if (activeTooltip && activeTooltip.parentNode) {
     activeTooltip.parentNode.removeChild(activeTooltip);
@@ -15,7 +17,7 @@ export function lookupWord(rawWord: string) {
   if (!normalized || normalized.length < 3) return null;
 
   // Check initial vocab bank first
-  const bankMatch = INITIAL_VOCABULARY.find(v => v.word.toLowerCase() === normalized);
+  const bankMatch = VOCAB_MAP.get(normalized);
   if (bankMatch) {
     return {
       word: bankMatch.word,
