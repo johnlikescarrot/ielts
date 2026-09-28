@@ -32,7 +32,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     let text = translations[language]?.[key] || translations.en[key] || key;
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
-        text = text.replace(new RegExp(`{${k}}`, 'g'), String(v));
+        text = text.replaceAll(`{${k}}`, String(v));
       });
     }
     return text;
