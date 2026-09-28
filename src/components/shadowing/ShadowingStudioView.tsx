@@ -87,6 +87,15 @@ function embedSource(videoId: string, chunks: ShadowChunk[], currentIndex: numbe
   return buildYouTubeEmbedUrl(videoId, chunk.startSeconds, endSeconds);
 }
 
+/**
+ * Media source bound to a browser-created object URL. `encodeURI` keeps the
+ * value HTML-safe and is a no-op for the opaque `blob:` URLs this app creates,
+ * so nothing about the URL can be reinterpreted as markup.
+ */
+function safeMediaSource(objectUrl: string): string {
+  return encodeURI(objectUrl);
+}
+
 export const ShadowingStudioView: React.FC = () => {
   const { language, t } = useI18n();
   const [step, setStep] = useState<StudioStep>('source');
@@ -584,7 +593,7 @@ export const ShadowingStudioView: React.FC = () => {
                   {localFile?.type.startsWith('video/') ? (
                     <video
                       ref={setMediaElement}
-                      src={localObjectUrl}
+                      src={safeMediaSource(localObjectUrl)}
                       controls
                       onLoadedMetadata={handleLoadedMetadata}
                       className="w-full rounded-xl bg-black"
@@ -592,7 +601,7 @@ export const ShadowingStudioView: React.FC = () => {
                   ) : (
                     <audio
                       ref={setMediaElement}
-                      src={localObjectUrl}
+                      src={safeMediaSource(localObjectUrl)}
                       controls
                       onLoadedMetadata={handleLoadedMetadata}
                       className="w-full"
