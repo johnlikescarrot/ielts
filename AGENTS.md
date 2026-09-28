@@ -26,6 +26,7 @@ RULES:
 - SELF-CHECK before you finish: re-read the file and replace any style={{…}}, raw `<div>`/`<span>` layout, imported .css/@apply, or hardcoded/arbitrary value (e.g. bg-[#fff], p-[13px]) with the component or a token-backed utility. If unsure a component/prop exists, run `astryx component <Name>` / `astryx search "<thing>"`; don't hand-roll CSS.
 
 MORE CLI:
+
   search "&lt;query&gt;"   find any component / hook / doc / template / block
   component --list   164 components by category
   template --list    page + block recipes
