@@ -94,6 +94,26 @@ describe('Common Components Suite', () => {
     vi.useRealTimers();
   });
 
+  it('increments time when countUp is true', async () => {
+    vi.useFakeTimers();
+
+    render(
+      <I18nProvider>
+        <Timer initialSeconds={0} autoStart={true} countUp={true} />
+      </I18nProvider>
+    );
+
+    expect(screen.getByText('00:00')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(screen.getByText('00:02')).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
   it('interacts with AudioPlayer: play, pause, speed cycles, time updates and restart', async () => {
     const onUpdate = vi.fn();
     render(
