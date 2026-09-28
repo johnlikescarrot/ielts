@@ -28,7 +28,7 @@ const MODAL_VERBS = new Set([
 
 const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS).flat().map(p => p.toLowerCase());
 const sortedPhrases = [...allTransitionPhrases].sort((a, b) => b.length - a.length);
-const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS).flat().map(p => p.toLowerCase());');
+const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const transitionRegex = new RegExp(`\\b(${sortedPhrases.map(escapeRegExp).join('|')})\\b`, 'gi');
 
 export function tokenizeSentence(sentenceText: string, baseOffset = 0): TokenNode[] {
