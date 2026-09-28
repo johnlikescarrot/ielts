@@ -145,7 +145,7 @@ export class StorageService {
     const data = await this.getData();
     const newAttempt: TestAttempt = {
       ...attempt,
-      id: attempt.id || `test_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: attempt.id || `test_${Date.now()}_${crypto.randomUUID()}`,
       date: attempt.date || new Date().toISOString(),
     };
 
