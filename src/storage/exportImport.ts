@@ -25,20 +25,13 @@ export function validateImportData(rawJson: string): StorageData {
     ...(data.settings || {}),
   };
 
-  // Validate arrays
-  const srsCards = Array.isArray(data.srsCards) ? data.srsCards : [];
-  const customVocabulary = Array.isArray(data.customVocabulary) ? data.customVocabulary : [];
-  const testHistory = Array.isArray(data.testHistory) ? data.testHistory : [];
-  const bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
-  const notes = Array.isArray(data.notes) ? data.notes : [];
-
   return {
     settings,
-    srsCards,
-    customVocabulary,
-    testHistory,
-    bookmarks,
-    notes,
+    srsCards: Array.isArray(data.srsCards) ? data.srsCards : [],
+    customVocabulary: Array.isArray(data.customVocabulary) ? data.customVocabulary : [],
+    testHistory: Array.isArray(data.testHistory) ? data.testHistory : [],
+    bookmarks: Array.isArray(data.bookmarks) ? data.bookmarks : [],
+    notes: Array.isArray(data.notes) ? data.notes : [],
   };
 }
 
