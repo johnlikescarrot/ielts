@@ -26,6 +26,10 @@ const MODAL_VERBS = new Set([
   'can', 'could', 'may', 'might', 'must', 'shall', 'should', 'will', 'would', 'ought'
 ]);
 
+const IRREGULAR_PARTICIPLES = new Set([
+  'built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'
+]);
+
 const allTransitionPhrases = Object.values(DISCOURSE_TRANSITIONS).flat().map(p => p.toLowerCase());
 const sortedPhrases = [...allTransitionPhrases].sort((a, b) => b.length - a.length);
 const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -104,7 +108,7 @@ export function parseClauses(sentenceText: string, tokens: TokenNode[]): ClauseN
   // Detect passive voice (Auxiliary + word ending with 'ed' or known irregular participle)
   let hasPassive = false;
   for (let i = 0; i < tokens.length - 1; i++) {
-    if (tokens[i].isPassiveAux && tokens[i + 1].isWord && (tokens[i + 1].normalized.endsWith('ed') || ['built', 'seen', 'done', 'given', 'known', 'taken', 'made', 'shown', 'drawn'].includes(tokens[i + 1].normalized))) {
+    if (tokens[i].isPassiveAux && tokens[i + 1].isWord && (tokens[i + 1].normalized.endsWith('ed') || IRREGULAR_PARTICIPLES.has(tokens[i + 1].normalized))) {
       hasPassive = true;
       break;
     }
