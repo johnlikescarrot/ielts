@@ -85,20 +85,12 @@ export function calculateOverallBand(scores: {
   if (validScores.length === 0) return 0;
 
   const average = validScores.reduce((sum, s) => sum + s, 0) / validScores.length;
-  const floor = Math.floor(average);
-  const fraction = average - floor;
 
   // Official IELTS rounding rules:
   // .00 to .24 -> .0
   // .25 to .74 -> .5
   // .75 to .99 -> 1.0 (ceil)
-  if (fraction < 0.25) {
-    return floor;
-  } else if (fraction < 0.75) {
-    return floor + 0.5;
-  } else {
-    return floor + 1.0;
-  }
+  return Math.round(average * 2) / 2;
 }
 
 export function getCEFRLevel(band: number): 'A2' | 'B1' | 'B2' | 'C1' | 'C2' {
