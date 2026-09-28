@@ -4,37 +4,59 @@
  */
 
 export function countSyllables(word: string): number {
-  const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
-  if (!cleanWord) return 0;
-  if (cleanWord.length <= 3) return 1;
+  let cleanWord = '';
+  const len = word.length;
+  for (let i = 0; i < len; i++) {
+    const code = word.charCodeAt(i);
+    if (code >= 97 && code <= 122) {
+      cleanWord += word[i];
+    } else if (code >= 65 && code <= 90) {
+      cleanWord += String.fromCharCode(code + 32);
+    }
+  }
 
-  // Syllable regex heuristics
+  const cleanLen = cleanWord.length;
+  if (cleanLen === 0) return 0;
+  if (cleanLen <= 3) return 1;
+
   let count = 0;
-  const vowels = 'aeiouy';
   let prevIsVowel = false;
 
-  for (let i = 0; i < cleanWord.length; i++) {
-    const isVowel = vowels.includes(cleanWord[i]);
+  for (let i = 0; i < cleanLen; i++) {
+    const char = cleanWord[i];
+    const isVowel = (char === 'a' || char === 'e' || char === 'i' || char === 'o' || char === 'u' || char === 'y');
     if (isVowel && !prevIsVowel) {
       count++;
     }
     prevIsVowel = isVowel;
   }
 
+  const lastChar = cleanWord[cleanLen - 1];
+  const secondLastChar = cleanWord[cleanLen - 2];
+
   // Adjust for silent 'e' at end
-  if (cleanWord.endsWith('e') && count > 1) {
-    count--;
-  }
-  // Add syllable for words ending in "le" preceded by a consonant
-  if (cleanWord.endsWith('le') && cleanWord.length > 2 && !vowels.includes(cleanWord.charAt(cleanWord.length - 3))) {
-    count++;
-  }
-  // Adjust for 'ed' endings
-  if (cleanWord.endsWith('ed') && count > 1 && !cleanWord.endsWith('ted') && !cleanWord.endsWith('ded')) {
+  if (lastChar === 'e' && count > 1) {
     count--;
   }
 
-  return Math.max(1, count);
+  // Add syllable for words ending in "le" preceded by a consonant
+  if (lastChar === 'e' && secondLastChar === 'l' && cleanLen > 2) {
+    const thirdLastChar = cleanWord[cleanLen - 3];
+    const isThirdLastVowel = (thirdLastChar === 'a' || thirdLastChar === 'e' || thirdLastChar === 'i' || thirdLastChar === 'o' || thirdLastChar === 'u' || thirdLastChar === 'y');
+    if (!isThirdLastVowel) {
+      count++;
+    }
+  }
+
+  // Adjust for 'ed' endings
+  if (lastChar === 'd' && secondLastChar === 'e' && count > 1) {
+    const thirdLastChar = cleanWord[cleanLen - 3];
+    if (thirdLastChar !== 't' && thirdLastChar !== 'd') {
+      count--;
+    }
+  }
+
+  return count > 0 ? count : 1;
 }
 
 export function calculateReadability(text: string, words: string[], sentences: string[]) {
