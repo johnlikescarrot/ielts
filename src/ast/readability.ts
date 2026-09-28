@@ -1,40 +1,13 @@
+import { syllable } from 'syllable';
+
 /**
  * Readability & Lexical Complexity Metrics Calculator
  * Implements Flesch-Kincaid, ARI, Gunning Fog, and Lexical Density algorithms.
  */
 
 export function countSyllables(word: string): number {
-  const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
-  if (!cleanWord) return 0;
-  if (cleanWord.length <= 3) return 1;
-
-  // Syllable regex heuristics
-  let count = 0;
-  const vowels = 'aeiouy';
-  let prevIsVowel = false;
-
-  for (let i = 0; i < cleanWord.length; i++) {
-    const isVowel = vowels.includes(cleanWord[i]);
-    if (isVowel && !prevIsVowel) {
-      count++;
-    }
-    prevIsVowel = isVowel;
-  }
-
-  // Adjust for silent 'e' at end
-  if (cleanWord.endsWith('e') && count > 1) {
-    count--;
-  }
-  // Add syllable for words ending in "le" preceded by a consonant
-  if (cleanWord.endsWith('le') && cleanWord.length > 2 && !vowels.includes(cleanWord.charAt(cleanWord.length - 3))) {
-    count++;
-  }
-  // Adjust for 'ed' endings
-  if (cleanWord.endsWith('ed') && count > 1 && !cleanWord.endsWith('ted') && !cleanWord.endsWith('ded')) {
-    count--;
-  }
-
-  return Math.max(1, count);
+  if (!word) return 0;
+  return syllable(word);
 }
 
 export function calculateReadability(text: string, words: string[], sentences: string[]) {
