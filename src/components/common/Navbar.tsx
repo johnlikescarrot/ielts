@@ -6,11 +6,12 @@ import {
   Mic, 
   Layers, 
   Award, 
-  BarChart2, 
-  Settings, 
+  BarChart2,
+  Settings,
   Globe,
   LayoutDashboard,
-  Video
+  Video,
+  Repeat
 } from 'lucide-react';
 import { SkillType } from '../../types';
 import { useI18n } from '../../i18n/i18nContext';
@@ -37,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'speaking', label: t('nav.speaking'), icon: Mic },
     { id: 'vocabulary', label: t('nav.vocabulary'), icon: Layers },
     { id: 'video-lab', label: t('nav.videoLab'), icon: Video },
+    { id: 'shadowing', label: t('nav.shadowing'), icon: Repeat },
     { id: 'mock-test', label: t('nav.mockTest'), icon: Award },
     { id: 'analytics', label: t('nav.analytics'), icon: BarChart2 },
     { id: 'settings', label: t('nav.settings'), icon: Settings },

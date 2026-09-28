@@ -10,6 +10,18 @@
 
 ## ✨ What makes it different
 
+### New in 1.2 — Shadowing Studio
+
+Build speaking fluency through **listen-and-repeat shadowing**: paste captions, and the studio splits them into cue-aligned chunks (3–120 seconds) that never cut a sentence in half. Then run the shadowing loop — listen, repeat aloud, replay, refine — with three private replay engines:
+
+1. **Browser voice** — replay any chunk with on-device speech synthesis, no setup, works offline.
+2. **YouTube preview** — each replay re-opens the exact chunk window inside a privacy-enhanced `youtube-nocookie` embed, with no remote player scripts (Firefox add-ons forbid remotely hosted code, and IELTS Slayer loads none).
+3. **Local audio/video** — open a file from your device; playback auto-stops at each chunk boundary and auto-advances when you want hands-free practice.
+
+The loop is fully keyboard-driven (`Space` replay, `←`/`→` chunk navigation, `R` cycle speed from 0.5× to 2×, `A` auto-advance), supports a hide-the-script mode for shadowing by ear, tracks replays per chunk, and finishes with a session review that shows exactly which chunks need more work — saved to your local history only.
+
+The workflow is a deliberate, privacy-first adaptation of the open-source [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) chunked-shadowing concept: same listen–repeat loop and shortcuts, but cue-aligned chunking, three replay engines, session tracking, bilingual EN/VI interface, and zero remote code or uploads.
+
 ### New in 1.1 — Private Video IELTS Lab
 
 Turn the captions from almost any English video into active IELTS practice:
@@ -30,6 +42,7 @@ The workflow was informed by the open-source [`Libailin222/ielts-video-assistant
 - **Listening:** Four-section practice, adjustable playback, transcripts, scoring, and answer review.
 - **Writing:** Local AST-based analysis across Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Includes AWL detection and multiple readability indices.
 - **Speaking:** Three-part interview simulation, preparation and response timers, private voice recording, model answers, and self-assessment.
+- **Shadowing:** Cue-aligned listen-and-repeat drills with three replay engines, speed cycling, script hiding, keyboard shortcuts, and per-chunk session review.
 - **Vocabulary:** An SM-2 spaced-repetition deck, contextual examples, collocations, synonyms, and mini-quizzes.
 - **Mock exam and analytics:** Composite band calculation, local history, streaks, and portable JSON backup/restore.
 - **Web vocabulary inspector:** Select supported academic vocabulary on a page to see CEFR/band guidance and bilingual definitions.
@@ -45,7 +58,7 @@ The workflow was informed by the open-source [`Libailin222/ielts-video-assistant
 | User-controlled backup | Export and import a human-readable JSON backup |
 | Honest automation | Automated feedback is labelled as an estimate, not official IELTS scoring |
 
-Opening a user-provided YouTube timestamp is the only Video Lab action that leaves the extension, and only after the learner selects it.
+Opening a user-provided YouTube timestamp is the only Video Lab action that leaves the extension, and only after the learner selects it. In the Shadowing Studio, YouTube playback stays inside a `youtube-nocookie` embed that the learner explicitly starts; the extension loads no remote scripts, so nothing about the lesson is transmitted anywhere.
 
 ## 🧠 Evidence-informed learning design
 
@@ -63,7 +76,7 @@ See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the product-to-evidence mapping, 
 - **Platform:** Firefox WebExtension Manifest V3
 - **Language:** TypeScript in strict mode
 - **UI:** React 19, Tailwind CSS, Lucide, and Meta's open-source [Astryx](https://github.com/facebook/astryx) design system
-- **Local analysis:** deterministic transcript parser, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
+- **Local analysis:** deterministic transcript parser, cue-aligned shadowing chunker, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
 - **Testing:** Vitest, React Testing Library, jsdom, and V8 coverage
 - **Quality:** ESLint, TypeScript, Super-Linter, and Astryx CLI design guidance
 
@@ -80,7 +93,8 @@ Astryx is used as the accessible component and theme system. The writing **AST**
 npm ci
 npm test
 npm run test:coverage
-npm run test:coverage:video   # enforces 100% for the new Video Lab
+npm run test:coverage:video       # enforces 100% for the Video Lab
+npm run test:coverage:shadowing   # enforces 100% for the Shadowing Studio
 npm run typecheck
 npm run lint
 npm run astryx -- doctor
@@ -98,7 +112,7 @@ The production extension is written to `dist/`.
 
 ## ✅ Quality policy
 
-The Video Lab ships with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
+The Video Lab and the Shadowing Studio each ship with **100% statements, branches, functions, and lines coverage**, enforced by dedicated CI gates. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
 
 Security and accessibility expectations include semantic controls, keyboard-visible focus, bilingual accessible names, no HTML injection of transcript content, URL host validation, and no remote execution.
 

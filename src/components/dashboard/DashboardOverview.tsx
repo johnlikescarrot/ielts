@@ -15,7 +15,8 @@ import {
   Flame,
   Sparkles,
   ChevronRight,
-  Video
+  Video,
+  Repeat
 } from 'lucide-react';
 
 export interface DashboardOverviewProps {
@@ -97,6 +98,14 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       icon: Video,
       color: 'from-violet-600 to-fuchsia-600',
       tag: 'Private Caption Lab',
+    },
+    {
+      id: 'shadowing' as SkillType,
+      title: t('nav.shadowing'),
+      description: t('dash.featureShadowingDesc'),
+      icon: Repeat,
+      color: 'from-teal-600 to-emerald-600',
+      tag: 'Listen & Repeat',
     },
     {
       id: 'mock-test' as SkillType,
