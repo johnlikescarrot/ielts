@@ -55,6 +55,14 @@ describe('astParser', () => {
     expect(clauses.some(c => c.hasConditional)).toBe(true);
   });
 
+  it('detects passive voice with irregular verbs', () => {
+    const sentence = 'The picture was drawn by an artist.';
+    const tokens = tokenizeSentence(sentence);
+    const clauses = parseClauses(sentence, tokens);
+
+    expect(clauses.some(c => c.hasPassive)).toBe(true);
+  });
+
   it('classifies sentence types: simple, compound, complex, compound-complex', () => {
     const simpleTokens = tokenizeSentence('The cat sat on the mat.');
     const simpleClauses = parseClauses('The cat sat on the mat.', simpleTokens);
