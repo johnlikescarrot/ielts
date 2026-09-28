@@ -72,6 +72,11 @@ export function calculateReadingBand(rawScore: number, totalQuestions = 40, exam
   }
 }
 
+
+function isValidScore(s: number | undefined): s is number {
+  return typeof s === 'number' && !isNaN(s) && s >= 1.0 && s <= 9.0;
+}
+
 export function calculateOverallBand(scores: {
   listening?: number;
   reading?: number;
@@ -79,7 +84,7 @@ export function calculateOverallBand(scores: {
   speaking?: number;
 }): number {
   const validScores = [scores.listening, scores.reading, scores.writing, scores.speaking].filter(
-    (s): s is number => typeof s === 'number' && !isNaN(s) && s >= 1.0 && s <= 9.0
+    isValidScore
   );
 
   if (validScores.length === 0) return 0;
