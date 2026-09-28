@@ -17,6 +17,7 @@ WORKFLOW — discover, don't guess. Before writing UI:
 3. `astryx component \<Name\>` — props + examples for every component you use.
 
 RULES:
+
 - No `<div>` — components do all layout/spacing, page frame included.
 - Frame first: read `astryx docs layout` before writing any page or screen — page frame, region widths, breakpoint behavior.
 - Dense data = rows (Table, List/Item), never Card-wrapped list items; Card is for standalone widgets. Status = StatusDot/Token; Badge = counts only.
