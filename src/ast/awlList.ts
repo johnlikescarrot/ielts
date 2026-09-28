@@ -169,3 +169,14 @@ export const COMMON_COLLOCATIONS = [
   'broaden their horizons',
   'gain a competitive edge'
 ];
+
+
+// Pre-compile a RegExp to match all collocations efficiently.
+// This is used for fast presence-checking or extraction in analyzers.
+const escapedCollocations = COMMON_COLLOCATIONS.map((c) =>
+  c.replace(/[.*+?^$`{}()|[\]\\]/g, '\\$&')
+);
+export const COMMON_COLLOCATIONS_REGEX = new RegExp(
+  `(${escapedCollocations.join('|')})`,
+  'g'
+);
