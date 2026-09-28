@@ -40,9 +40,6 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JSON: false
-          VALIDATE_MARKDOWN: true
-          VALIDATE_CSS: true
-          VALIDATE_HTML: true
           LINTER_RULES_PATH: /
           TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
           CSS_CONFIG_FILE: .stylelintrc.json
