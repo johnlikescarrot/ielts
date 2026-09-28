@@ -124,7 +124,81 @@ describe('Common Components Suite', () => {
     await userEvent.click(resetBtn);
   });
 
+
+  it('AudioPlayer interval, pause, and cycleSpeed while playing', async () => {
+    vi.useFakeTimers();
+    const onUpdate = vi.fn();
+
+    // Mock speechSynthesis
+    const mockSpeak = vi.fn();
+    const mockPause = vi.fn();
+    const mockCancel = vi.fn();
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: {
+        speak: mockSpeak,
+        pause: mockPause,
+        cancel: mockCancel,
+      },
+      writable: true,
+    });
+    // Mock SpeechSynthesisUtterance
+    global.SpeechSynthesisUtterance = class { constructor() {} } as any;
+
+    render(
+      <I18nProvider>
+        <AudioPlayer
+          transcriptText="Testing"
+          durationSeconds={2}
+          onTimeUpdate={onUpdate}
+        />
+      </I18nProvider>
+    );
+
+    const playPauseBtn = screen.getByRole('button', { name: /Play|Pause/i });
+
+    // Play
+    await act(async () => {
+      fireEvent.click(playPauseBtn);
+    });
+
+    // Advance time to trigger interval
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(onUpdate).toHaveBeenCalledWith(1);
+
+    // Cycle speed while playing
+    const speedBtn = screen.getByText('1x');
+    await act(async () => {
+      fireEvent.click(speedBtn);
+    });
+
+    // Advance time for the setTimeout in cycleSpeed
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    // Pause while playing
+    await act(async () => {
+      fireEvent.click(playPauseBtn);
+    });
+    expect(mockPause).toHaveBeenCalled();
+
+    // Play again and finish
+    await act(async () => {
+      fireEvent.click(playPauseBtn);
+    });
+
+    // Advance to end
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    vi.useRealTimers();
+  });
+
   it('handles mic access denial in VoiceRecorder and falls back to mock recording', async () => {
+
     vi.useFakeTimers();
     const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
     navigator.mediaDevices.getUserMedia = vi.fn().mockRejectedValue(new Error('NotAllowedError: Permission denied'));
