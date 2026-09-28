@@ -110,5 +110,17 @@ describe('bandCalculator', () => {
 
     const otherReport = getScoreBreakdown('writing', 7.5, 9);
     expect(otherReport.bandScore).toBe(7.5);
+
+    // Test clamped bounds for other skills (max 9.0)
+    const writingReportHigh = getScoreBreakdown('writing', 10, 9);
+    expect(writingReportHigh.bandScore).toBe(9.0);
+
+    // Test clamped bounds for other skills (min 1.0)
+    const writingReportLow = getScoreBreakdown('writing', 0, 9);
+    expect(writingReportLow.bandScore).toBe(1.0);
+
+    // Test invalid skill defaults to clamped raw score
+    const invalidSkillReport = getScoreBreakdown('invalid-skill' as any, 5.5, 9);
+    expect(invalidSkillReport.bandScore).toBe(5.5);
   });
 });
