@@ -13,8 +13,16 @@ import {
 } from './types';
 
 export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
-  const allTokens = ast.paragraphs.flatMap(p => p.sentences.flatMap(s => s.tokens));
-  const words = allTokens.filter(t => t.isWord).map(t => t.normalized);
+  const words: string[] = [];
+  for (const p of ast.paragraphs) {
+    for (const s of p.sentences) {
+      for (const t of s.tokens) {
+        if (t.isWord) {
+          words.push(t.normalized);
+        }
+      }
+    }
+  }
   const totalWords = words.length;
 
   if (totalWords === 0) {
@@ -37,11 +45,15 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
     wordFrequencies[w] = (wordFrequencies[w] || 0) + 1;
   });
 
-  allTokens.forEach(t => {
-    if (t.isWord && t.isAcademic) {
-      awlSet.add(t.normalized);
+  for (const p of ast.paragraphs) {
+    for (const s of p.sentences) {
+      for (const t of s.tokens) {
+        if (t.isWord && t.isAcademic) {
+          awlSet.add(t.normalized);
+        }
+      }
     }
-  });
+  }
 
   const uniqueWords = Object.keys(wordFrequencies).length;
   const ttr = Math.round((uniqueWords / totalWords) * 100) / 100;
@@ -385,8 +397,19 @@ export function evaluateGrammaticalRange(grammatical: GrammaticalMetrics): Crite
 
 export function analyzeEssay(essayText: string, targetWordCount = 250, promptKeywords: string[] = []): EssayEvaluationReport {
   const ast = parseEssayToAST(essayText);
-  const words = ast.paragraphs.flatMap(p => p.sentences.flatMap(s => s.tokens.filter(t => t.isWord).map(t => t.raw)));
-  const sentences = ast.paragraphs.flatMap(p => p.sentences.map(s => s.text));
+  const words: string[] = [];
+  const sentences: string[] = [];
+
+  for (const p of ast.paragraphs) {
+    for (const s of p.sentences) {
+      sentences.push(s.text);
+      for (const t of s.tokens) {
+        if (t.isWord) {
+          words.push(t.raw);
+        }
+      }
+    }
+  }
 
   const readability = calculateReadability(essayText, words, sentences);
   const lexical = extractLexicalMetrics(ast);
