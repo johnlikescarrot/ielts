@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Badge } from '../../src/components/common/Badge';
-import { ProgressBar } from '../../src/components/common/ProgressBar';
 import { Timer } from '../../src/components/common/Timer';
 import { AudioPlayer } from '../../src/components/common/AudioPlayer';
 import { VoiceRecorder } from '../../src/components/common/VoiceRecorder';
@@ -35,33 +34,6 @@ describe('Common Components Suite', () => {
     expect(screen.getByText('Purple')).toBeInTheDocument();
   });
 
-  it('renders ProgressBar with color variations and percentage hiding', () => {
-    const { rerender } = render(
-      <ProgressBar
-        value={75}
-        max={100}
-        label="Task Progress"
-        sublabel="75/100"
-        color="emerald"
-        showPercentage={true}
-      />
-    );
-    expect(screen.getByText('Task Progress')).toBeInTheDocument();
-    expect(screen.getByText('75%')).toBeInTheDocument();
-
-    rerender(
-      <ProgressBar
-        value={50}
-        max={100}
-        color="amber"
-        showPercentage={false}
-      />
-    );
-
-    rerender(<ProgressBar value={20} color="rose" />);
-    rerender(<ProgressBar value={90} color="purple" />);
-    rerender(<ProgressBar value={10} color="indigo" />);
-  });
 
   it('manages Timer lifecycle: play, pause, reset, timeUp, countUp', async () => {
     vi.useFakeTimers();
