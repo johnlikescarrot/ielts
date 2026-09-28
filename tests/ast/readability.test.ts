@@ -2,16 +2,24 @@ import { describe, it, expect } from 'vitest';
 import { countSyllables, calculateReadability } from '../../src/ast/readability';
 
 describe('readability', () => {
+  it('counts syllables accurately for words ending in "le"', () => {
+    // "le" preceded by a consonant adds a syllable
+    expect(countSyllables('table')).toBe(2);
+    expect(countSyllables('apple')).toBe(2);
+    expect(countSyllables('simple')).toBe(2);
+    expect(countSyllables('riddle')).toBe(2);
+    expect(countSyllables('article')).toBe(3);
+
+    // "le" preceded by a vowel doesn't add an extra syllable via the "le" rule
+    expect(countSyllables('pale')).toBe(1);
+    expect(countSyllables('whale')).toBe(1);
+    expect(countSyllables('scale')).toBe(1);
+  });
+
   it('counts syllables accurately with edge cases', () => {
     expect(countSyllables('')).toBe(0);
     expect(countSyllables('a')).toBe(1);
     expect(countSyllables('the')).toBe(1);
-    expect(countSyllables('table')).toBe(2);
-    expect(countSyllables('apple')).toBe(2);
-    expect(countSyllables('pale')).toBe(1);
-    expect(countSyllables('whale')).toBe(1);
-    expect(countSyllables('scale')).toBe(1);
-    expect(countSyllables('article')).toBe(3);
     expect(countSyllables('mitigate')).toBe(3);
     expect(countSyllables('proliferation')).toBe(5);
     expect(countSyllables('developed')).toBe(3);
