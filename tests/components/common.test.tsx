@@ -119,6 +119,62 @@ describe('Common Components Suite', () => {
     await userEvent.click(resetBtn);
   });
 
+  it('handles mic access denial in VoiceRecorder and falls back to mock recording', async () => {
+    const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    navigator.mediaDevices.getUserMedia = vi.fn().mockRejectedValue(new Error('NotAllowedError: Permission denied'));
+
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder />
+      </I18nProvider>
+    );
+
+    const startBtn = screen.getByText(/Start Voice Recording|Bắt đầu Ghi âm/i);
+    await userEvent.click(startBtn);
+
+    expect(consoleSpy).toHaveBeenCalledWith('VoiceRecorder: mic access error', expect.any(Error));
+    expect(screen.getByText(/Stop Recording|Dừng Ghi âm/i)).toBeInTheDocument();
+
+    navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+    consoleSpy.mockRestore();
+  });
+
+  it('handles missing mediaDevices in VoiceRecorder and falls back to mock recording', async () => {
+    // Save original object to restore later
+    const originalNavigator = global.navigator;
+
+    // Temporarily replace navigator with an object lacking mediaDevices
+    Object.defineProperty(global, 'navigator', {
+      value: { ...originalNavigator, mediaDevices: undefined },
+      writable: true,
+      configurable: true,
+    });
+
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    render(
+      <I18nProvider>
+        <VoiceRecorder />
+      </I18nProvider>
+    );
+
+    const startBtn = screen.getByText(/Start Voice Recording|Bắt đầu Ghi âm/i);
+    await userEvent.click(startBtn);
+
+    expect(consoleSpy).toHaveBeenCalledWith('VoiceRecorder: mic access error', expect.any(Error));
+    expect(screen.getByText(/Stop Recording|Dừng Ghi âm/i)).toBeInTheDocument();
+
+    // Restore navigator
+    Object.defineProperty(global, 'navigator', {
+      value: originalNavigator,
+      writable: true,
+      configurable: true,
+    });
+    consoleSpy.mockRestore();
+  });
+
   it('interacts with VoiceRecorder: recording lifecycle and audio playback', async () => {
     const onComplete = vi.fn();
     render(
