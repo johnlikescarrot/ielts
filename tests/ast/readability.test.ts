@@ -7,6 +7,11 @@ describe('readability', () => {
     expect(countSyllables('a')).toBe(1);
     expect(countSyllables('the')).toBe(1);
     expect(countSyllables('table')).toBe(2);
+    expect(countSyllables('apple')).toBe(2);
+    expect(countSyllables('pale')).toBe(1);
+    expect(countSyllables('whale')).toBe(1);
+    expect(countSyllables('scale')).toBe(1);
+    expect(countSyllables('article')).toBe(3);
     expect(countSyllables('mitigate')).toBe(3);
     expect(countSyllables('proliferation')).toBe(5);
     expect(countSyllables('developed')).toBe(3);
