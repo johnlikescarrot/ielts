@@ -3,6 +3,13 @@
  * Implements Flesch-Kincaid, ARI, Gunning Fog, and Lexical Density algorithms.
  */
 
+const stopWords = new Set([
+  'a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from',
+  'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
+  'it', 'this', 'that', 'these', 'those', 'and', 'or', 'but', 'so', 'if',
+  'as', 'can', 'will', 'do', 'does', 'did', 'not'
+]);
+
 export function countSyllables(word: string): number {
   const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
   if (!cleanWord) return 0;
@@ -85,12 +92,6 @@ export function calculateReadability(text: string, words: string[], sentences: s
 
   // Lexical Density: Content words vs total words
   // Filter out short function words
-  const stopWords = new Set([
-    'a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from',
-    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
-    'it', 'this', 'that', 'these', 'those', 'and', 'or', 'but', 'so', 'if',
-    'as', 'can', 'will', 'do', 'does', 'did', 'not'
-  ]);
   const contentWords = words.filter(w => !stopWords.has(w.toLowerCase()));
   const lexicalDensity = Math.round((contentWords.length / wordCount) * 1000) / 10;
 
