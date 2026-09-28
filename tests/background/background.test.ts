@@ -107,4 +107,55 @@ describe('background Suite', () => {
 
     consoleSpy.mockRestore();
   });
+
+  it('exits early if browser is undefined or action/setBadgeText is missing in updateReviewBadge', async () => {
+    const originalBrowser = (globalThis as any).browser;
+    (globalThis as any).browser = undefined;
+    await updateReviewBadge(); // should return silently
+
+    (globalThis as any).browser = { action: {} };
+    await updateReviewBadge(); // should return silently
+
+    (globalThis as any).browser = originalBrowser;
+  });
+
+  it('exits early if browser is undefined in initializeBackground', () => {
+    const originalBrowser = (globalThis as any).browser;
+    (globalThis as any).browser = undefined;
+    initializeBackground(); // should return silently
+    (globalThis as any).browser = originalBrowser;
+  });
+
+  it('handles missing setBadgeBackgroundColor gracefully', async () => {
+    delete mockBrowser.action.setBadgeBackgroundColor;
+    await storageService.saveSRSCards([
+      { wordId: 'w3', interval: 0, repetition: 0, easeFactor: 2.5, nextReviewDate: '2020-01-01', history: [] },
+    ]);
+    await updateReviewBadge();
+    expect(mockBrowser.action.setBadgeText).toHaveBeenCalledWith({ text: '1' });
+  });
+
+  it('handles missing browser contextMenus/runtime features gracefully', () => {
+    const originalBrowser = (globalThis as any).browser;
+
+    // Test without contextMenus, onMessage, onClicked, etc.
+    (globalThis as any).browser = {
+      runtime: {
+        onInstalled: { addListener: vi.fn((cb) => cb()) },
+      },
+      action: {
+        setBadgeText: vi.fn(),
+      }
+    };
+
+    initializeBackground();
+
+    (globalThis as any).browser = {
+      runtime: {}
+    };
+    initializeBackground();
+
+    (globalThis as any).browser = originalBrowser;
+  });
+
 });
