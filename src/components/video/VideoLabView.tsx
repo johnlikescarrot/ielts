@@ -31,9 +31,23 @@ export const VideoLabView: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
+  const [sourceFileName, setSourceFileName] = useState('');
 
   const videoId = useMemo(() => getYouTubeVideoId(sourceUrl), [sourceUrl]);
   const score = lesson ? scoreLesson(lesson.questions, answers) : 0;
+
+  const loadTranscriptFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      setTranscript(await file.text());
+      setSourceFileName(file.name);
+      setError('');
+    } catch {
+      setError(t('video.fileReadError'));
+    }
+    event.target.value = '';
+  };
 
   const generate = () => {
     const nextLesson = createVideoLesson(transcript);
@@ -128,12 +142,19 @@ export const VideoLabView: React.FC = () => {
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-900"
             />
 
-            <div className="mt-5 flex items-center justify-between gap-3">
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
               <label htmlFor="video-transcript" className="block text-sm font-semibold">{t('video.transcriptLabel')}</label>
-              <button type="button" onClick={() => { setTranscript(SAMPLE_TRANSCRIPT); setError(''); }} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
-                {t('video.useSample')}
-              </button>
+              <div className="flex items-center gap-3">
+                <label htmlFor="video-transcript-file" className="cursor-pointer text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
+                  {t('video.loadFile')}
+                </label>
+                <input id="video-transcript-file" type="file" accept=".srt,.vtt,.txt,text/plain" onChange={loadTranscriptFile} className="sr-only" />
+                <button type="button" onClick={() => { setTranscript(SAMPLE_TRANSCRIPT); setSourceFileName(''); setError(''); }} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
+                  {t('video.useSample')}
+                </button>
+              </div>
             </div>
+            {sourceFileName && <p className="mt-2 text-xs text-slate-500" role="status">{t('video.loadedFile')}: {sourceFileName}</p>}
             <textarea
               id="video-transcript"
               value={transcript}
