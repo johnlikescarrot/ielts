@@ -129,6 +129,27 @@ describe('StorageService Suite', () => {
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
   });
 
+
+  it('handles errors when clearing storage', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    (globalThis as any).browser = {
+      storage: {
+        local: {
+          remove: vi.fn().mockRejectedValue(new Error('Mocked remove error')),
+        }
+      }
+    };
+
+    const browserService = new StorageService();
+    await browserService.resetAll();
+
+    expect(consoleSpy).toHaveBeenCalledWith('StorageService: error clearing storage', expect.any(Error));
+
+    consoleSpy.mockRestore();
+    delete (globalThis as any).browser;
+  });
+
   it('works with browser.storage.local mock', async () => {
     const mockStorage: Record<string, any> = {};
     (globalThis as any).browser = {
