@@ -29,6 +29,18 @@ describe('srsManager', () => {
     expect(due.map(d => d.wordId)).toContain('w3');
   });
 
+  it('returns no cards as due with a far past date', () => {
+    const due = getDueCards(sampleCards, '2020-01-01');
+    expect(due.length).toBe(0);
+  });
+
+  it('filters due cards using the default current date', () => {
+    const due = getDueCards(sampleCards);
+    const currentDate = new Date().toISOString().split('T')[0];
+    const expectedDueCount = sampleCards.filter(c => !c.nextReviewDate || c.nextReviewDate <= currentDate).length;
+    expect(due.length).toBe(expectedDueCount);
+  });
+
   it('generates accurate deck summary', () => {
     const summary = getDeckSummary(sampleCards, '2026-09-27');
     expect(summary.totalCards).toBe(3);
