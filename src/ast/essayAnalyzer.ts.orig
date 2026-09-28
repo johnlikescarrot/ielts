@@ -12,8 +12,6 @@ import {
   SentenceType
 } from './types';
 
-const STOP_WORDS = new Set(['the', 'and', 'to', 'of', 'a', 'in', 'that', 'is', 'for', 'it', 'with', 'as', 'are', 'on', 'this', 'by', 'be']);
-
 export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
   const allTokens = ast.paragraphs.flatMap(p => p.sentences.flatMap(s => s.tokens));
   const words = allTokens.filter(t => t.isWord).map(t => t.normalized);
@@ -50,8 +48,9 @@ export function extractLexicalMetrics(ast: EssayAST): LexicalMetrics {
   const awlDensityPercent = Math.round((awlSet.size / totalWords) * 1000) / 10;
 
   // Identify high frequency repeated content words (excluding standard stop words)
+  const stopWords = new Set(['the', 'and', 'to', 'of', 'a', 'in', 'that', 'is', 'for', 'it', 'with', 'as', 'are', 'on', 'this', 'by', 'be']);
   const repeatedWords = Object.entries(wordFrequencies)
-    .filter(([word, count]) => !STOP_WORDS.has(word) && count >= 4 && word.length > 3)
+    .filter(([word, count]) => !stopWords.has(word) && count >= 4 && word.length > 3)
     .map(([word, count]) => ({ word, count }))
     .sort((a, b) => b.count - a.count);
 
@@ -194,8 +193,8 @@ export function extractTaskMetrics(ast: EssayAST, targetWordCount = 250, promptK
 
   const rawLower = ast.rawText.toLowerCase();
   const matchedKeywords = promptKeywords.filter(kw => rawLower.includes(kw.toLowerCase()));
-  const keywordCoveragePercent = promptKeywords.length > 0 
-    ? Math.round((matchedKeywords.length / promptKeywords.length) * 100) 
+  const keywordCoveragePercent = promptKeywords.length > 0
+    ? Math.round((matchedKeywords.length / promptKeywords.length) * 100)
     : 100;
 
   return {
