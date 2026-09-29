@@ -32,15 +32,23 @@ export function parseSubtitleTimestamp(timestamp: string): number | null {
  * Strips HTML tags, WebVTT styles, SSA/ASS tags, and normalizes whitespaces.
  */
 export function cleanSubtitleText(raw: string): string {
-  return raw
-    .replace(/<[^>]+>/g, '') // remove HTML tags like <b>, <i>, <c.color>
-    .replace(/\{\\[^}]+\}/g, '') // remove ASS/SSA override tags like {\an8}
-    .replace(/\[\/?(?:b|i|u|color|font)[^\]]*\]/gi, '') // remove BBCode style tags
+  let sanitized = raw
     .replace(/&nbsp;/g, ' ')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&')
+    .replace(/&amp;/g, '&');
+
+  let previous: string;
+  do {
+    previous = sanitized;
+    sanitized = sanitized
+      .replace(/<[^>]+>/g, '') // remove HTML tags like <b>, <i>, <c.color>
+      .replace(/\{\\[^}]+\}/g, '') // remove ASS/SSA override tags like {\an8}
+      .replace(/\[\/?(?:b|i|u|color|font)[^\]]*\]/gi, ''); // remove BBCode style tags
+  } while (sanitized !== previous);
+
+  return sanitized
     .replace(/\s+/g, ' ')
     .trim();
 }
