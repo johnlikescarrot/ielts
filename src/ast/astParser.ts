@@ -192,6 +192,8 @@ export function classifySentenceType(clauses: ClauseNode[], tokens: TokenNode[])
   return 'simple';
 }
 
+const nominalizationSuffixes = ['tion', 'sion', 'ment', 'ance', 'ence', 'ity', 'ism'];
+
 export function splitIntoSentences(paragraphText: string, baseOffset = 0): SentenceNode[] {
   const sentenceNodes: SentenceNode[] = [];
   // Match sentence ending punctuation followed by space or end of string
@@ -210,6 +212,22 @@ export function splitIntoSentences(paragraphText: string, baseOffset = 0): Sente
     const sentenceType = classifySentenceType(clauses, tokens);
     const wordCount = tokens.filter(t => t.isWord).length;
 
+    let passiveVoiceCount = 0;
+    let conditionalCount = 0;
+    let relativeClauseCount = 0;
+    for (const c of clauses) {
+      if (c.hasPassive) passiveVoiceCount++;
+      if (c.hasConditional) conditionalCount++;
+      if (c.hasRelative) relativeClauseCount++;
+    }
+
+    let nominalizationCount = 0;
+    for (const t of tokens) {
+      if (t.isWord && t.normalized.length > 5 && nominalizationSuffixes.some(suf => t.normalized.endsWith(suf))) {
+        nominalizationCount++;
+      }
+    }
+
     if (wordCount > 0) {
       sentenceNodes.push({
         type: 'Sentence',
@@ -220,6 +238,10 @@ export function splitIntoSentences(paragraphText: string, baseOffset = 0): Sente
         wordCount,
         startIndex: sentenceStartIndex,
         endIndex: sentenceEndIndex,
+        passiveVoiceCount,
+        conditionalCount,
+        relativeClauseCount,
+        nominalizationCount,
       });
     }
   }
