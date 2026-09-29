@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { StorageService, DEFAULT_SETTINGS } from '../../src/storage/storageService';
+import {
+  buildShadowingChunks,
+  createShadowingSession,
+  MAX_STORED_SESSIONS,
+  rateChunk,
+} from '../../src/shadowing/shadowingEngine';
 
 describe('StorageService Suite', () => {
   let service: StorageService;
@@ -127,6 +133,75 @@ describe('StorageService Suite', () => {
 
     const settings = await service.getSettings();
     expect(settings.targetBand).toBe(DEFAULT_SETTINGS.targetBand);
+  });
+
+  it('manages shadowing sessions with resume ordering, upserts, and caps', async () => {
+    expect(await service.getShadowingSessions()).toEqual([]);
+
+    const buildRecord = (id: string, updatedAt: string, rating: 0 | 1 | 2 | 3 = 2) => {
+      const cues = [{ id: 'cue-1', startSeconds: 0, text: 'One chunk to shadow.' }];
+      const chunks = buildShadowingChunks(cues, 8);
+      let session = createShadowingSession(chunks, new Date('2026-09-29T10:00:00Z'));
+      session = rateChunk(session, 'chunk-1', rating, new Date(updatedAt));
+      return {
+        id,
+        session,
+        sourceUrl: '',
+        createdAt: '2026-09-29T10:00:00Z',
+        updatedAt: session.updatedAt,
+        completedAt: null,
+      };
+    };
+
+    const older = buildRecord('shadow-older', '2026-09-28T10:00:00Z');
+    const newer = buildRecord('shadow-newer', '2026-09-29T10:00:00Z');
+    await service.saveShadowingSession(older);
+    await service.saveShadowingSession(newer);
+
+    // Most recently updated session first so the studio can offer a resume.
+    let sessions = await service.getShadowingSessions();
+    expect(sessions.map(record => record.id)).toEqual(['shadow-newer', 'shadow-older']);
+
+    // Saving the same id updates it in place instead of duplicating it.
+    const updatedNewer = { ...newer, completedAt: '2026-09-29T11:00:00Z' };
+    await service.saveShadowingSession(updatedNewer);
+    sessions = await service.getShadowingSessions();
+    expect(sessions).toHaveLength(2);
+    expect(sessions[0].completedAt).toBe('2026-09-29T11:00:00Z');
+
+    // Deleting a session removes exactly that record.
+    await service.deleteShadowingSession('shadow-older');
+    sessions = await service.getShadowingSessions();
+    expect(sessions.map(record => record.id)).toEqual(['shadow-newer']);
+    await service.deleteShadowingSession('missing-id');
+    expect(await service.getShadowingSessions()).toHaveLength(1);
+
+    // Only the newest MAX_STORED_SESSIONS records are kept.
+    for (let index = 0; index < MAX_STORED_SESSIONS + 3; index += 1) {
+      await service.saveShadowingSession(buildRecord(`shadow-${index}`, `2026-10-0${(index % 9) + 1}T10:00:00Z`));
+    }
+    sessions = await service.getShadowingSessions();
+    expect(sessions.length).toBe(MAX_STORED_SESSIONS);
+  });
+
+  it('persists shadowing sessions through local storage for a fresh service', async () => {
+    const cues = [{ id: 'cue-1', startSeconds: 0, text: 'One chunk to shadow.' }];
+    const record = {
+      id: 'shadow-persist',
+      session: createShadowingSession(buildShadowingChunks(cues, 8), new Date('2026-09-29T10:00:00Z')),
+      sourceUrl: 'https://youtu.be/dQw4w9WgXcQ',
+      createdAt: '2026-09-29T10:00:00Z',
+      updatedAt: '2026-09-29T10:00:00Z',
+      completedAt: null,
+    };
+    await service.saveShadowingSession(record);
+
+    // A brand-new service instance (cold in-memory cache) reads the same data.
+    const fresh = new StorageService();
+    const sessions = await fresh.getShadowingSessions();
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0].id).toBe('shadow-persist');
+    expect(sessions[0].sourceUrl).toBe('https://youtu.be/dQw4w9WgXcQ');
   });
 
   it('works with browser.storage.local mock', async () => {

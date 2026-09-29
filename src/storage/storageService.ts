@@ -1,5 +1,6 @@
 import { StorageData } from './types';
 import { UserSettings, SRSCard, TestAttempt, VocabularyItem } from '../types';
+import { MAX_STORED_SESSIONS, ShadowingSessionRecord } from '../shadowing/shadowingEngine';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   language: 'en',
@@ -16,6 +17,7 @@ export const DEFAULT_STORAGE_DATA: StorageData = {
   srsCards: [],
   customVocabulary: [],
   testHistory: [],
+  shadowingSessions: [],
   bookmarks: [],
   notes: [],
 };
@@ -50,6 +52,7 @@ export class StorageService {
             srsCards: Array.isArray(parsed.srsCards) ? parsed.srsCards : [],
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
+            shadowingSessions: Array.isArray(parsed.shadowingSessions) ? parsed.shadowingSessions : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
@@ -65,6 +68,7 @@ export class StorageService {
             srsCards: Array.isArray(parsed.srsCards) ? parsed.srsCards : [],
             customVocabulary: Array.isArray(parsed.customVocabulary) ? parsed.customVocabulary : [],
             testHistory: Array.isArray(parsed.testHistory) ? parsed.testHistory : [],
+            shadowingSessions: Array.isArray(parsed.shadowingSessions) ? parsed.shadowingSessions : [],
             bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
             notes: Array.isArray(parsed.notes) ? parsed.notes : [],
           };
@@ -152,6 +156,30 @@ export class StorageService {
     const updatedHistory = [newAttempt, ...(data.testHistory || [])];
     await this.saveData({ testHistory: updatedHistory });
     return newAttempt;
+  }
+
+  /**
+   * Shadowing Studio sessions, most recently updated first, so the learner
+   * can resume where they stopped. Everything stays on the device.
+   */
+  async getShadowingSessions(): Promise<ShadowingSessionRecord[]> {
+    const data = await this.getData();
+    return [...(data.shadowingSessions || [])].sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+  }
+
+  async saveShadowingSession(record: ShadowingSessionRecord): Promise<void> {
+    const data = await this.getData();
+    const others = (data.shadowingSessions || []).filter(session => session.id !== record.id);
+    const updated = [record, ...others]
+      .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))
+      .slice(0, MAX_STORED_SESSIONS);
+    await this.saveData({ shadowingSessions: updated });
+  }
+
+  async deleteShadowingSession(sessionId: string): Promise<void> {
+    const data = await this.getData();
+    const remaining = (data.shadowingSessions || []).filter(session => session.id !== sessionId);
+    await this.saveData({ shadowingSessions: remaining });
   }
 
   async getCustomVocabulary(): Promise<VocabularyItem[]> {

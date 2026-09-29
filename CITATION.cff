@@ -4,14 +4,15 @@ title: "IELTS Slayer: A private, bilingual Firefox IELTS preparation suite"
 type: software
 authors:
   - family-names: "johnlikescarrot"
-version: 1.1.0
-date-released: 2026-09-27
+version: 1.2.0
+date-released: 2026-09-29
 url: "https://github.com/johnlikescarrot/ielts"
 repository-code: "https://github.com/johnlikescarrot/ielts"
 license: MIT
 keywords:
   - IELTS
   - language learning
+  - shadowing
   - captioned video
   - spaced repetition
   - Firefox extension
@@ -19,4 +20,5 @@ keywords:
 abstract: >-
   A free, login-free Firefox extension for bilingual English/Vietnamese IELTS
   preparation, including deterministic on-device caption-to-listening practice,
-  local writing analysis, speaking recording, and spaced vocabulary review.
+  a chunked shadowing studio with SM-2 spaced review, local writing analysis,
+  speaking recording, and spaced vocabulary review.

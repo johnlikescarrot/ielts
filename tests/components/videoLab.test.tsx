@@ -72,4 +72,25 @@ describe('VideoLabView', () => {
     await user.click(screen.getByRole('button', { name: 'Review vocabulary' }));
     expect(screen.getByText(/No known academic terms were detected/)).toBeInTheDocument();
   });
+
+  it('starts a shadowing studio session from the same transcript', async () => {
+    const user = userEvent.setup();
+    renderLab();
+
+    // Without a transcript the studio start shows the same validation error.
+    await user.click(screen.getByRole('button', { name: 'Start shadowing studio' }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/at least 20 English words/i);
+
+    await user.click(screen.getByRole('button', { name: 'Try sample transcript' }));
+    await user.click(screen.getByRole('button', { name: 'Start shadowing studio' }));
+
+    expect(screen.getByRole('heading', { name: 'Shadowing Studio: speak along, chunk by chunk' })).toBeInTheDocument();
+    // The practice step is labelled as the studio while in shadowing mode.
+    expect(screen.getByRole('tab', { name: /Step 2 Shadowing Studio/i })).toBeInTheDocument();
+
+    // Leaving the studio returns to the source step and restores the cloze labels.
+    await user.click(screen.getByRole('button', { name: 'New session' }));
+    expect(screen.getByRole('heading', { name: 'Create your private video lesson' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Step 2 Listening practice/i })).toBeInTheDocument();
+  });
 });

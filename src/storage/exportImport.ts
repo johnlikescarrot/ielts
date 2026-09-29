@@ -29,6 +29,7 @@ export function validateImportData(rawJson: string): StorageData {
   const srsCards = Array.isArray(data.srsCards) ? data.srsCards : [];
   const customVocabulary = Array.isArray(data.customVocabulary) ? data.customVocabulary : [];
   const testHistory = Array.isArray(data.testHistory) ? data.testHistory : [];
+  const shadowingSessions = Array.isArray(data.shadowingSessions) ? data.shadowingSessions : [];
   const bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
   const notes = Array.isArray(data.notes) ? data.notes : [];
 
@@ -37,6 +38,7 @@ export function validateImportData(rawJson: string): StorageData {
     srsCards,
     customVocabulary,
     testHistory,
+    shadowingSessions,
     bookmarks,
     notes,
   };

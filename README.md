@@ -10,6 +10,20 @@
 
 ## ✨ What makes it different
 
+### New in 1.2 — Shadowing Studio
+
+Practise the evidence-based **shadowing** technique (listen and speak along, chunk by chunk) with the same transcript you already use for the Video Lab:
+
+1. Split the transcript into practice chunks (3–120 s, like the classic shadowing players).
+2. Listen to each chunk with browser speech at 0.5×–2× speed, or open the YouTube source at its exact timestamp.
+3. Hide the transcript to shadow from memory, record yourself, and compare.
+4. Rate each attempt (Again / Hard / Good / Easy); every rated chunk is scheduled for spaced review with **SM-2** — the same algorithm as the vocabulary deck.
+5. Resume any previous session — progress is saved locally, capped, and included in JSON backups.
+
+Keyboard-first, like a dedicated player: **Space** replays the chunk, **← / →** move between chunks, **R** cycles the playback speed.
+
+The workflow was informed by the open-source [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player), while rebuilding it as a private, bilingual, zero-configuration studio inside the extension (see [`docs/RESEARCH.md`](docs/RESEARCH.md)).
+
 ### New in 1.1 — Private Video IELTS Lab
 
 Turn the captions from almost any English video into active IELTS practice:
@@ -30,6 +44,7 @@ The workflow was informed by the open-source [`Libailin222/ielts-video-assistant
 - **Listening:** Four-section practice, adjustable playback, transcripts, scoring, and answer review.
 - **Writing:** Local AST-based analysis across Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Includes AWL detection and multiple readability indices.
 - **Speaking:** Three-part interview simulation, preparation and response timers, private voice recording, model answers, and self-assessment.
+- **Shadowing:** Chunked speak-along practice in the Video Lab, with 0.5×–2× playback, keyboard control, self-rating, private recording, and SM-2 spaced review of every chunk.
 - **Vocabulary:** An SM-2 spaced-repetition deck, contextual examples, collocations, synonyms, and mini-quizzes.
 - **Mock exam and analytics:** Composite band calculation, local history, streaks, and portable JSON backup/restore.
 - **Web vocabulary inspector:** Select supported academic vocabulary on a page to see CEFR/band guidance and bilingual definitions.
@@ -80,7 +95,8 @@ Astryx is used as the accessible component and theme system. The writing **AST**
 npm ci
 npm test
 npm run test:coverage
-npm run test:coverage:video   # enforces 100% for the new Video Lab
+npm run test:coverage:video       # enforces 100% for the Video Lab
+npm run test:coverage:shadowing   # enforces 100% for the Shadowing Studio
 npm run typecheck
 npm run lint
 npm run astryx -- doctor
@@ -98,7 +114,7 @@ The production extension is written to `dist/`.
 
 ## ✅ Quality policy
 
-The Video Lab ships with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
+The Video Lab and the Shadowing Studio each ship with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
 
 Security and accessibility expectations include semantic controls, keyboard-visible focus, bilingual accessible names, no HTML injection of transcript content, URL host validation, and no remote execution.
 

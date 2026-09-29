@@ -6,6 +6,7 @@ import {
   triggerDownload
 } from '../../src/storage/exportImport';
 import { DEFAULT_STORAGE_DATA } from '../../src/storage/storageService';
+import { buildShadowingChunks, createShadowingSession } from '../../src/shadowing/shadowingEngine';
 
 describe('exportImport', () => {
   it('exports data into structured JSON with version and timestamp', () => {
@@ -45,8 +46,26 @@ describe('exportImport', () => {
     expect(validated.srsCards).toEqual([]);
     expect(validated.customVocabulary).toEqual([]);
     expect(validated.testHistory).toEqual([]);
+    expect(validated.shadowingSessions).toEqual([]);
     expect(validated.bookmarks).toEqual([]);
     expect(validated.notes).toEqual([]);
+  });
+
+  it('round-trips shadowing studio sessions through export and import', () => {
+    const cues = [{ id: 'cue-1', startSeconds: 0, text: 'One chunk to shadow.' }];
+    const record = {
+      id: 'shadow-backup',
+      session: createShadowingSession(buildShadowingChunks(cues, 8), new Date('2026-09-29T10:00:00Z')),
+      sourceUrl: '',
+      createdAt: '2026-09-29T10:00:00Z',
+      updatedAt: '2026-09-29T10:00:00Z',
+      completedAt: null,
+    };
+    const exported = exportDataAsJSON({ ...DEFAULT_STORAGE_DATA, shadowingSessions: [record] });
+    const validated = validateImportData(exported);
+    expect(validated.shadowingSessions).toHaveLength(1);
+    expect(validated.shadowingSessions[0].id).toBe('shadow-backup');
+    expect(validated.shadowingSessions[0].session.chunks[0].text).toBe('One chunk to shadow.');
   });
 
   it('throws an error on invalid import payload', () => {

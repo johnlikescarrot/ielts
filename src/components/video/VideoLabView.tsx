@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
+import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Mic, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { useI18n } from '../../i18n/i18nContext';
 import {
@@ -10,6 +10,7 @@ import {
   scoreLesson,
   VideoLesson,
 } from '../../video/videoLesson';
+import { ShadowingStudioView } from '../shadowing/ShadowingStudioView';
 
 const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sustainable transport systems.
 [00:08] The evidence indicates that accessible public transit benefits entire communities.
@@ -20,6 +21,7 @@ const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sus
 [00:48] In conclusion, effective urban planning requires cooperation, investment, and careful assessment.`;
 
 type LabStep = 'source' | 'practice' | 'vocabulary';
+type LabMode = 'cloze' | 'shadowing';
 
 export const VideoLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -27,6 +29,7 @@ export const VideoLabView: React.FC = () => {
   const [transcript, setTranscript] = useState('');
   const [lesson, setLesson] = useState<VideoLesson | null>(null);
   const [step, setStep] = useState<LabStep>('source');
+  const [mode, setMode] = useState<LabMode>('cloze');
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
@@ -49,6 +52,21 @@ export const VideoLabView: React.FC = () => {
     setStep('practice');
   };
 
+  const startShadowing = () => {
+    const nextLesson = createVideoLesson(transcript);
+    if (nextLesson.wordCount < 20) {
+      setError(t('video.errorTranscript'));
+      return;
+    }
+    setLesson(nextLesson);
+    setMode('shadowing');
+    setAnswers({});
+    setSubmitted(false);
+    setShowHints({});
+    setError('');
+    setStep('practice');
+  };
+
   const speakCue = (text: string) => {
     window.speechSynthesis?.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -61,6 +79,7 @@ export const VideoLabView: React.FC = () => {
     setLesson(null);
     setAnswers({});
     setSubmitted(false);
+    setMode('cloze');
     setStep('source');
   };
 
@@ -91,6 +110,7 @@ export const VideoLabView: React.FC = () => {
         {(['source', 'practice', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
+          const itemLabel = item === 'practice' && mode === 'shadowing' ? t('shadowing.studio') : t(`video.${item}`);
           return (
             <button
               key={item}
@@ -102,7 +122,7 @@ export const VideoLabView: React.FC = () => {
               className={`rounded-xl border px-3 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${active ? 'border-indigo-500 bg-indigo-50 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 dark:border-slate-700 dark:bg-slate-800'} disabled:cursor-not-allowed disabled:opacity-50`}
             >
               <span className="block text-[10px] font-bold uppercase tracking-widest opacity-60">{t('video.step')} {index + 1}</span>
-              <span className="block text-sm font-bold mt-0.5">{t(`video.${item}`)}</span>
+              <span className="block text-sm font-bold mt-0.5">{itemLabel}</span>
             </button>
           );
         })}
@@ -149,6 +169,7 @@ export const VideoLabView: React.FC = () => {
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button label={t('video.generate')} variant="primary" size="lg" onClick={generate} icon={<Sparkles size={18} />} />
+              <Button label={t('video.startShadowing')} variant="secondary" size="lg" onClick={startShadowing} icon={<Mic size={18} />} />
               {transcript && <span className="text-xs text-slate-500">{transcript.trim().split(/\s+/).length} {t('common.words')}</span>}
             </div>
           </section>
@@ -172,7 +193,11 @@ export const VideoLabView: React.FC = () => {
         </div>
       )}
 
-      {step === 'practice' && lesson && (
+      {step === 'practice' && lesson && mode === 'shadowing' && (
+        <ShadowingStudioView lesson={lesson} sourceUrl={sourceUrl} onNewLesson={reset} />
+      )}
+
+      {step === 'practice' && lesson && mode === 'cloze' && (
         <section>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
