@@ -137,15 +137,15 @@ export function extractCoherenceMetrics(ast: EssayAST): CoherenceMetrics {
   const paragraphCount = ast.paragraphs.length;
   const transitionWordsSet = new Set<string>();
 
-  ast.paragraphs.forEach(p => {
-    p.sentences.forEach(s => {
-      s.tokens.forEach(t => {
+  for (const p of ast.paragraphs) {
+    for (const s of p.sentences) {
+      for (const t of s.tokens) {
         if (t.isTransition) {
           transitionWordsSet.add(t.normalized);
         }
-      });
-    });
-  });
+      }
+    }
+  }
 
   const transitionWordCount = transitionWordsSet.size;
   const transitionsPerParagraph = paragraphCount > 0 ? Math.round((transitionWordCount / paragraphCount) * 10) / 10 : 0;
