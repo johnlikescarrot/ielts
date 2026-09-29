@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ProgressBarProps {
-  value: number; // 0 to 100
+  progress: number; // 0 to 100
   max?: number;
   label?: string;
   sublabel?: string;
@@ -11,7 +11,7 @@ export interface ProgressBarProps {
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
-  value,
+  progress,
   max = 100,
   label,
   sublabel,
@@ -19,7 +19,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   showPercentage = true,
   className = '',
 }) => {
-  const percentage = Math.min(100, Math.max(0, Math.round((value / max) * 100)));
+  const percentage = Math.min(100, Math.max(0, Math.round((progress / max) * 100)));
 
   const colorMap = {
     indigo: 'bg-indigo-600',
