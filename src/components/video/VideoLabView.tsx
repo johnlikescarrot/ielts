@@ -1,6 +1,22 @@
-import React, { useMemo, useState } from 'react';
-import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  BookOpenCheck,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Headphones,
+  Keyboard,
+  Lightbulb,
+  Play,
+  Repeat2,
+  RotateCcw,
+  Sparkles,
+  Video,
+} from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
+import { ProgressBar } from '@astryxdesign/core/ProgressBar';
 import { useI18n } from '../../i18n/i18nContext';
 import {
   createVideoLesson,
@@ -10,6 +26,11 @@ import {
   scoreLesson,
   VideoLesson,
 } from '../../video/videoLesson';
+import {
+  createShadowingChunks,
+  getAdjacentChunkIndex,
+  getShadowingProgress,
+} from '../../video/shadowingSession';
 
 const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sustainable transport systems.
 [00:08] The evidence indicates that accessible public transit benefits entire communities.
@@ -19,7 +40,11 @@ const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sus
 [00:40] Citizens increasingly support environmental measures when the economic benefits are clear.
 [00:48] In conclusion, effective urban planning requires cooperation, investment, and careful assessment.`;
 
-type LabStep = 'source' | 'practice' | 'vocabulary';
+type LabStep = 'source' | 'shadowing' | 'practice' | 'vocabulary';
+
+const SHADOWING_SPEEDS = [0.7, 0.85, 1, 1.15, 1.3] as const;
+const SHADOWING_REPEATS = [1, 3, 5] as const;
+const CHUNK_LENGTHS = [3, 5, 8, 12, 20, 30, 60, 120] as const;
 
 export const VideoLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -31,9 +56,23 @@ export const VideoLabView: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
+  const [chunkSeconds, setChunkSeconds] = useState(8);
+  const [shadowIndex, setShadowIndex] = useState(0);
+  const [shadowRate, setShadowRate] = useState(0.85);
+  const [shadowRepeats, setShadowRepeats] = useState(3);
+  const [completedRepeats, setCompletedRepeats] = useState(0);
+  const [isShadowPlaying, setIsShadowPlaying] = useState(false);
+  const [showShadowText, setShowShadowText] = useState(false);
+  const [autoAdvance, setAutoAdvance] = useState(true);
 
   const videoId = useMemo(() => getYouTubeVideoId(sourceUrl), [sourceUrl]);
   const score = lesson ? scoreLesson(lesson.questions, answers) : 0;
+  const shadowChunks = useMemo(
+    () => createShadowingChunks(lesson?.cues ?? [], chunkSeconds),
+    [lesson, chunkSeconds],
+  );
+  const currentShadowChunk = shadowChunks[shadowIndex];
+  const shadowProgress = getShadowingProgress(shadowIndex, shadowChunks.length);
 
   const generate = () => {
     const nextLesson = createVideoLesson(transcript);
@@ -46,7 +85,10 @@ export const VideoLabView: React.FC = () => {
     setSubmitted(false);
     setShowHints({});
     setError('');
-    setStep('practice');
+    setShadowIndex(0);
+    setCompletedRepeats(0);
+    setShowShadowText(false);
+    setStep('shadowing');
   };
 
   const speakCue = (text: string) => {
@@ -57,10 +99,70 @@ export const VideoLabView: React.FC = () => {
     window.speechSynthesis?.speak(utterance);
   };
 
+  const stopShadowing = () => {
+    window.speechSynthesis?.cancel();
+    setIsShadowPlaying(false);
+  };
+
+  const moveShadow = (direction: -1 | 1) => {
+    stopShadowing();
+    setCompletedRepeats(0);
+    setShadowIndex(current => getAdjacentChunkIndex(current, shadowChunks.length, direction));
+  };
+
+  const playShadowChunk = () => {
+    const chunk = currentShadowChunk!;
+    stopShadowing();
+    setCompletedRepeats(0);
+    setIsShadowPlaying(true);
+    const playingIndex = shadowIndex;
+
+    const playIteration = (iteration: number) => {
+      const utterance = new SpeechSynthesisUtterance(chunk.text);
+      utterance.lang = 'en-GB';
+      utterance.rate = shadowRate;
+      utterance.onend = () => {
+        setCompletedRepeats(iteration);
+        if (iteration < shadowRepeats) {
+          playIteration(iteration + 1);
+          return;
+        }
+        setIsShadowPlaying(false);
+        if (autoAdvance) {
+          setShadowIndex(getAdjacentChunkIndex(playingIndex, shadowChunks.length, 1));
+        }
+      };
+      window.speechSynthesis?.speak(utterance);
+    };
+
+    playIteration(1);
+  };
+
+  useEffect(() => {
+    if (step !== 'shadowing') return undefined;
+    const handleShortcut = (event: KeyboardEvent) => {
+      const tagName = (event.target as HTMLElement | null)?.tagName;
+      if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') return;
+      if (event.key === 'ArrowLeft') moveShadow(-1);
+      if (event.key === 'ArrowRight') moveShadow(1);
+      if (event.key === ' ') {
+        event.preventDefault();
+        playShadowChunk();
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  });
+
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
   const reset = () => {
+    stopShadowing();
     setLesson(null);
     setAnswers({});
     setSubmitted(false);
+    setShadowIndex(0);
+    setCompletedRepeats(0);
     setStep('source');
   };
 
@@ -87,8 +189,8 @@ export const VideoLabView: React.FC = () => {
         </div>
       </section>
 
-      <div className="mb-7 grid grid-cols-3 gap-2" role="tablist" aria-label={t('video.workflow')}>
-        {(['source', 'practice', 'vocabulary'] as const).map((item, index) => {
+      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={t('video.workflow')}>
+        {(['source', 'shadowing', 'practice', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
           return (
@@ -98,7 +200,10 @@ export const VideoLabView: React.FC = () => {
               role="tab"
               aria-selected={active}
               disabled={disabled}
-              onClick={() => setStep(item)}
+              onClick={() => {
+                if (step === 'shadowing' && item !== 'shadowing') stopShadowing();
+                setStep(item);
+              }}
               className={`rounded-xl border px-3 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${active ? 'border-indigo-500 bg-indigo-50 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 dark:border-slate-700 dark:bg-slate-800'} disabled:cursor-not-allowed disabled:opacity-50`}
             >
               <span className="block text-[10px] font-bold uppercase tracking-widest opacity-60">{t('video.step')} {index + 1}</span>
@@ -147,6 +252,17 @@ export const VideoLabView: React.FC = () => {
             <p id="video-format-help" className="mt-2 text-xs text-slate-500">{t('video.formatHelp')}</p>
             {error && <p id="video-error" role="alert" className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 dark:bg-rose-950 dark:text-rose-200">{error}</p>}
 
+            <label htmlFor="shadow-chunk-length" className="mt-5 block text-sm font-semibold">{t('video.chunkLength')}</label>
+            <select
+              id="shadow-chunk-length"
+              value={chunkSeconds}
+              onChange={event => setChunkSeconds(Number(event.target.value))}
+              className="mt-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"
+            >
+              {CHUNK_LENGTHS.map(seconds => <option key={seconds} value={seconds}>{seconds} {t('video.seconds')}</option>)}
+            </select>
+            <p className="mt-2 text-xs text-slate-500">{t('video.chunkLengthHelp')}</p>
+
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button label={t('video.generate')} variant="primary" size="lg" onClick={generate} icon={<Sparkles size={18} />} />
               {transcript && <span className="text-xs text-slate-500">{transcript.trim().split(/\s+/).length} {t('common.words')}</span>}
@@ -170,6 +286,119 @@ export const VideoLabView: React.FC = () => {
             </div>
           </aside>
         </div>
+      )}
+
+      {step === 'shadowing' && lesson && currentShadowChunk && (
+        <section aria-labelledby="shadowing-heading" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-7">
+          <header className="flex flex-wrap items-start justify-between gap-4">
+            <section>
+              <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-300">{t('video.shadowingEyebrow')}</p>
+              <h2 id="shadowing-heading" className="mt-1 text-2xl font-black">{t('video.shadowingTitle')}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{t('video.shadowingHelp')}</p>
+            </section>
+            <p role="status" aria-live="polite" className="rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-200">
+              {shadowProgress.current} / {shadowProgress.total}
+            </p>
+          </header>
+
+          <section className="mt-6" aria-label={t('video.shadowingProgress')}>
+            <ProgressBar
+              label={t('video.shadowingProgress')}
+              value={shadowProgress.current}
+              max={shadowProgress.total}
+              hasValueLabel
+              formatValueLabel={(value, max) => `${value}/${max}`}
+              variant={shadowProgress.percent === 100 ? 'success' : 'accent'}
+            />
+          </section>
+
+          <article className="mt-6 rounded-2xl bg-slate-950 p-5 text-white sm:p-8">
+            <header className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-300">
+              <p className="font-mono">{formatTimestamp(currentShadowChunk.startSeconds)} → {formatTimestamp(currentShadowChunk.endSeconds)} · {currentShadowChunk.durationSeconds}s</p>
+              <p>{t('video.repeatProgress')}: {completedRepeats}/{shadowRepeats}</p>
+            </header>
+            {showShadowText ? (
+              <p className="mt-7 text-xl font-semibold leading-9 sm:text-2xl">{currentShadowChunk.text}</p>
+            ) : (
+              <p className="mt-7 rounded-xl border border-dashed border-slate-600 p-6 text-center text-slate-400">{t('video.transcriptHidden')}</p>
+            )}
+            <nav className="mt-7 flex flex-wrap items-center justify-center gap-3" aria-label={t('video.shadowControls')}>
+              <button
+                type="button"
+                onClick={() => moveShadow(-1)}
+                disabled={shadowIndex === 0}
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-3 font-semibold disabled:opacity-40"
+                aria-label={t('video.previousChunk')}
+              >
+                <ChevronLeft className="h-5 w-5" /> {t('common.previous')}
+              </button>
+              <button
+                type="button"
+                onClick={playShadowChunk}
+                className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-6 py-3 font-black text-white hover:bg-indigo-400"
+                aria-label={t('video.replayChunk')}
+              >
+                {isShadowPlaying ? <Repeat2 className="h-5 w-5 animate-pulse" /> : <Play className="h-5 w-5" />}
+                {isShadowPlaying ? t('video.repeating') : t('video.playAndRepeat')}
+              </button>
+              <button
+                type="button"
+                onClick={() => moveShadow(1)}
+                disabled={shadowIndex === shadowChunks.length - 1}
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-3 font-semibold disabled:opacity-40"
+                aria-label={t('video.nextChunk')}
+              >
+                {t('common.next')} <ChevronRight className="h-5 w-5" />
+              </button>
+            </nav>
+          </article>
+
+          <section className="mt-6 grid gap-4 md:grid-cols-3" aria-label={t('video.shadowSettings')}>
+            <label className="text-sm font-semibold">
+              {t('common.audioSpeed')}
+              <select
+                aria-label={t('common.audioSpeed')}
+                value={shadowRate}
+                onChange={event => setShadowRate(Number(event.target.value))}
+                className="mt-2 block w-full rounded-xl border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+              >
+                {SHADOWING_SPEEDS.map(speed => <option key={speed} value={speed}>{speed}×</option>)}
+              </select>
+            </label>
+            <label className="text-sm font-semibold">
+              {t('video.repetitions')}
+              <select
+                aria-label={t('video.repetitions')}
+                value={shadowRepeats}
+                onChange={event => setShadowRepeats(Number(event.target.value))}
+                className="mt-2 block w-full rounded-xl border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+              >
+                {SHADOWING_REPEATS.map(repeats => <option key={repeats} value={repeats}>{repeats}×</option>)}
+              </select>
+            </label>
+            <section className="flex flex-col justify-end gap-2 text-sm font-semibold">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={autoAdvance} onChange={event => setAutoAdvance(event.target.checked)} />
+                {t('video.autoAdvance')}
+              </label>
+              <button type="button" onClick={() => setShowShadowText(current => !current)} className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-300">
+                {showShadowText ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showShadowText ? t('video.hideTranscript') : t('video.revealTranscript')}
+              </button>
+            </section>
+          </section>
+
+          <aside className="mt-6 flex items-start gap-3 rounded-xl bg-indigo-50 p-4 text-sm text-indigo-900 dark:bg-indigo-950 dark:text-indigo-100">
+            <Keyboard className="mt-0.5 h-5 w-5 shrink-0" />
+            <p><strong>{t('video.keyboardTitle')}:</strong> {t('video.keyboardHelp')}</p>
+          </aside>
+
+          <footer className="mt-6 flex flex-wrap gap-3">
+            <Button label={t('video.continueChallenge')} variant="primary" onClick={() => { stopShadowing(); setStep('practice'); }} />
+            {videoId && <Button label={t('video.openVideo')} variant="secondary" icon={<ExternalLink size={16} />} onClick={() => openAt(currentShadowChunk.startSeconds)} />}
+            <Button label={t('video.newLesson')} variant="ghost" onClick={reset} />
+          </footer>
+        </section>
       )}
 
       {step === 'practice' && lesson && (

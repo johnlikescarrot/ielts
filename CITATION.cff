@@ -4,8 +4,8 @@ title: "IELTS Slayer: A private, bilingual Firefox IELTS preparation suite"
 type: software
 authors:
   - family-names: "johnlikescarrot"
-version: 1.1.0
-date-released: 2026-09-27
+version: 1.2.0
+date-released: 2026-09-29
 url: "https://github.com/johnlikescarrot/ielts"
 repository-code: "https://github.com/johnlikescarrot/ielts"
 license: MIT

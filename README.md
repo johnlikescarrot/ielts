@@ -10,13 +10,24 @@
 
 ## ✨ What makes it different
 
-### New in 1.1 — Private Video IELTS Lab
+### New in 1.2 — Private Shadowing Studio
 
-Turn the captions from almost any English video into active IELTS practice:
+The Video Lab now turns captions into a focused listen–imitate–repeat session before the listening challenge:
+
+- Choose safe, deterministic practice chunks from **3 to 120 seconds**.
+- Speak along with browser-generated English at **0.7× to 1.3× speed**.
+- Repeat each chunk one, three, or five times, with optional auto-advance.
+- Hide the transcript for listening-first practice, then reveal it to check phrasing.
+- Navigate with accessible controls or the Space and Arrow keyboard shortcuts.
+- Keep the complete workflow on-device with no account, API key, telemetry, or upload.
+
+The interaction design was informed by the privacy-first open-source [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player). IELTS Slayer adapts its learner-controlled chunking, replay, speed, auto-advance, subtitle, and keyboard patterns to a bilingual Firefox-extension workflow; no source code was copied.
+
+The complete Video Lab workflow is now:
 
 1. Paste a YouTube transcript, SRT caption file, timestamped text, or plain text.
-2. Generate a deterministic listening cloze entirely on-device.
-3. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
+2. Generate deterministic shadowing chunks and a listening cloze entirely on-device.
+3. Shadow short cues, or open a YouTube source at its exact timestamp.
 4. Retrieve the missing words and receive immediate answer feedback.
 5. Review detected Academic Word List terms with English and Vietnamese definitions.
 
