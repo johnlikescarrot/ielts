@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { useI18n } from '../../i18n/i18nContext';
-import { ShadowingPlayer } from './ShadowingPlayer';
+import { ShadowingStudio } from './ShadowingStudio';
 import {
   createVideoLesson,
   formatTimestamp,
@@ -20,7 +20,7 @@ const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sus
 [00:40] Citizens increasingly support environmental measures when the economic benefits are clear.
 [00:48] In conclusion, effective urban planning requires cooperation, investment, and careful assessment.`;
 
-type LabStep = 'source' | 'practice' | 'vocabulary';
+type LabStep = 'source' | 'shadow' | 'practice' | 'vocabulary';
 
 export const VideoLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -47,7 +47,7 @@ export const VideoLabView: React.FC = () => {
     setSubmitted(false);
     setShowHints({});
     setError('');
-    setStep('practice');
+    setStep('shadow');
   };
 
   const speakCue = (text: string) => {
@@ -88,8 +88,8 @@ export const VideoLabView: React.FC = () => {
         </div>
       </section>
 
-      <div className="mb-7 grid grid-cols-3 gap-2" role="tablist" aria-label={t('video.workflow')}>
-        {(['source', 'practice', 'vocabulary'] as const).map((item, index) => {
+      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={t('video.workflow')}>
+        {(['source', 'shadow', 'practice', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
           return (
@@ -173,6 +173,14 @@ export const VideoLabView: React.FC = () => {
         </div>
       )}
 
+      {step === 'shadow' && lesson && (
+        <ShadowingStudio
+          cues={lesson.cues}
+          onContinue={() => setStep('practice')}
+          onOpenAt={videoId ? openAt : undefined}
+        />
+      )}
+
       {step === 'practice' && lesson && (
         <section>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
@@ -202,9 +210,7 @@ export const VideoLabView: React.FC = () => {
               )}
             </div>
 
-            <ShadowingPlayer cues={lesson.cues} />
-
-            <div className="mt-6 space-y-4">
+            <div className="space-y-4">
               {lesson.questions.map((question, index) => {
                 const isCorrect = submitted && scoreLesson([question], answers) === 1;
                 return (

@@ -9,6 +9,13 @@ import {
   scoreLesson,
   timestampToSeconds,
 } from '../../src/video/videoLesson';
+import {
+  calculateShadowingProgress,
+  createShadowingChunks,
+  cycleShadowingSpeed,
+  getAdjacentChunkIndex,
+  normalizeChunkDuration,
+} from '../../src/video/shadowingSession';
 
 const TRANSCRIPT = `[00:00] Researchers analyze significant changes in urban transport.
 00:08 Sustainable systems benefit communities and reduce pollution.
@@ -115,5 +122,56 @@ An untimed final caption {\\an8}`);
     expect(getYouTubeVideoId('not a URL')).toBeNull();
     expect(getYouTubeVideoId('https://youtube.com/watch')).toBeNull();
     expect(getYouTubeVideoId('https://youtu.be/')).toBeNull();
+  });
+
+  it('creates safe, replayable shadowing chunks from caption cues', () => {
+    expect(normalizeChunkDuration(Number.NaN)).toBe(10);
+    expect(normalizeChunkDuration(2.9)).toBe(3);
+    expect(normalizeChunkDuration(10.9)).toBe(10);
+    expect(normalizeChunkDuration(121)).toBe(120);
+
+    expect(createShadowingChunks([
+      { id: 'late', startSeconds: 12.8, text: 'The second chunk starts here.' },
+      { id: 'empty', startSeconds: 6, text: '   ' },
+      { id: 'first', startSeconds: -3, text: 'First words.' },
+      { id: 'same-bucket', startSeconds: 4.9, text: 'More first words.' },
+      { id: 'invalid', startSeconds: Number.NaN, text: 'Skip me.' },
+    ], 10)).toEqual([
+      {
+        id: 'chunk-1',
+        startSeconds: 0,
+        endSeconds: 10,
+        text: 'First words. More first words.',
+        cueCount: 2,
+      },
+      {
+        id: 'chunk-2',
+        startSeconds: 10,
+        endSeconds: 20,
+        text: 'The second chunk starts here.',
+        cueCount: 1,
+      },
+    ]);
+    expect(createShadowingChunks([], 10)).toEqual([]);
+  });
+
+  it('navigates and reports progress through a bounded shadowing session', () => {
+    expect(getAdjacentChunkIndex(0, 'previous', 3)).toBe(0);
+    expect(getAdjacentChunkIndex(1.8, 'next', 3)).toBe(2);
+    expect(getAdjacentChunkIndex(99, 'next', 3)).toBe(2);
+    expect(getAdjacentChunkIndex(Number.NaN, 'previous', 3)).toBe(0);
+    expect(getAdjacentChunkIndex(5, 'next', 0)).toBe(0);
+
+    expect(calculateShadowingProgress(-4, 4)).toBe(25);
+    expect(calculateShadowingProgress(2, 4)).toBe(75);
+    expect(calculateShadowingProgress(Number.NaN, 4)).toBe(25);
+    expect(calculateShadowingProgress(99, 4)).toBe(100);
+    expect(calculateShadowingProgress(0, 0)).toBe(0);
+
+    expect(cycleShadowingSpeed(0.5)).toBe(0.75);
+    expect(cycleShadowingSpeed(0.75)).toBe(1);
+    expect(cycleShadowingSpeed(1)).toBe(1.25);
+    expect(cycleShadowingSpeed(1.25)).toBe(0.5);
+    expect(cycleShadowingSpeed(9)).toBe(0.5);
   });
 });

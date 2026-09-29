@@ -10,20 +10,19 @@
 
 ## ✨ What makes it different
 
-### New in 1.1 — Private Video IELTS Lab
+### New in 1.2 — Private Shadowing Studio and Video IELTS Lab
 
-Turn the captions from almost any English video into active IELTS practice:
+Turn the captions from almost any English video into a deliberate IELTS listening-and-speaking loop:
 
 1. Paste a YouTube transcript, SRT caption file, timestamped text, or plain text.
-2. Generate a deterministic listening cloze entirely on-device.
-3. Load a local audio/video file into the shadowing player, then replay caption-sized chunks with adjustable speed and keyboard shortcuts.
-4. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
-5. Retrieve the missing words and receive immediate answer feedback.
-6. Review detected Academic Word List terms with English and Vietnamese definitions.
+2. Split captions into **5-, 10-, or 15-second repeatable shadowing chunks** entirely on-device.
+3. Listen with Firefox speech synthesis, control **0.5×–1.25× speed**, replay, use auto-advance, or move between chunks with the keyboard.
+4. Hide/reveal captions, use the quick self-check, and open the learner-supplied YouTube source at the active chunk only when wanted.
+5. Continue to a deterministic listening cloze, receive immediate answer feedback, and review detected Academic Word List terms with English and Vietnamese definitions.
 
-No transcript is uploaded. No generative-AI output is presented as an official IELTS question. The parser accepts common caption formats, strips caption markup, caps lesson size safely, and produces the same lesson from the same input.
+No transcript is uploaded. No generative-AI output is presented as an official IELTS question. The parser accepts common caption formats, strips caption markup, caps lesson size safely, and produces the same lesson from the same input. Browser speech is a learner-controlled practice cue rather than the original speaker audio.
 
-The workflow was informed by the open-source [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant), while deliberately replacing its server and LLM dependency with a private, zero-configuration local engine suited to a browser extension.
+The interaction loop was informed by the open-source [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player), which demonstrates short chunks, replay, speed, auto-advance, and keyboard-first controls. It also draws on the timestamped-practice idea in [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant). IELTS Slayer deliberately replaces both projects' media/server concerns with a private, zero-configuration local transcript engine suited to a Firefox extension; no source code was copied.
 
 ### Complete preparation suite
 

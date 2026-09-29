@@ -6,20 +6,22 @@ IELTS Slayer is an independent study aid, not an experiment and not an official 
 
 ## Reference-project review
 
-The Video Lab was informed by a code and product review of [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant) at commit `f748738adb825409bddfe090beb2c3b6eff962a2` (reviewed 2026-09-27).
+The Shadowing Studio was informed by a product review of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (reviewed 2026-09-29). It is an MIT-licensed, single-file language-shadowing player built around short chunks of natural speech. Its useful interaction model is clear: choose a chunk length, replay the current chunk, adjust speed, optionally auto-advance, and keep hands on the keyboard with Space, Left/Right, and R shortcuts. It also supports user-selected local media/subtitles and YouTube links.
+
+IELTS Slayer adopts that learner-controlled rehearsal loop without taking control of media playback or uploading captions. It deterministically buckets a pasted transcript into 5-, 10-, or 15-second chunks, reads the active chunk through the browser's local speech synthesis, supports replay/speed/auto-advance/keyboard control, and offers an optional timestamp handoff to a learner-supplied YouTube URL. Browser speech is explicitly a practice cue, not a substitute for the source speaker. No source code from the project was copied.
+
+The Video Lab was also informed by a code and product review of [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant) at commit `f748738adb825409bddfe090beb2c3b6eff962a2` (reviewed 2026-09-27).
 
 That project is a React/Vite client plus Express server. It obtains YouTube/Bilibili transcripts, sends them to a configurable LLM, and generates reading, listening, speaking, writing, and translation material. Particularly useful interaction ideas include timestamped listening blanks, short auto-paused practice windows, transcript-grounded prompts, and in-context vocabulary.
 
-For a free, login-free Firefox extension, its main product risks are server availability, API-key configuration, remote transcript processing, nondeterministic output, and presenting generated questions with more authority than warranted. IELTS Slayer therefore adopts the learning workflow but not the server architecture:
+For a free, login-free Firefox extension, the main product risks are server availability, API-key configuration, remote transcript processing, nondeterministic output, and presenting generated questions with more authority than warranted. IELTS Slayer therefore adopts the learning workflow but not the server architecture:
 
 - transcripts are pasted by the learner and remain local;
-- parsing and question generation are deterministic TypeScript;
+- parsing, chunking, and question generation are deterministic TypeScript;
 - source URLs are optional and host-validated;
 - academic definitions come from the bundled vocabulary/AWL data;
 - automated exercises are explicitly described as study aids;
 - Vietnamese is a first-class interface and definition language.
-
-No source code from the reference project was copied.
 
 ## Evidence-to-feature map
 
@@ -28,7 +30,7 @@ No source code from the reference project was copied.
 | Keep captions central to the task | Captioned viewing has shown positive effects for L2 listening/vocabulary relative to uncaptioned viewing (Montero Perez et al., 2013; Kurokawa et al., 2024). | Effects vary by proficiency, caption design, genre, prior vocabulary, and outcome measure. |
 | Blank a salient content word | Retrieval makes the learner produce a form instead of merely rereading it. This is an application of retrieval-practice principles, not a claim that one cloze item guarantees retention. | Automatically selected words can be easier or harder than intended. Learners should use level-appropriate sources. |
 | Give immediate correctness feedback | Feedback closes the retrieval loop and prevents an incorrect response from becoming the only remembered form. | Exact-match scoring accepts normalized spelling but does not evaluate semantically equivalent answers. |
-| Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. | Browser speech synthesis is a fallback cue, not the original speaker audio. Opening the source requires network access. |
+| Replay a short shadowing chunk | The learner-controlled loop applies repeated, focused exposure before advancing; the interface deliberately keeps chunk size, replay, speed, and auto-advance visible. | Browser speech synthesis is a browser-provided practice cue, not the original speaker audio. Opening the learner-provided source requires network access. |
 | Expose English and Vietnamese definitions | Bilingual support lowers lookup friction for Vietnamese learners while retaining the English definition. | Bundled definitions cover known AWL/bank entries only; this is not a general dictionary. |
 | Encourage later review | Spacing has positive aggregate evidence in L2 learning (Kim & Webb, 2022). | The current Video Lab does not yet schedule transcript cues in SM-2; the separate vocabulary deck does use SM-2. |
 
@@ -42,4 +44,4 @@ No source code from the reference project was copied.
 
 ## Reproducibility
 
-The lesson engine lives in `src/video/videoLesson.ts`. Its behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; and YouTube URL validation. The complete Video Lab, including its React workflow, is held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.
+The caption lesson engine lives in `src/video/videoLesson.ts`, and the deterministic chunking/session engine lives in `src/video/shadowingSession.ts`. Their behavior is covered by unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; URL validation; chunk bounds; navigation; progress; and speed cycling. The complete Video Lab, including the React shadowing controls and learning workflow, is held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.
