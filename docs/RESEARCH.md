@@ -6,20 +6,24 @@ IELTS Slayer is an independent study aid, not an experiment and not an official 
 
 ## Reference-project review
 
-The Video Lab was informed by a code and product review of [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant) at commit `f748738adb825409bddfe090beb2c3b6eff962a2` (reviewed 2026-09-27).
+The Video Lab and Shadowing Studio were informed by a code and product review of:
 
-That project is a React/Vite client plus Express server. It obtains YouTube/Bilibili transcripts, sends them to a configurable LLM, and generates reading, listening, speaking, writing, and translation material. Particularly useful interaction ideas include timestamped listening blanks, short auto-paused practice windows, transcript-grounded prompts, and in-context vocabulary.
+1. [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant) at commit `f748738adb825409bddfe090beb2c3b6eff962a2` (reviewed 2026-09-27).
+   That project is a React/Vite client plus Express server. It obtains YouTube/Bilibili transcripts, sends them to a configurable LLM, and generates reading, listening, speaking, writing, and translation material.
+2. [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) at commit `fa5749f993d9396fe8da52f4eb27a27fa4b14844` (reviewed 2026-09-29).
+   That project demonstrates lightweight, chunk-based video and audio playback for shadowing practice with keyboard shortcuts, speed adjustment, and SRT subtitle parsing.
 
-For a free, login-free Firefox extension, its main product risks are server availability, API-key configuration, remote transcript processing, nondeterministic output, and presenting generated questions with more authority than warranted. IELTS Slayer therefore adopts the learning workflow but not the server architecture:
+For a free, login-free Firefox extension, server availability, API-key configuration, remote media/voice processing, and non-deterministic cloud responses present severe privacy and accessibility issues. IELTS Slayer adopts the active learning workflows while replacing external server dependencies with an entirely private local engine:
 
-- transcripts are pasted by the learner and remain local;
-- parsing and question generation are deterministic TypeScript;
+- transcripts and audio/video files remain 100% on-device;
+- parsing, slicing, and cloze generation are deterministic TypeScript;
+- voice recording and pronunciation scoring execute in-browser using Web Audio, SpeechRecognition/MediaRecorder, and Levenshtein alignment;
 - source URLs are optional and host-validated;
 - academic definitions come from the bundled vocabulary/AWL data;
-- automated exercises are explicitly described as study aids;
+- automated exercises and pronunciation scores are explicitly described as study aids;
 - Vietnamese is a first-class interface and definition language.
 
-No source code from the reference project was copied.
+No source code from the reference projects was copied.
 
 ## Evidence-to-feature map
 

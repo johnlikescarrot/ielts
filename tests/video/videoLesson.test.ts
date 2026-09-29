@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import {
+  calculateLevenshteinDistance,
+  calculatePronunciationScore,
   cefrToBand,
+  cleanCaption,
   createVideoLesson,
+  CURATED_IELTS_LESSONS,
+  exportToSRT,
+  exportToVTT,
   formatTimestamp,
   getYouTubeVideoId,
+  lookupVocabulary,
   normalizeAnswer,
+  parseSRT,
   parseTranscript,
+  parseVTT,
   scoreLesson,
   timestampToSeconds,
 } from '../../src/video/videoLesson';
@@ -23,9 +32,84 @@ describe('video lesson engine', () => {
     expect(timestampToSeconds('62:00')).toBeNull();
     expect(timestampToSeconds('00:99')).toBeNull();
     expect(timestampToSeconds('later')).toBeNull();
+    expect(timestampToSeconds('12:65:00')).toBeNull();
   });
 
-  it('parses SRT, time-only, prefixed, duplicate, and untimed captions', () => {
+  it('cleans markup and tags from captions', () => {
+    expect(cleanCaption('<i><b>Academic</b></i> {\\an8} {color:red} test')).toBe('Academic test');
+    expect(cleanCaption('Normal text')).toBe('Normal text');
+  });
+
+  it('parses SRT formatted subtitles', () => {
+    const srt = `1
+00:00:01,000 --> 00:00:04,500
+First line of SRT
+
+2
+00:00:05,000 --> 00:00:08,000
+Second line of SRT`;
+
+    const cues = parseSRT(srt);
+    expect(cues).toHaveLength(2);
+    expect(cues[0]).toEqual({
+      id: 'cue-1',
+      startSeconds: 1,
+      endSeconds: 4,
+      text: 'First line of SRT',
+    });
+
+    expect(parseSRT('')).toEqual([]);
+    expect(parseSRT('invalid text without timestamps')).toEqual([]);
+    expect(parseSRT('1\n99:99:99,000 --> 99:99:99,000\nInvalid')).toEqual([]);
+    expect(parseSRT('1\n00:00:01,000 --> 99:99:99,000\nValid start invalid end')).toHaveLength(1);
+    expect(parseSRT('1\n00:00:01,000 --> 00:00:04,000\n<i></i>')).toHaveLength(0);
+  });
+
+  it('parses VTT formatted subtitles', () => {
+    const vtt = `WEBVTT - Sample
+
+1
+00:01.000 --> 00:04.500
+First VTT cue
+
+2
+00:05.000 --> 00:08.000
+Second VTT cue`;
+
+    const cues = parseVTT(vtt);
+    expect(cues).toHaveLength(2);
+    expect(cues[0]).toEqual({
+      id: 'cue-1',
+      startSeconds: 1,
+      endSeconds: 4,
+      text: 'First VTT cue',
+    });
+
+    expect(parseVTT('')).toEqual([]);
+    expect(parseVTT('WEBVTT\n\nNo timestamps here')).toEqual([]);
+    expect(parseVTT('WEBVTT\n\n00:99.000 --> 00:99.000\nInvalid')).toEqual([]);
+    expect(parseVTT('WEBVTT\n\n00:01.000 --> 99:99.000\nValid start invalid end')).toHaveLength(1);
+    expect(parseVTT('WEBVTT\n\n00:01.000 --> 00:04.000\n<i></i>')).toHaveLength(0);
+  });
+
+  it('exports cues to SRT and VTT formats', () => {
+    const sampleCues = [
+      { id: 'cue-1', startSeconds: 5, endSeconds: 9, text: 'Hello world.' },
+      { id: 'cue-2', startSeconds: 3661, text: 'Second cue without end.' },
+    ];
+
+    const srtOutput = exportToSRT(sampleCues);
+    expect(srtOutput).toContain('00:00:05,000 --> 00:00:09,000');
+    expect(srtOutput).toContain('01:01:01,000 --> 01:01:05,000');
+    expect(srtOutput).toContain('Hello world.');
+
+    const vttOutput = exportToVTT(sampleCues);
+    expect(vttOutput).toContain('WEBVTT');
+    expect(vttOutput).toContain('00:00:05.000 --> 00:00:09.000');
+    expect(vttOutput).toContain('Hello world.');
+  });
+
+  it('parses SRT, time-only, prefixed, duplicate, and untimed captions in parseTranscript', () => {
     const cues = parseTranscript(`1
 00:00:01,000 --> 00:00:04,000
 <i>Academic research matters.</i>
@@ -52,6 +136,19 @@ An untimed final caption {\\an8}`);
     expect(cefrToBand('C2')).toBe(8.5);
     expect(cefrToBand('C1')).toBe(7.5);
     expect(cefrToBand('B2')).toBe(6.5);
+    expect(cefrToBand('A1')).toBe(6.5);
+  });
+
+  it('looks up vocabulary correctly in bank and academic list', () => {
+    const bankVocab = lookupVocabulary('mitigate');
+    expect(bankVocab).not.toBeNull();
+    expect(bankVocab?.word.toLowerCase()).toBe('mitigate');
+
+    const awlVocab = lookupVocabulary('analyze');
+    expect(awlVocab).not.toBeNull();
+    expect(awlVocab?.word.toLowerCase()).toBe('analyze');
+
+    expect(lookupVocabulary('xyzrandomnonexistentword')).toBeNull();
   });
 
   it('creates deterministic, distributed cloze questions and known vocabulary', () => {
@@ -110,10 +207,82 @@ An untimed final caption {\\an8}`);
     expect(getYouTubeVideoId(`https://www.youtube.com/watch?v=${id}`)).toBe(id);
     expect(getYouTubeVideoId(`https://youtube.com/embed/${id}`)).toBe(id);
     expect(getYouTubeVideoId(`https://youtube.com/shorts/${id}`)).toBe(id);
+    expect(getYouTubeVideoId(`https://youtube.com/live/${id}`)).toBe(id);
     expect(getYouTubeVideoId('https://youtube.example/watch?v=dQw4w9WgXcQ')).toBeNull();
     expect(getYouTubeVideoId('https://evilyoutube.com/watch?v=dQw4w9WgXcQ')).toBeNull();
     expect(getYouTubeVideoId('not a URL')).toBeNull();
     expect(getYouTubeVideoId('https://youtube.com/watch')).toBeNull();
     expect(getYouTubeVideoId('https://youtu.be/')).toBeNull();
+  });
+
+  it('calculates Levenshtein distance properly', () => {
+    expect(calculateLevenshteinDistance('', '')).toBe(0);
+    expect(calculateLevenshteinDistance('hello', '')).toBe(5);
+    expect(calculateLevenshteinDistance('', 'world')).toBe(5);
+    expect(calculateLevenshteinDistance('kitten', 'sitting')).toBe(3);
+    expect(calculateLevenshteinDistance('saturday', 'sunday')).toBe(3);
+  });
+
+  it('evaluates pronunciation scores across all score and band brackets', () => {
+    // Empty target
+    const emptyTarget = calculatePronunciationScore('', '');
+    expect(emptyTarget.score).toBe(100);
+    expect(emptyTarget.band).toBe(9.0);
+
+    // Empty spoken
+    const emptySpoken = calculatePronunciationScore('hello world', '');
+    expect(emptySpoken.score).toBe(0);
+    expect(emptySpoken.band).toBe(5.0);
+    expect(emptySpoken.matchedWords.every(w => w.status === 'missing')).toBe(true);
+
+    // Perfect match (Band 9.0 >= 92)
+    const perfect = calculatePronunciationScore('mitigate environmental degradation', 'mitigate environmental degradation');
+    expect(perfect.score).toBe(100);
+    expect(perfect.band).toBe(9.0);
+
+    // Band 8.5 (score >= 82)
+    const band85 = calculatePronunciationScore('comprehensive educational workshops augmented citizen participation', 'comprehensive educational workshop augment citizen participation');
+    expect(band85.band).toBeGreaterThanOrEqual(8.0);
+
+    // Exact brackets for 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0
+    // Test word matching with short words and long words
+    const res80 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two three four five six seven eight');
+    expect(res80.band).toBe(8.0);
+
+    const res75 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two three four five six');
+    expect(res75.band).toBe(7.5);
+
+    const res70 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two three four five');
+    expect(res70.band).toBe(7.0);
+
+    const res65 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two three four');
+    expect(res65.band).toBe(6.5);
+
+    const res60 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two three');
+    expect(res60.band).toBe(6.0);
+
+    const res55 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one two');
+    expect(res55.band).toBe(5.5);
+
+    const res50 = calculatePronunciationScore('one two three four five six seven eight nine ten', 'one');
+    expect(res50.band).toBe(5.0);
+
+    // Mispronunciation branch with length <= 5 vs length > 5
+    const shortMispronounced = calculatePronunciationScore('cats dogs bird fish', 'cot dog bird fish');
+    expect(shortMispronounced.matchedWords.some(w => w.status === 'mispronounced' || w.status === 'correct')).toBe(true);
+
+    const longMispronounced = calculatePronunciationScore('sustainable environment degradation', 'sustainble enviroment degradtion');
+    expect(longMispronounced.matchedWords.some(w => w.status === 'mispronounced')).toBe(true);
+  });
+
+  it('has valid curated lessons in CURATED_IELTS_LESSONS', () => {
+    expect(CURATED_IELTS_LESSONS.length).toBeGreaterThanOrEqual(4);
+    for (const curated of CURATED_IELTS_LESSONS) {
+      expect(curated.id).toBeTruthy();
+      expect(curated.title).toBeTruthy();
+      expect(curated.transcript.length).toBeGreaterThan(20);
+      expect(curated.keyWords.length).toBeGreaterThan(0);
+      expect(curated.targetBand).toBeGreaterThanOrEqual(8.0);
+    }
   });
 });

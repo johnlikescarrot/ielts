@@ -68,13 +68,18 @@ class MockMediaRecorder {
 
   start() {
     this.state = 'recording';
-    if (this.ondataavailable) {
-      this.ondataavailable({ data: new Blob(['mock audio'], { type: 'audio/webm' }) });
-    }
+    setTimeout(() => {
+      if (this.ondataavailable) {
+        this.ondataavailable({ data: new Blob(['mock audio'], { type: 'audio/webm' }) });
+      }
+    }, 0);
   }
 
   stop() {
     this.state = 'inactive';
+    if (this.ondataavailable) {
+      this.ondataavailable({ data: new Blob(['mock audio'], { type: 'audio/webm' }) });
+    }
     if (this.onstop) {
       this.onstop();
     }
@@ -104,6 +109,14 @@ HTMLAnchorElement.prototype.click = () => {};
 window.URL.createObjectURL = () => 'blob:mock-url';
 window.URL.revokeObjectURL = () => {};
 
-// Polyfill HTMLMediaElement play/pause
+// Polyfill HTMLMediaElement play/pause and currentTime
+let mockCurrentTime = 0;
+Object.defineProperty(HTMLMediaElement.prototype, 'currentTime', {
+  get: () => mockCurrentTime,
+  set: (val: number) => {
+    mockCurrentTime = val;
+  },
+  configurable: true,
+});
 HTMLMediaElement.prototype.play = async () => {};
 HTMLMediaElement.prototype.pause = () => {};

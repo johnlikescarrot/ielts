@@ -10,19 +10,21 @@
 
 ## ✨ What makes it different
 
-### New in 1.1 — Private Video IELTS Lab
+### New in 1.1 — Private Video IELTS Lab & Shadowing Studio
 
-Turn the captions from almost any English video into active IELTS practice:
+Turn any captioned English video or local media file into active IELTS listening and speaking practice:
 
-1. Paste a YouTube transcript, SRT caption file, timestamped text, or plain text.
-2. Generate a deterministic listening cloze entirely on-device.
-3. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
-4. Retrieve the missing words and receive immediate answer feedback.
-5. Review detected Academic Word List terms with English and Vietnamese definitions.
+1. **Multi-Source Support:** Load YouTube videos, drag-and-drop local video/audio files (MP4, WebM, MKV, MP3, WAV), paste YouTube transcripts, or upload `.srt` / `.vtt` subtitles.
+2. **Chunk-by-Chunk Shadowing Studio:** Sliced playback by subtitle cue or configurable time intervals, with speed cycling (`0.5x` to `2.0x`), subtitle overlay toggling, auto-advance, and smart "Shadow Echo Pause".
+3. **On-Device Voice Recording & Pronunciation Scoring:** Record voice shadowing directly in the browser; receive immediate phonetic alignment, Levenshtein distance accuracy scoring, word-level color breakdown, and an IELTS Pronunciation Band estimate (`Band 5.0` to `9.0`).
+4. **Keyboard Shortcuts:** Ergonomic hotkeys for rapid practice (`Space` to replay/pause, `←` / `→` for previous/next chunk, `R` to cycle speed, `M` to record voice, `A` to toggle auto-advance, `S` for subtitles).
+5. **Interactive Subtitle Timeline & Search:** Live search filter across all caption cues, jump to timestamp, and one-click export to clean `.SRT` or `.VTT`.
+6. **Curated IELTS Band 8.5–9.0 Library:** Preloaded high-scoring model responses covering Speaking Part 1, Part 2 (Cue Card), Part 3, and Listening Section 4 academic lectures.
+7. **Listening Cloze Challenge & Spaced Repetition:** Deterministic on-device cloze exercises, immediate scoring, and one-click addition of detected Academic Word List terms directly into your SM-2 flashcard deck.
 
-No transcript is uploaded. No generative-AI output is presented as an official IELTS question. The parser accepts common caption formats, strips caption markup, caps lesson size safely, and produces the same lesson from the same input.
+No transcript or voice recording is uploaded to external servers. No generative-AI key or login required.
 
-The workflow was informed by the open-source [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant), while deliberately replacing its server and LLM dependency with a private, zero-configuration local engine suited to a browser extension.
+The architecture was informed by open-source research and tools including [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) and [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant), engineered into a 100% private, zero-configuration local engine suited to a Firefox browser extension.
 
 ### Complete preparation suite
 
