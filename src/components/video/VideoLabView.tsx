@@ -10,6 +10,7 @@ import {
   scoreLesson,
   VideoLesson,
 } from '../../video/videoLesson';
+import { createShadowingChunks, createShadowingSession, currentChunk, markChunkFinished, moveChunk, sessionProgress, ShadowingSession } from '../../video/shadowingSession';
 
 const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sustainable transport systems.
 [00:08] The evidence indicates that accessible public transit benefits entire communities.
@@ -31,6 +32,7 @@ export const VideoLabView: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
+  const [shadowing, setShadowing] = useState<ShadowingSession | null>(null);
 
   const videoId = useMemo(() => getYouTubeVideoId(sourceUrl), [sourceUrl]);
   const score = lesson ? scoreLesson(lesson.questions, answers) : 0;
@@ -42,6 +44,7 @@ export const VideoLabView: React.FC = () => {
       return;
     }
     setLesson(nextLesson);
+    setShadowing(createShadowingSession(createShadowingChunks(nextLesson.cues, nextLesson.durationSeconds)));
     setAnswers({});
     setSubmitted(false);
     setShowHints({});
@@ -187,6 +190,23 @@ export const VideoLabView: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {shadowing && currentChunk(shadowing) && (
+            <div className="mb-6 rounded-2xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-900 dark:bg-indigo-950/40" aria-label="Shadowing player">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-300">Shadowing loop</p>
+                  <p className="mt-1 text-lg font-bold text-indigo-950 dark:text-indigo-100">{currentChunk(shadowing)?.text}</p>
+                  <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-300">Chunk {shadowing.activeIndex + 1} of {shadowing.chunks.length} · {sessionProgress(shadowing)}% complete</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className="rounded-lg bg-white px-3 py-2 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-100 dark:bg-slate-800 dark:text-indigo-200" onClick={() => setShadowing(moveChunk(shadowing, -1))}>Previous</button>
+                  <button type="button" className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700" onClick={() => { const chunk = currentChunk(shadowing); if (chunk) speakCue(chunk.text); setShadowing(markChunkFinished(shadowing)); }}>Listen and repeat</button>
+                  <button type="button" className="rounded-lg bg-white px-3 py-2 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-100 dark:bg-slate-800 dark:text-indigo-200" onClick={() => setShadowing(moveChunk(shadowing, 1))}>Next</button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-sm dark:border-slate-700 dark:bg-slate-800">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
