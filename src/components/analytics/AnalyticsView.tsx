@@ -166,8 +166,6 @@ export const AnalyticsView: React.FC = () => {
             <option value="listening">Listening</option>
             <option value="writing">Writing</option>
             <option value="speaking">Speaking</option>
-            <option value="video-lab">Video Lab</option>
-            <option value="shadowing">Shadowing</option>
             <option value="mock-test">Mock Exams</option>
           </select>
         </div>

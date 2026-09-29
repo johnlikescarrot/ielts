@@ -1,6 +1,6 @@
 {
   "name": "ielts-slayer-firefox",
-  "version": "1.2.0",
+  "version": "1.1.0",
   "description": "Top-tier, 100% Free & Privacy-first IELTS Preparation Suite for Firefox with AST Analysis and Dual English/Vietnamese Support",
   "private": true,
   "type": "module",
@@ -15,7 +15,6 @@
     "typecheck": "tsc --noEmit",
     "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs",
     "test:coverage:video": "vitest run tests/video/videoLesson.test.ts tests/components/videoLab.test.tsx --coverage --coverage.reportsDirectory=coverage/video --coverage.include='src/video/**' --coverage.include='src/components/video/**' --coverage.thresholds.100=true",
-    "test:coverage:shadowing": "vitest run tests/shadowing/ tests/components/shadowingStudio.test.tsx --coverage --coverage.reportsDirectory=coverage/shadowing --coverage.include='src/shadowing/**' --coverage.include='src/components/shadowing/**' --coverage.thresholds.100=true",
     "lint:styles": "stylelint 'src/**/*.css' 'public/**/*.css'",
     "lint:docs": "markdownlint README.md docs/RESEARCH.md",
     "lint:html": "htmlhint '*.html'"
