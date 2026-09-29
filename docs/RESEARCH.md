@@ -21,6 +21,12 @@ For a free, login-free Firefox extension, its main product risks are server avai
 
 No source code from the reference project was copied.
 
+### Shadowing-player review
+
+The Shadowing Studio was additionally informed by a product review of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (reviewed 2026-09-29). Its MIT-licensed, single-file player centres a language-shadowing workflow on chunk size, replay, pacing, local-media support, optional captions, and keyboard controls.
+
+IELTS Slayer adopts the learner-facing principle of short, self-paced repeatable turns while remaining a Firefox extension and preserving its privacy model. It implements original TypeScript turn grouping over a learner-pasted transcript, browser-native speech synthesis, an explicitly user-triggered in-memory microphone recorder, a selectable practice queue, and keyboard shortcuts. It does **not** copy source code, embed third-party media players, fetch remote captions, transmit microphone data, or offer an automated pronunciation score.
+
 ## Evidence-to-feature map
 
 | Product decision | Evidence and interpretation | Limitation |
@@ -28,7 +34,7 @@ No source code from the reference project was copied.
 | Keep captions central to the task | Captioned viewing has shown positive effects for L2 listening/vocabulary relative to uncaptioned viewing (Montero Perez et al., 2013; Kurokawa et al., 2024). | Effects vary by proficiency, caption design, genre, prior vocabulary, and outcome measure. |
 | Blank a salient content word | Retrieval makes the learner produce a form instead of merely rereading it. This is an application of retrieval-practice principles, not a claim that one cloze item guarantees retention. | Automatically selected words can be easier or harder than intended. Learners should use level-appropriate sources. |
 | Give immediate correctness feedback | Feedback closes the retrieval loop and prevents an incorrect response from becoming the only remembered form. | Exact-match scoring accepts normalized spelling but does not evaluate semantically equivalent answers. |
-| Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. | Browser speech synthesis is a fallback cue, not the original speaker audio. Opening the source requires network access. |
+| Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. Shadowing Studio makes the loop explicit with selectable 3–12 second turns, 1–3 local repetitions, pace controls, and a record/replay comparison step. | Browser speech synthesis is a fallback cue, not the original speaker audio. Opening the source requires network access. The extension does not evaluate pronunciation or claim a band-score effect. |
 | Expose English and Vietnamese definitions | Bilingual support lowers lookup friction for Vietnamese learners while retaining the English definition. | Bundled definitions cover known AWL/bank entries only; this is not a general dictionary. |
 | Encourage later review | Spacing has positive aggregate evidence in L2 learning (Kim & Webb, 2022). | The current Video Lab does not yet schedule transcript cues in SM-2; the separate vocabulary deck does use SM-2. |
 
@@ -42,4 +48,4 @@ No source code from the reference project was copied.
 
 ## Reproducibility
 
-The lesson engine lives in `src/video/videoLesson.ts`. Its behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; and YouTube URL validation. The complete Video Lab, including its React workflow, is held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.
+The lesson engines live in `src/video/videoLesson.ts` and `src/video/shadowing.ts`. Their behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; YouTube URL validation; shadowing-turn grouping; duration bounds; pace cycling; and index clamping. The complete Video Lab and Shadowing Studio React workflows are held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
+import { ShadowingLab } from './ShadowingLab';
 import { useI18n } from '../../i18n/i18nContext';
 import {
   createVideoLesson,
@@ -19,7 +20,7 @@ const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sus
 [00:40] Citizens increasingly support environmental measures when the economic benefits are clear.
 [00:48] In conclusion, effective urban planning requires cooperation, investment, and careful assessment.`;
 
-type LabStep = 'source' | 'practice' | 'vocabulary';
+type LabStep = 'source' | 'practice' | 'shadowing' | 'vocabulary';
 
 export const VideoLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -88,7 +89,7 @@ export const VideoLabView: React.FC = () => {
       </section>
 
       <div className="mb-7 grid grid-cols-3 gap-2" role="tablist" aria-label={t('video.workflow')}>
-        {(['source', 'practice', 'vocabulary'] as const).map((item, index) => {
+        {(['source', 'practice', 'shadowing', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
           return (
@@ -242,11 +243,20 @@ export const VideoLabView: React.FC = () => {
               ) : (
                 <Button label={t('video.tryAgain')} variant="secondary" icon={<RotateCcw size={16} />} onClick={() => { setAnswers({}); setSubmitted(false); }} />
               )}
+              <Button label={t('video.startShadowing')} variant="secondary" icon={<Headphones size={16} />} onClick={() => setStep('shadowing')} />
               <Button label={t('video.viewVocabulary')} variant="ghost" onClick={() => setStep('vocabulary')} />
               <Button label={t('video.newLesson')} variant="ghost" onClick={reset} />
             </div>
           </div>
         </section>
+      )}
+
+      {step === 'shadowing' && lesson && (
+        <ShadowingLab
+          cues={lesson.cues}
+          sourceUrl={sourceUrl}
+          onContinue={() => setStep('vocabulary')}
+        />
       )}
 
       {step === 'vocabulary' && lesson && (

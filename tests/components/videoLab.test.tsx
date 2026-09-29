@@ -40,6 +40,11 @@ describe('VideoLabView', () => {
     await user.click(screen.getByRole('button', { name: 'Check answers' }));
     expect(screen.getAllByText(/Answer:/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole('button', { name: 'Practice again' }));
+    await user.click(screen.getByRole('button', { name: 'Start shadowing studio' }));
+    expect(screen.getByRole('heading', { name: 'Hear it. Shadow it. Refine it.' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Continue to vocabulary' }));
+    expect(screen.getByRole('heading', { name: 'Academic vocabulary from this video' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Back to practice' }));
 
     await user.click(screen.getByRole('button', { name: 'Review vocabulary' }));
     expect(screen.getByRole('heading', { name: 'Academic vocabulary from this video' })).toBeInTheDocument();
@@ -57,7 +62,7 @@ describe('VideoLabView', () => {
     expect(await screen.findByRole('heading', { name: /Biến mọi video/i })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Dùng transcript mẫu' }));
     await user.click(screen.getByRole('button', { name: 'Tạo bài luyện nghe' }));
-    await user.click(screen.getByRole('tab', { name: /Bước 3 Từ vựng/i }));
+    await user.click(screen.getByRole('tab', { name: /Bước 4 Từ vựng/i }));
     expect(screen.getByText(/Thiết kế học tập: phụ đề/)).toBeInTheDocument();
     await user.click(screen.getByRole('tab', { name: /Bước 2 Luyện nghe/i }));
     expect(screen.getByRole('heading', { name: 'Thử thách nghe chủ động' })).toBeInTheDocument();

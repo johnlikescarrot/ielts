@@ -1,15 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Play, Pause, Download, AlertCircle } from 'lucide-react';
+import { AlertCircle, Download, Mic, Pause, Play, Square } from 'lucide-react';
+import { Button } from '@astryxdesign/core/Button';
+import { HStack } from '@astryxdesign/core/HStack';
+import { Section } from '@astryxdesign/core/Section';
+import { Text } from '@astryxdesign/core/Text';
+import { VStack } from '@astryxdesign/core/VStack';
 import { useI18n } from '../../i18n/i18nContext';
 
 export interface VoiceRecorderProps {
   onRecordingComplete?: (audioBlob: Blob, durationSeconds: number) => void;
   className?: string;
+  startLabel?: string;
+  stopLabel?: string;
+  playLabel?: string;
+  downloadLabel?: string;
+  fileNamePrefix?: string;
 }
 
 export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   onRecordingComplete,
   className = '',
+  startLabel,
+  stopLabel,
+  playLabel,
+  downloadLabel,
+  fileNamePrefix = 'ielts-speaking-take',
 }) => {
   const { t } = useI18n();
   const [isRecording, setIsRecording] = useState(false);
@@ -20,20 +35,40 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recordingTimeRef = useRef(0);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-    };
+  const resolvedStartLabel = startLabel ?? t('speaking.startRecording');
+  const resolvedStopLabel = stopLabel ?? t('speaking.stopRecording');
+  const resolvedPlayLabel = playLabel ?? t('speaking.playRecording');
+  const resolvedDownloadLabel = downloadLabel ?? t('common.download');
+
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => () => {
+    clearTimer();
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
   }, [audioUrl]);
+
+  const startTimer = () => {
+    clearTimer();
+    timerRef.current = setInterval(() => {
+      recordingTimeRef.current += 1;
+      setRecordingTime(recordingTimeRef.current);
+    }, 1000);
+  };
 
   const startRecording = async () => {
     setErrorMessage(null);
     setAudioUrl(null);
     audioChunksRef.current = [];
+    recordingTimeRef.current = 0;
     setRecordingTime(0);
 
     try {
@@ -46,50 +81,41 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
-        if (onRecordingComplete) {
-          onRecordingComplete(audioBlob, recordingTime);
-        }
+        onRecordingComplete?.(audioBlob, recordingTimeRef.current);
         stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorder.start();
       setIsRecording(true);
-
-      timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
-    } catch (err: any) {
+      startTimer();
+    } catch (err: unknown) {
       console.warn('VoiceRecorder: mic access error', err);
-      // Fallback mock recording for sandbox/tests or without mic hardware
+      // Keep a deterministic in-browser fallback for environments without mic hardware.
       setIsRecording(true);
-      timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
+      startTimer();
     }
   };
 
   const stopRecording = () => {
     if (!isRecording) return;
     setIsRecording(false);
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearTimer();
 
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     } else {
-      // Mock audio blob for offline/sandbox environments
+      // Mock audio blob for offline/sandbox environments.
       const mockBlob = new Blob(['mock-audio-data'], { type: 'audio/webm' });
       const url = URL.createObjectURL(mockBlob);
       setAudioUrl(url);
-      if (onRecordingComplete) onRecordingComplete(mockBlob, recordingTime);
+      onRecordingComplete?.(mockBlob, recordingTimeRef.current);
     }
   };
 
@@ -104,76 +130,68 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
     }
   };
 
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  const downloadRecording = () => {
+    if (!audioUrl) return;
+    const download = document.createElement('a');
+    download.href = audioUrl;
+    download.download = `${fileNamePrefix}-${Date.now()}.webm`;
+    download.click();
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
   return (
-    <div className={`p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm ${className}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+    <Section padding={4} className={className} aria-label={t('speaking.startRecording')}>
+      <VStack gap={3}>
+        <HStack gap={3} wrap="wrap" vAlign="center">
           {!isRecording ? (
-            <button
+            <Button
+              label={resolvedStartLabel}
+              variant="primary"
+              icon={<Mic size={16} />}
               onClick={startRecording}
-              className="flex items-center space-x-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-medium rounded-lg shadow-sm transition active:scale-95"
-            >
-              <Mic className="w-4 h-4" />
-              <span>{t('speaking.startRecording')}</span>
-            </button>
+            />
           ) : (
-            <button
+            <Button
+              label={resolvedStopLabel}
+              variant="destructive"
+              icon={<Square size={16} />}
               onClick={stopRecording}
-              className="flex items-center space-x-2 px-4 py-2 bg-slate-900 text-white font-medium rounded-lg shadow-sm animate-pulse transition active:scale-95"
-            >
-              <Square className="w-4 h-4 text-rose-400" />
-              <span>{t('speaking.stopRecording')}</span>
-            </button>
+            />
           )}
-
-          {isRecording && (
-            <div className="flex items-center space-x-2 text-rose-600 font-mono font-bold text-sm">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping" />
-              <span>{formatTime(recordingTime)}</span>
-            </div>
-          )}
-        </div>
+          {isRecording && <Text type="code" aria-live="polite">{formatTime(recordingTime)}</Text>}
+        </HStack>
 
         {audioUrl && !isRecording && (
-          <div className="flex items-center space-x-2">
-            <audio
-              ref={audioPlayerRef}
-              src={audioUrl}
-              onEnded={() => setIsPlayingAudio(false)}
-              className="hidden"
-            />
-            <button
+          <HStack gap={2} wrap="wrap" vAlign="center">
+            <audio ref={audioPlayerRef} src={audioUrl} onEnded={() => setIsPlayingAudio(false)} hidden />
+            <Button
+              label={isPlayingAudio ? t('common.pause') : resolvedPlayLabel}
+              variant="secondary"
+              icon={isPlayingAudio ? <Pause size={16} /> : <Play size={16} />}
               onClick={togglePlayAudio}
-              className="flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900 transition"
-            >
-              {isPlayingAudio ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              <span>{isPlayingAudio ? t('common.pause') : t('speaking.playRecording')}</span>
-            </button>
-
-            <a
-              href={audioUrl}
-              download={`ielts-speaking-take-${Date.now()}.webm`}
-              className="p-1.5 text-slate-500 hover:text-indigo-600 rounded-lg transition"
-              title="Download recording"
-            >
-              <Download className="w-4 h-4" />
-            </a>
-          </div>
+            />
+            <Button
+              label={resolvedDownloadLabel}
+              variant="ghost"
+              icon={<Download size={16} />}
+              isIconOnly
+              onClick={downloadRecording}
+            />
+          </HStack>
         )}
-      </div>
 
-      {errorMessage && (
-        <div className="mt-2 flex items-center space-x-1.5 text-xs text-rose-500">
-          <AlertCircle className="w-3.5 h-3.5" />
-          <span>{errorMessage}</span>
-        </div>
-      )}
-    </div>
+        {errorMessage && (
+          <HStack gap={2} vAlign="center">
+            <AlertCircle aria-hidden="true" size={16} />
+            <Text type="supporting">{errorMessage}</Text>
+          </HStack>
+        )}
+      </VStack>
+    </Section>
   );
 };

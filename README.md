@@ -24,6 +24,18 @@ No transcript is uploaded. No generative-AI output is presented as an official I
 
 The workflow was informed by the open-source [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant), while deliberately replacing its server and LLM dependency with a private, zero-configuration local engine suited to a browser extension.
 
+### New in 1.2 — Private Shadowing Studio
+
+The Video Lab now turns its timestamped captions into a focused speaking loop, inspired by a product review of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (MIT). The implementation is original TypeScript and keeps the extension's local-first model:
+
+1. Select a 3, 5, 8, or 12 second caption turn and jump through a visible practice queue.
+2. Play the browser's on-device model voice at 0.7×–1.15× and loop it one, two, or three times.
+3. Record, replay, and optionally download a private shadowing take; microphone audio is never uploaded or stored as learner analytics.
+4. Use <kbd>Space</kbd> to play or stop, <kbd>←</kbd>/<kbd>→</kbd> to change turns, and <kbd>R</kbd> to cycle pace when focus is not in a control.
+5. Open the learner-supplied YouTube source at the active timestamp only when explicitly selected.
+
+The studio uses Astryx sections, grids, stacks, buttons, status, and keyboard-hint components; responsive grids reduce from two regions to one without narrowing the speaking prompt below a readable width. See [`docs/SHADOWING_STUDIO.md`](docs/SHADOWING_STUDIO.md) for the interaction, privacy, layout, and evidence contract.
+
 ### Complete preparation suite
 
 - **Reading:** Academic and General Training passages, highlighting, timers, band conversion, and bilingual explanations.
