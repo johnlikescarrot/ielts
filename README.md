@@ -10,19 +10,20 @@
 
 ## ✨ What makes it different
 
-### New in 1.1 — Private Video IELTS Lab
+### New in 1.2 — Private Shadowing Video IELTS Lab
 
-Turn the captions from almost any English video into active IELTS practice:
+Turn the captions from almost any English video into a private shadowing and active-retrieval IELTS lab:
 
 1. Paste a YouTube transcript, SRT caption file, timestamped text, or plain text.
-2. Generate a deterministic listening cloze entirely on-device.
-3. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
-4. Retrieve the missing words and receive immediate answer feedback.
-5. Review detected Academic Word List terms with English and Vietnamese definitions.
+2. Build deterministic, repeatable shadowing chunks with adjustable length and speech speed.
+3. Use replay, auto-advance, and keyboard shortcuts to practise listen-pause-speak cycles.
+4. Generate a deterministic listening cloze entirely on-device.
+5. Open a YouTube source at the exact timestamp only when you choose to leave the extension.
+6. Retrieve the missing words, receive immediate answer feedback, and review detected Academic Word List terms with English and Vietnamese definitions.
 
 No transcript is uploaded. No generative-AI output is presented as an official IELTS question. The parser accepts common caption formats, strips caption markup, caps lesson size safely, and produces the same lesson from the same input.
 
-The workflow was informed by the open-source [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant), while deliberately replacing its server and LLM dependency with a private, zero-configuration local engine suited to a browser extension.
+The workflow was informed by open-source caption and shadowing tools, including [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) for chunked replay ergonomics and [`Libailin222/ielts-video-assistant`](https://github.com/Libailin222/ielts-video-assistant) for transcript-grounded IELTS practice ideas, while deliberately replacing server, account, and LLM dependencies with a private, zero-configuration local engine suited to a browser extension.
 
 ### Complete preparation suite
 
@@ -31,6 +32,7 @@ The workflow was informed by the open-source [`Libailin222/ielts-video-assistant
 - **Writing:** Local AST-based analysis across Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Includes AWL detection and multiple readability indices.
 - **Speaking:** Three-part interview simulation, preparation and response timers, private voice recording, model answers, and self-assessment.
 - **Vocabulary:** An SM-2 spaced-repetition deck, contextual examples, collocations, synonyms, and mini-quizzes.
+- **Video Lab:** Transcript-powered shadowing chunks, timestamped replay, local listening cloze generation, and bilingual academic vocabulary.
 - **Mock exam and analytics:** Composite band calculation, local history, streaks, and portable JSON backup/restore.
 - **Web vocabulary inspector:** Select supported academic vocabulary on a page to see CEFR/band guidance and bilingual definitions.
 
@@ -63,7 +65,7 @@ See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the product-to-evidence mapping, 
 - **Platform:** Firefox WebExtension Manifest V3
 - **Language:** TypeScript in strict mode
 - **UI:** React 19, Tailwind CSS, Lucide, and Meta's open-source [Astryx](https://github.com/facebook/astryx) design system
-- **Local analysis:** deterministic transcript parser, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
+- **Local analysis:** deterministic transcript parser, private shadowing planner, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
 - **Testing:** Vitest, React Testing Library, jsdom, and V8 coverage
 - **Quality:** ESLint, TypeScript, Super-Linter, and Astryx CLI design guidance
 
@@ -80,7 +82,7 @@ Astryx is used as the accessible component and theme system. The writing **AST**
 npm ci
 npm test
 npm run test:coverage
-npm run test:coverage:video   # enforces 100% for the new Video Lab
+npm run test:coverage:video   # enforces 100% for the Video Lab and Shadowing Coach
 npm run typecheck
 npm run lint
 npm run astryx -- doctor
@@ -98,7 +100,7 @@ The production extension is written to `dist/`.
 
 ## ✅ Quality policy
 
-The Video Lab ships with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
+The Video Lab and Shadowing Coach ship with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
 
 Security and accessibility expectations include semantic controls, keyboard-visible focus, bilingual accessible names, no HTML injection of transcript content, URL host validation, and no remote execution.
 

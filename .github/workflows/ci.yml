@@ -36,7 +36,7 @@ jobs:
       - name: Run full test suite with coverage ratchet
         run: npm run test:coverage
 
-      - name: Enforce 100% Video Lab coverage
+      - name: Enforce 100% Video Lab and Shadowing Coach coverage
         run: npm run test:coverage:video
 
       - name: Run Astryx design-system diagnostics
