@@ -73,6 +73,7 @@ describe('ShadowingLab', () => {
   it('provides local looping, recording, source navigation, keyboard commands, and a practice queue', async () => {
     const user = userEvent.setup();
     const onContinue = vi.fn();
+    const onPlayOriginal = vi.fn();
     const speak = vi.spyOn(window.speechSynthesis, 'speak');
     const open = vi.spyOn(window, 'open').mockImplementation(() => null);
 
@@ -82,6 +83,7 @@ describe('ShadowingLab', () => {
           cues={CUES}
           sourceUrl="https://youtu.be/dQw4w9WgXcQ"
           onContinue={onContinue}
+          onPlayOriginal={onPlayOriginal}
         />
       </I18nProvider>,
     );
@@ -96,6 +98,9 @@ describe('ShadowingLab', () => {
     expect(speak).toHaveBeenCalled();
     expect(speak.mock.calls[0][0]).toMatchObject({ rate: 1, text: `${CUES[0].text} ${CUES[1].text}` });
     await waitFor(() => expect(screen.getByRole('button', { name: 'Play model' })).toBeInTheDocument());
+
+    await user.click(screen.getByRole('button', { name: 'Play original cue' }));
+    expect(onPlayOriginal).toHaveBeenCalledWith({ startSeconds: 0, endSeconds: 6 });
 
     await user.click(screen.getByRole('button', { name: '0.7×' }));
     await user.click(screen.getByRole('button', { name: '1×' }));

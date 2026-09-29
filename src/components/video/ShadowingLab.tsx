@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ExternalLink, Headphones, Mic, RotateCcw, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { ExternalLink, Headphones, Mic, Play, RotateCcw, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { Grid } from '@astryxdesign/core/Grid';
 import { Heading } from '@astryxdesign/core/Heading';
@@ -11,6 +11,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { VoiceRecorder } from '../common/VoiceRecorder';
 import { useI18n } from '../../i18n/i18nContext';
+import type { CuePlaybackWindow } from '../../video/localMedia';
 import { formatTimestamp, getYouTubeVideoId, TranscriptCue } from '../../video/videoLesson';
 import {
   clampChunkIndex,
@@ -24,12 +25,13 @@ export interface ShadowingLabProps {
   cues: TranscriptCue[];
   sourceUrl: string;
   onContinue: () => void;
+  onPlayOriginal?: (window: CuePlaybackWindow) => void;
 }
 
 const CHUNK_OPTIONS = [3, 5, DEFAULT_CHUNK_SECONDS, 12] as const;
 const REPETITION_OPTIONS = [1, 2, 3] as const;
 
-export const ShadowingLab: React.FC<ShadowingLabProps> = ({ cues, sourceUrl, onContinue }) => {
+export const ShadowingLab: React.FC<ShadowingLabProps> = ({ cues, sourceUrl, onContinue, onPlayOriginal }) => {
   const { t } = useI18n();
   const [chunkSeconds, setChunkSeconds] = useState(DEFAULT_CHUNK_SECONDS);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -225,6 +227,17 @@ export const ShadowingLab: React.FC<ShadowingLabProps> = ({ cues, sourceUrl, onC
                     icon={isListening ? <RotateCcw size={16} /> : <Volume2 size={16} />}
                     onClick={isListening ? stopListening : playActiveChunk}
                   />
+                  {onPlayOriginal && (
+                    <Button
+                      label={t('video.playOriginal')}
+                      variant="secondary"
+                      icon={<Play size={16} />}
+                      onClick={() => onPlayOriginal({
+                        startSeconds: activeChunk.startSeconds,
+                        endSeconds: activeChunk.endSeconds,
+                      })}
+                    />
+                  )}
                   {videoId && (
                     <Button
                       label={t('video.openVideo')}

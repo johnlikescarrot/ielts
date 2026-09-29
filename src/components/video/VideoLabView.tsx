@@ -1,8 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { ShadowingLab } from './ShadowingLab';
 import { useI18n } from '../../i18n/i18nContext';
+import { LocalMediaPlayer } from './LocalMediaPlayer';
+import { LocalSourcePicker } from './LocalSourcePicker';
+import {
+  createLocalMediaSource,
+  CuePlaybackWindow,
+  getCuePlaybackWindow,
+  LocalMediaSource,
+  playLocalMediaCue,
+  releaseLocalMediaSource,
+  stopAtCueBoundary,
+} from '../../video/localMedia';
 import {
   createVideoLesson,
   formatTimestamp,
@@ -32,9 +43,25 @@ export const VideoLabView: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
+  const [subtitleFile, setSubtitleFile] = useState<File | null>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [localMediaSource, setLocalMediaSource] = useState<LocalMediaSource | null>(null);
+  const [mediaPlaybackRate, setMediaPlaybackRate] = useState(1);
+  const mediaElementRef = useRef<HTMLMediaElement | null>(null);
+  const cueEndRef = useRef<number | null>(null);
 
   const videoId = useMemo(() => getYouTubeVideoId(sourceUrl), [sourceUrl]);
   const score = lesson ? scoreLesson(lesson.questions, answers) : 0;
+
+  useEffect(() => {
+    if (!mediaFile) {
+      setLocalMediaSource(null);
+      return;
+    }
+    const source = createLocalMediaSource(mediaFile);
+    setLocalMediaSource(source);
+    return () => releaseLocalMediaSource(source);
+  }, [mediaFile]);
 
   const generate = () => {
     const nextLesson = createVideoLesson(transcript);
@@ -58,10 +85,31 @@ export const VideoLabView: React.FC = () => {
     window.speechSynthesis?.speak(utterance);
   };
 
+  const playOriginal = (cueWindow: CuePlaybackWindow) => {
+    const media = mediaElementRef.current!;
+    cueEndRef.current = cueWindow.endSeconds;
+    void playLocalMediaCue(media, cueWindow, mediaPlaybackRate);
+  };
+
+  const playCue = (cueId: string, text: string) => {
+    const media = mediaElementRef.current;
+    if (media && lesson) {
+      // Questions are generated from lesson cues, so this lookup is an invariant.
+      playOriginal(getCuePlaybackWindow(lesson.cues, cueId, media.duration)!);
+      return;
+    }
+    speakCue(text);
+  };
+
+  const handleMediaTimeUpdate: React.ReactEventHandler<HTMLMediaElement> = event => {
+    if (stopAtCueBoundary(event.currentTarget, cueEndRef.current)) cueEndRef.current = null;
+  };
+
   const reset = () => {
     setLesson(null);
     setAnswers({});
     setSubmitted(false);
+    cueEndRef.current = null;
     setStep('source');
   };
 
@@ -88,7 +136,7 @@ export const VideoLabView: React.FC = () => {
         </div>
       </section>
 
-      <div className="mb-7 grid grid-cols-3 gap-2" role="tablist" aria-label={t('video.workflow')}>
+      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={t('video.workflow')}>
         {(['source', 'practice', 'shadowing', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
@@ -148,6 +196,14 @@ export const VideoLabView: React.FC = () => {
             <p id="video-format-help" className="mt-2 text-xs text-slate-500">{t('video.formatHelp')}</p>
             {error && <p id="video-error" role="alert" className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 dark:bg-rose-950 dark:text-rose-200">{error}</p>}
 
+            <LocalSourcePicker
+              subtitleFile={subtitleFile}
+              mediaFile={mediaFile}
+              onSubtitleFileChange={setSubtitleFile}
+              onTranscriptLoaded={text => { setTranscript(text); setError(''); }}
+              onMediaFileChange={setMediaFile}
+            />
+
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button label={t('video.generate')} variant="primary" size="lg" onClick={generate} icon={<Sparkles size={18} />} />
               {transcript && <span className="text-xs text-slate-500">{transcript.trim().split(/\s+/).length} {t('common.words')}</span>}
@@ -175,6 +231,15 @@ export const VideoLabView: React.FC = () => {
 
       {step === 'practice' && lesson && (
         <section>
+          {localMediaSource && (
+            <LocalMediaPlayer
+              source={localMediaSource}
+              playbackRate={mediaPlaybackRate}
+              mediaRef={mediaElementRef}
+              onPlaybackRateChange={setMediaPlaybackRate}
+              onTimeUpdate={handleMediaTimeUpdate}
+            />
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
               [lesson.wordCount, t('video.transcriptWords')],
@@ -211,7 +276,7 @@ export const VideoLabView: React.FC = () => {
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-black text-indigo-700 dark:bg-indigo-950 dark:text-indigo-200">{index + 1}</span>
                       <div className="min-w-0 flex-1">
                         <div className="mb-3 flex flex-wrap items-center gap-2">
-                          <button type="button" onClick={() => speakCue(question.cueText)} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-semibold hover:bg-indigo-100 dark:bg-slate-700 dark:hover:bg-indigo-900" aria-label={`${t('video.playCue')} ${index + 1}`}>
+                          <button type="button" onClick={() => playCue(question.cueId, question.cueText)} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-semibold hover:bg-indigo-100 dark:bg-slate-700 dark:hover:bg-indigo-900" aria-label={`${t('video.playCue')} ${index + 1}`}>
                             <Play className="h-3.5 w-3.5" /> {formatTimestamp(question.startSeconds)}
                           </button>
                           {videoId && <button type="button" onClick={() => openAt(question.startSeconds)} className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-300"><ExternalLink className="h-3.5 w-3.5" />{t('video.openVideo')}</button>}
@@ -252,11 +317,23 @@ export const VideoLabView: React.FC = () => {
       )}
 
       {step === 'shadowing' && lesson && (
-        <ShadowingLab
-          cues={lesson.cues}
-          sourceUrl={sourceUrl}
-          onContinue={() => setStep('vocabulary')}
-        />
+        <section>
+          {localMediaSource && (
+            <LocalMediaPlayer
+              source={localMediaSource}
+              playbackRate={mediaPlaybackRate}
+              mediaRef={mediaElementRef}
+              onPlaybackRateChange={setMediaPlaybackRate}
+              onTimeUpdate={handleMediaTimeUpdate}
+            />
+          )}
+          <ShadowingLab
+            cues={lesson.cues}
+            sourceUrl={sourceUrl}
+            onContinue={() => setStep('vocabulary')}
+            onPlayOriginal={localMediaSource ? playOriginal : undefined}
+          />
+        </section>
       )}
 
       {step === 'vocabulary' && lesson && (

@@ -4,21 +4,22 @@
 
 Shadowing Studio is the speaking-practice stage of Video Lab. It converts local timestamped transcript cues into short, repeatable turns. It is a study aid, not pronunciation scoring, an IELTS assessment, or a claim that a browser voice matches the source speaker.
 
-The feature was informed by a product review of [Hossein-Mosaffa/shadowing-player](https://github.com/Hossein-Mosaffa/shadowing-player), an MIT-licensed, single-file player focused on chunked playback, replay, pace controls, and keyboard shortcuts. IELTS Slayer uses an original React/TypeScript implementation; no source code from that project was copied.
+The feature was informed by a product and code review of [Hossein-Mosaffa/shadowing-player](https://github.com/Hossein-Mosaffa/shadowing-player) at commit `0fa7f96903675d896a69a061e94db4dae3780792`, an MIT-licensed, single-file player focused on local media, subtitles, chunked playback, replay, pace controls, and keyboard shortcuts. IELTS Slayer uses an original React/TypeScript implementation; no source code from that project was copied.
 
 ## Learning loop
 
 1. **Select a turn.** `createShadowingChunks` joins adjacent captions into a 3, 5, 8, or 12 second speaking window. A learner can also select any turn from the queue.
-2. **Listen.** The browser `speechSynthesis` voice reads the active turn locally at 0.7×, 0.85×, 1×, or 1.15×. The learner selects one to three repetitions.
+2. **Listen.** A local audio/video source can replay the original speaker at cue boundaries during listening practice. In Shadowing Studio, browser `speechSynthesis` reads the active turn at 0.7×, 0.85×, 1×, or 1.15× for one to three repetitions.
 3. **Shadow.** The learner speaks along with or immediately after the model.
 4. **Record and compare.** `MediaRecorder` captures a take only after an explicit microphone interaction. A take can be replayed or downloaded by the learner.
 5. **Revisit or continue.** Previous/next controls, a persistent queue, and an optional YouTube timestamp link support targeted repetition before vocabulary review.
 
-The model voice is deliberately labelled as a browser voice rather than original source audio. The optional link opens a learner-supplied YouTube source in a new tab; the extension does not fetch, embed, transcribe, or proxy video media.
+The model voice is deliberately labelled as a browser voice rather than original source audio. Learner-opened local media uses a temporary object URL and never leaves the tab. The optional link opens a learner-supplied YouTube source in a new tab; the extension does not fetch, embed, transcribe, or proxy remote video media.
 
 ## Privacy and data boundary
 
-- Captions are pasted by the learner and parsed locally.
+- Captions are pasted or opened from SRT, VTT, or TXT by the learner and parsed locally.
+- Local audio/video is referenced by a temporary object URL, which is revoked when replaced or when the view closes.
 - The browser voice, speech loop state, and practice queue are in-memory UI state.
 - Microphone permission is requested only when **Start shadow recording** is selected.
 - A recording remains a temporary `Blob` URL in the current page. It is not sent to a server, put in extension storage, or used for telemetry.
@@ -55,7 +56,7 @@ The feature applies a short-cycle listen–repeat–review routine. The broader 
 
 ## Quality and reproducibility
 
-`src/video/shadowing.ts` contains deterministic turn grouping, duration bounds, pace cycling, and index clamping. `src/components/video/ShadowingLab.tsx` contains the interaction layer. The focused coverage command executes the original Video Lab engine/view tests plus the Shadowing Studio engine and interaction tests:
+`src/video/shadowing.ts` contains deterministic turn grouping, duration bounds, pace cycling, and index clamping. `src/video/localMedia.ts` contains local-file validation, cue-window playback, and object-URL helpers. The focused coverage command executes the Video Lab, local-source, and Shadowing Studio engine and interaction tests:
 
 ```bash
 npm run test:coverage:video

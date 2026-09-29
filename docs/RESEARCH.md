@@ -12,7 +12,7 @@ That project is a React/Vite client plus Express server. It obtains YouTube/Bili
 
 For a free, login-free Firefox extension, its main product risks are server availability, API-key configuration, remote transcript processing, nondeterministic output, and presenting generated questions with more authority than warranted. IELTS Slayer therefore adopts the learning workflow but not the server architecture:
 
-- transcripts are pasted by the learner and remain local;
+- transcripts are pasted or opened by the learner and remain local;
 - parsing and question generation are deterministic TypeScript;
 - source URLs are optional and host-validated;
 - academic definitions come from the bundled vocabulary/AWL data;
@@ -23,9 +23,24 @@ No source code from the reference project was copied.
 
 ### Shadowing-player review
 
-The Shadowing Studio was additionally informed by a product review of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (reviewed 2026-09-29). Its MIT-licensed, single-file player centres a language-shadowing workflow on chunk size, replay, pacing, local-media support, optional captions, and keyboard controls.
+Shadowing Studio and local-source replay were additionally informed by a product and code review of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) at commit `0fa7f96903675d896a69a061e94db4dae3780792` (reviewed 2026-09-29). Its MIT-licensed, single-file player combines local audio/video, SRT/VTT captions, bounded chunks, replay, pacing, auto-advance, and keyboard controls.
 
-IELTS Slayer adopts the learner-facing principle of short, self-paced repeatable turns while remaining a Firefox extension and preserving its privacy model. It implements original TypeScript turn grouping over a learner-pasted transcript, browser-native speech synthesis, an explicitly user-triggered in-memory microphone recorder, a selectable practice queue, and keyboard shortcuts. It does **not** copy source code, embed third-party media players, fetch remote captions, transmit microphone data, or offer an automated pronunciation score.
+IELTS Slayer adopts that short, self-paced practice principle in original TypeScript while preserving the extension's privacy model. It adds two complementary paths:
+
+- a guided Shadowing Studio with caption-aligned turns, browser speech, a practice queue, keyboard controls, and an explicitly user-triggered in-memory microphone recorder;
+- local SRT/VTT/TXT intake and original-speaker audio/video replay that seeks to a cue, plays at a learner-selected pace, and stops at the next caption boundary.
+
+Safeguards relevant to a Firefox learning extension include:
+
+- subtitle reads capped at 2 MB, with stale asynchronous reads ignored;
+- revocable media object URLs and no file upload;
+- cue-aligned boundaries rather than a fixed grid that can cut through a caption;
+- honest errors for unsupported codecs;
+- synthetic speech when no original media is supplied;
+- no remote captions, third-party player script, speech-to-text, pronunciation score, login, or telemetry;
+- deterministic 100% coverage for the complete bilingual Video Lab and Shadowing Studio.
+
+No source code from this reference project was copied. This is an interaction-design adaptation, not evidence that the software improves IELTS scores.
 
 ## Evidence-to-feature map
 
@@ -34,7 +49,7 @@ IELTS Slayer adopts the learner-facing principle of short, self-paced repeatable
 | Keep captions central to the task | Captioned viewing has shown positive effects for L2 listening/vocabulary relative to uncaptioned viewing (Montero Perez et al., 2013; Kurokawa et al., 2024). | Effects vary by proficiency, caption design, genre, prior vocabulary, and outcome measure. |
 | Blank a salient content word | Retrieval makes the learner produce a form instead of merely rereading it. This is an application of retrieval-practice principles, not a claim that one cloze item guarantees retention. | Automatically selected words can be easier or harder than intended. Learners should use level-appropriate sources. |
 | Give immediate correctness feedback | Feedback closes the retrieval loop and prevents an incorrect response from becoming the only remembered form. | Exact-match scoring accepts normalized spelling but does not evaluate semantically equivalent answers. |
-| Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. Shadowing Studio makes the loop explicit with selectable 3–12 second turns, 1–3 local repetitions, pace controls, and a record/replay comparison step. | Browser speech synthesis is a fallback cue, not the original speaker audio. Opening the source requires network access. The extension does not evaluate pronunciation or claim a band-score effect. |
+| Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. Shadowing Studio makes the loop explicit with selectable turns, local repetitions, pace controls, and record/replay comparison; local media can preserve the original speaker. | Local files depend on browser codec support. Browser speech is a fallback, opening a YouTube source requires network access, and the extension does not evaluate pronunciation or claim a band-score effect. |
 | Expose English and Vietnamese definitions | Bilingual support lowers lookup friction for Vietnamese learners while retaining the English definition. | Bundled definitions cover known AWL/bank entries only; this is not a general dictionary. |
 | Encourage later review | Spacing has positive aggregate evidence in L2 learning (Kim & Webb, 2022). | The current Video Lab does not yet schedule transcript cues in SM-2; the separate vocabulary deck does use SM-2. |
 
@@ -48,4 +63,4 @@ IELTS Slayer adopts the learner-facing principle of short, self-paced repeatable
 
 ## Reproducibility
 
-The lesson engines live in `src/video/videoLesson.ts` and `src/video/shadowing.ts`. Their behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; YouTube URL validation; shadowing-turn grouping; duration bounds; pace cycling; and index clamping. The complete Video Lab and Shadowing Studio React workflows are held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.
+The deterministic engines live in `src/video/videoLesson.ts`, `src/video/shadowing.ts`, and `src/video/localMedia.ts`. Tests cover caption formats and malformed timestamps; markup removal; word selection; vocabulary limits; scoring; URL validation; shadowing-turn grouping; duration and index bounds; pace cycling; subtitle failures and races; media-kind detection; bounded playback; speed clamping; browser playback rejection; decode feedback; and object-URL cleanup. The complete bilingual Video Lab and Shadowing Studio are held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.
