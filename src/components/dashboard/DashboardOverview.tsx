@@ -15,8 +15,7 @@ import {
   Flame,
   Sparkles,
   ChevronRight,
-  Video,
-  MicVocal
+  Video
 } from 'lucide-react';
 
 export interface DashboardOverviewProps {
@@ -98,14 +97,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onSelectSk
       icon: Video,
       color: 'from-violet-600 to-fuchsia-600',
       tag: 'Private Caption Lab',
-    },
-    {
-      id: 'shadowing' as SkillType,
-      title: t('nav.shadowing'),
-      description: t('dash.featureShadowingDesc'),
-      icon: MicVocal,
-      color: 'from-fuchsia-600 to-rose-600',
-      tag: 'Chunk · Record · Compare',
     },
     {
       id: 'mock-test' as SkillType,

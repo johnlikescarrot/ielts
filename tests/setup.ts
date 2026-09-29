@@ -58,7 +58,6 @@ Object.defineProperty(navigator, 'clipboard', {
 // Polyfill MediaRecorder
 class MockMediaRecorder {
   state: string = 'inactive';
-  mimeType: string = 'audio/webm';
   ondataavailable: any = null;
   onstop: any = null;
   stream: any;

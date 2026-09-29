@@ -2,7 +2,7 @@
 
 ## Scope
 
-IELTS Slayer is an independent study aid, not an experiment and not an official IELTS assessment. This document records why the Video IELTS Lab uses captioned input, retrieval, immediate feedback, and replay, and why the Shadowing Studio uses chunked shadowing with self-recording. It also states where the evidence does **not** justify a stronger product claim.
+IELTS Slayer is an independent study aid, not an experiment and not an official IELTS assessment. This document records why the Video IELTS Lab uses captioned input, retrieval, immediate feedback, and replay. It also states where the evidence does **not** justify a stronger product claim.
 
 ## Reference-project review
 
@@ -21,10 +21,6 @@ For a free, login-free Firefox extension, its main product risks are server avai
 
 No source code from the reference project was copied.
 
-## Shadowing Studio rationale
-
-The Shadowing Studio (v1.2) re-implements the interaction popularised by [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (MIT, reviewed 2026-09-29): chunk-based playback (3–120 s), one-click chunk replay, speed cycling, auto-advance, keyboard shortcuts, and local-file media. That project is a single-file HTML app; IELTS Slayer rebuilds the workflow as a deterministic TypeScript module (`src/shadowing/`) with three interchangeable media controllers (browser speech, local `HTMLMediaElement`, YouTube iframe `postMessage`), a pure reducer core, per-chunk take recording, and session stats saved to local history. No source code was copied; the MIT-licensed upstream is credited as design inspiration.
-
 ## Evidence-to-feature map
 
 | Product decision | Evidence and interpretation | Limitation |
@@ -33,22 +29,17 @@ The Shadowing Studio (v1.2) re-implements the interaction popularised by [`Hosse
 | Blank a salient content word | Retrieval makes the learner produce a form instead of merely rereading it. This is an application of retrieval-practice principles, not a claim that one cloze item guarantees retention. | Automatically selected words can be easier or harder than intended. Learners should use level-appropriate sources. |
 | Give immediate correctness feedback | Feedback closes the retrieval loop and prevents an incorrect response from becoming the only remembered form. | Exact-match scoring accepts normalized spelling but does not evaluate semantically equivalent answers. |
 | Replay a short cue | Repeated audiovisual exposure can aid form recognition; learners control repetition rather than being forced through the entire video. | Browser speech synthesis is a fallback cue, not the original speaker audio. Opening the source requires network access. |
-| Cut practice into short, repeatable chunks | Shadowing research recommends short, level-appropriate audio units processed bottom-up; chunks of one to several caption cues keep each repetition cycle fast and let learners control the loop (Hamada, 2016a). | Chunk boundaries are derived from cue timestamps and are approximations of prosodic units. |
-| Add a silent repeat gap and repetition count | Hamada (2016b) describes repeating shadowing material as standard procedure; the gap reserves time to vocalise while auto-advance keeps the session moving. | The extension cannot verify that the learner actually spoke. |
-| Record and compare your own take | Self-recording and comparison support noticing the gap between one's own output and the model (Hamada, 2016b). Recordings stay in memory for the session and are never uploaded. | There is no automated pronunciation scoring; comparison is by ear. |
 | Expose English and Vietnamese definitions | Bilingual support lowers lookup friction for Vietnamese learners while retaining the English definition. | Bundled definitions cover known AWL/bank entries only; this is not a general dictionary. |
 | Encourage later review | Spacing has positive aggregate evidence in L2 learning (Kim & Webb, 2022). | The current Video Lab does not yet schedule transcript cues in SM-2; the separate vocabulary deck does use SM-2. |
 
 ## References
 
 1. Kurokawa, S., Hein, A. M., & Uchihara, T. (2024). Incidental vocabulary acquisition through captioned viewing: A meta-analysis. *Language Learning*. <https://doi.org/10.1111/lang.12697>
-2. Hamada, Y. (2016a). Shadowing: Who benefits and how? Uncovering a booming EFL teaching technique for listening comprehension. *Language Teaching Research, 20*(1), 30–49. <https://doi.org/10.1177/1362168815597504>
-3. Hamada, Y. (2016b). *Teaching EFL learners shadowing for listening: Developing learners' bottom-up skills*. Routledge.
-4. Kim, S. K., & Webb, S. (2022). The effects of spaced practice on second language learning: A meta-analysis. *Language Learning, 72*(1), 269–319. <https://doi.org/10.1111/lang.12479>
-5. Lo, S. (2024). Vocabulary learning through viewing dual-subtitled videos: Immediate repetition versus spaced repetition as an enhancement strategy. *ReCALL, 36*(2), 152–167. <https://doi.org/10.1017/S0958344024000053>
-6. Montero Perez, M., Van Den Noortgate, W., & Desmet, P. (2013). Captioned video for L2 listening and vocabulary learning: A meta-analysis. *System, 41*(3), 720–739. <https://doi.org/10.1016/j.system.2013.07.013>
-7. Reynolds, B. L., Cui, Y., Kao, C.-W., & Thomas, N. (2022). Vocabulary acquisition through viewing captioned and subtitled video: A scoping review and meta-analysis. *Systems, 10*(5), 133. <https://doi.org/10.3390/systems10050133>
+2. Kim, S. K., & Webb, S. (2022). The effects of spaced practice on second language learning: A meta-analysis. *Language Learning, 72*(1), 269–319. <https://doi.org/10.1111/lang.12479>
+3. Lo, S. (2024). Vocabulary learning through viewing dual-subtitled videos: Immediate repetition versus spaced repetition as an enhancement strategy. *ReCALL, 36*(2), 152–167. <https://doi.org/10.1017/S0958344024000053>
+4. Montero Perez, M., Van Den Noortgate, W., & Desmet, P. (2013). Captioned video for L2 listening and vocabulary learning: A meta-analysis. *System, 41*(3), 720–739. <https://doi.org/10.1016/j.system.2013.07.013>
+5. Reynolds, B. L., Cui, Y., Kao, C.-W., & Thomas, N. (2022). Vocabulary acquisition through viewing captioned and subtitled video: A scoping review and meta-analysis. *Systems, 10*(5), 133. <https://doi.org/10.3390/systems10050133>
 
 ## Reproducibility
 
-The lesson engine lives in `src/video/videoLesson.ts`. Its behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; and YouTube URL validation. The complete Video Lab, including its React workflow, is held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`. The shadowing engine (`src/shadowing/`) and its studio UI are held to the same 100% standard by `npm run test:coverage:shadowing`, covering chunk building, every reducer transition, all three media controllers, session statistics, and the full bilingual workflow.
+The lesson engine lives in `src/video/videoLesson.ts`. Its behavior is covered by deterministic unit tests for SRT, YouTube-style, timestamped, and plain-text input; malformed timestamps; markup removal; word selection; vocabulary limits; scoring; timestamp formatting; and YouTube URL validation. The complete Video Lab, including its React workflow, is held to 100% statements, branches, functions, and lines coverage by `npm run test:coverage:video`.

@@ -10,19 +10,6 @@
 
 ## ✨ What makes it different
 
-### New in 1.2 — Shadowing Studio
-
-Practise the classic **shadowing** technique (listen → speak along simultaneously) with any transcript, entirely on-device:
-
-1. Paste a transcript (SRT, `[MM:SS]` text, YouTube transcript, or plain text) and pick a chunk length from 3–120 seconds.
-2. Choose a voice source: the browser speech engine, a **local audio/video file**, or an optional **YouTube embed** controlled through the iframe `postMessage` API — no remote scripts, so the MV3 content-security-policy stays intact.
-3. Loop through chunks with per-chunk replay, adjustable speed (0.5–2×), configurable repetitions, auto-advance, and a silent "repeat gap" reserved for speaking aloud.
-4. **Record your own take** for any chunk, then play, download, or delete it to compare against the model.
-5. Keyboard-first practice, mirroring popular shadowing players: `Space` replay, `←`/`→` chunk, `R` speed.
-6. Save the session to your local progress history; Analytics shows it alongside other practice.
-
-The interaction design was inspired by the open-source [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player) (MIT), re-implemented as a tested React/TypeScript module with three interchangeable media controllers, a pure reducer core, and 100% coverage.
-
 ### New in 1.1 — Private Video IELTS Lab
 
 Turn the captions from almost any English video into active IELTS practice:
@@ -60,14 +47,10 @@ The workflow was informed by the open-source [`Libailin222/ielts-video-assistant
 
 Opening a user-provided YouTube timestamp is the only Video Lab action that leaves the extension, and only after the learner selects it.
 
-In the Shadowing Studio, the default voice sources (speech engine and local files) never leave the device. The optional YouTube mode loads Google's embedded player only while the learner selects it, and commands are exchanged through the iframe messaging API — the extension loads no remote scripts and sends none of your data.
-
 ## 🧠 Evidence-informed learning design
 
-The Video Lab combines captioned input, active retrieval, focused feedback, and replay; the Shadowing Studio adds chunked repetition, self-recording, and self-comparison. These choices are grounded in research, but IELTS Slayer does **not** claim clinical efficacy or affiliation with IELTS owners.
+The Video Lab combines captioned input, active retrieval, focused feedback, and replay. These choices are grounded in research, but IELTS Slayer does **not** claim clinical efficacy or affiliation with IELTS owners.
 
-- Shadowing improves bottom-up L2 listening and benefits lower-proficiency learners most: Hamada (2016), *Language Teaching Research*, 20(1), 30–49. [doi:10.1177/1362168815597504](https://doi.org/10.1177/1362168815597504)
-- The technique's materials, procedure, and psychology are analysed in: Hamada (2016), *Teaching EFL Learners Shadowing for Listening*. Routledge.
 - Captioned video has demonstrated benefits for L2 listening and vocabulary learning in meta-analysis: Montero Perez, Van Den Noortgate, & Desmet (2013), *System*, 41(3), 720–739. [doi:10.1016/j.system.2013.07.013](https://doi.org/10.1016/j.system.2013.07.013)
 - A newer meta-analysis reports positive incidental vocabulary effects from captioned viewing: Kurokawa, Hein, & Uchihara (2024), *Language Learning*. [doi:10.1111/lang.12697](https://doi.org/10.1111/lang.12697)
 - Spaced practice in second-language learning is reviewed by Kim & Webb (2022), *Language Learning*, 72(1), 269–319. [doi:10.1111/lang.12479](https://doi.org/10.1111/lang.12479)
@@ -80,7 +63,7 @@ See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the product-to-evidence mapping, 
 - **Platform:** Firefox WebExtension Manifest V3
 - **Language:** TypeScript in strict mode
 - **UI:** React 19, Tailwind CSS, Lucide, and Meta's open-source [Astryx](https://github.com/facebook/astryx) design system
-- **Local analysis:** deterministic transcript parser, chunked shadowing engine, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
+- **Local analysis:** deterministic transcript parser, essay AST heuristics, AWL lookup, readability metrics, and SM-2 scheduling
 - **Testing:** Vitest, React Testing Library, jsdom, and V8 coverage
 - **Quality:** ESLint, TypeScript, Super-Linter, and Astryx CLI design guidance
 
@@ -97,8 +80,7 @@ Astryx is used as the accessible component and theme system. The writing **AST**
 npm ci
 npm test
 npm run test:coverage
-npm run test:coverage:video      # enforces 100% for the Video Lab
-npm run test:coverage:shadowing   # enforces 100% for the Shadowing Studio
+npm run test:coverage:video   # enforces 100% for the new Video Lab
 npm run typecheck
 npm run lint
 npm run astryx -- doctor
@@ -116,7 +98,7 @@ The production extension is written to `dist/`.
 
 ## ✅ Quality policy
 
-The Video Lab and the Shadowing Studio each ship with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
+The Video Lab ships with **100% statements, branches, functions, and lines coverage**. The repository tracks coverage for the full legacy suite separately and raises it without hiding UI files from reports. Every pull request must pass type checking, ESLint, tests, the production build, Astryx diagnostics, and Super-Linter.
 
 Security and accessibility expectations include semantic controls, keyboard-visible focus, bilingual accessible names, no HTML injection of transcript content, URL host validation, and no remote execution.
 
