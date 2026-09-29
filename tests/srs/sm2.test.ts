@@ -43,7 +43,7 @@ describe('sm2', () => {
     expect(res2.interval).toBe(15);
   });
 
-  it('enforces ease factor minimum of 1.3', () => {
+  it('enforces ease factor minimum of 1.3 and defaults missing easeFactor', () => {
     let card = { interval: 1, repetition: 1, easeFactor: 1.3 };
     // Repeated low grades
     for (let i = 0; i < 5; i++) {
@@ -51,5 +51,9 @@ describe('sm2', () => {
       card = { interval: res.interval, repetition: res.repetition, easeFactor: res.easeFactor };
     }
     expect(card.easeFactor).toBe(1.3);
+
+    // Default missing/falsy ease factor
+    const resDefault = calculateSM2({ interval: 1, repetition: 1, easeFactor: 0 }, 4);
+    expect(resDefault.easeFactor).toBeGreaterThanOrEqual(1.3);
   });
 });

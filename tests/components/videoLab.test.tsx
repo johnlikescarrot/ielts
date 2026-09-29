@@ -17,6 +17,10 @@ describe('VideoLabView', () => {
     const user = userEvent.setup();
     renderLab();
 
+    // Switch to Active Listening Cloze tab
+    const clozeTab = screen.getByText(/Active Listening Cloze/i);
+    await user.click(clozeTab);
+
     expect(screen.getByRole('heading', { name: /Turn any captioned video/i })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Create listening lesson' }));
     expect(screen.getByRole('alert')).toHaveTextContent(/at least 20 English words/i);
@@ -47,12 +51,20 @@ describe('VideoLabView', () => {
     await user.click(screen.getByRole('button', { name: 'Back to practice' }));
     await user.click(screen.getByRole('button', { name: 'New lesson' }));
     expect(screen.getByRole('heading', { name: 'Create your private video lesson' })).toBeInTheDocument();
+
+    // Switch back to Shadowing Studio tab
+    const shadowingTab = screen.getByText(/IELTS Shadowing Studio/i);
+    await user.click(shadowingTab);
   });
 
   it('supports tab navigation and Vietnamese localization', async () => {
     await storageService.updateSettings({ language: 'vi' });
     const user = userEvent.setup();
     renderLab();
+
+    // Switch to Cloze tab
+    const clozeTab = await screen.findByText(/Thử thách nghe điền từ/i);
+    await user.click(clozeTab);
 
     expect(await screen.findByRole('heading', { name: /Biến mọi video/i })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Dùng transcript mẫu' }));
@@ -66,6 +78,11 @@ describe('VideoLabView', () => {
   it('shows an empty vocabulary state for a non-academic transcript', async () => {
     const user = userEvent.setup();
     renderLab();
+
+    // Switch to Cloze tab
+    const clozeTab = screen.getByText(/Active Listening Cloze/i);
+    await user.click(clozeTab);
+
     const transcript = Array.from({ length: 5 }, (_, index) => `${index}:00 Wonderful storytelling celebrates friendship everywhere.`).join('\n');
     await user.type(screen.getByLabelText('English transcript'), transcript);
     await user.click(screen.getByRole('button', { name: 'Create listening lesson' }));

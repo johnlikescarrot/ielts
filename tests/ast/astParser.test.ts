@@ -53,6 +53,23 @@ describe('astParser', () => {
 
     expect(clauses.some(c => c.hasPassive)).toBe(true);
     expect(clauses.some(c => c.hasConditional)).toBe(true);
+    expect(clauses.some(c => c.clauseType === 'conditional')).toBe(true);
+  });
+
+  it('detects relative clauses with relative pronouns', () => {
+    const sentence = 'The policy, which was implemented last year, produced positive outcomes.';
+    const tokens = tokenizeSentence(sentence);
+    const clauses = parseClauses(sentence, tokens);
+
+    expect(clauses.some(c => c.clauseType === 'relative' || c.hasRelative)).toBe(true);
+  });
+
+  it('detects conditional clauses starting with unless', () => {
+    const sentence = 'Unless authorities take measures, pollution will worsen.';
+    const tokens = tokenizeSentence(sentence);
+    const clauses = parseClauses(sentence, tokens);
+
+    expect(clauses.some(c => c.clauseType === 'conditional' || c.hasConditional)).toBe(true);
   });
 
   it('detects passive voice with irregular verbs', () => {
@@ -128,5 +145,4 @@ In conclusion, concerted global efforts are indispensable.`;
 
     expect(clauses.some(c => c.hasPassive)).toBe(true);
   });
-
 });

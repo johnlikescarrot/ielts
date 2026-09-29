@@ -5,18 +5,30 @@ describe('contentScript Suite', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     removeTooltip();
+    vi.useFakeTimers();
   });
 
-  it('looks up words in vocabulary bank and academic word list', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('looks up words across different CEFR levels in AWL', () => {
     const vocabMatch = lookupWord('mitigate');
     expect(vocabMatch).toBeDefined();
     expect(vocabMatch?.word).toBe('mitigate');
     expect(vocabMatch?.band).toBe(8.5);
 
-    const awlMatch = lookupWord('analyze');
-    expect(awlMatch).toBeDefined();
-    expect(awlMatch?.word).toBe('analyze');
+    // B2 word (analyze) -> band 6.5
+    const awlB2 = lookupWord('analyze');
+    expect(awlB2).toBeDefined();
+    expect(awlB2?.band).toBe(6.5);
 
+    // C1 word (constitute) -> band 7.5
+    const awlC1 = lookupWord('constitute');
+    expect(awlC1).toBeDefined();
+    expect(awlC1?.band).toBe(7.5);
+
+    // C2 word (if any in AWL)
     const nonMatch = lookupWord('zzzznonexistentword');
     expect(nonMatch).toBeNull();
 
@@ -59,33 +71,14 @@ describe('contentScript Suite', () => {
     expect(saveBtn.textContent).toContain('✓ Saved to Flashcards!');
     expect((globalThis as any).browser.runtime.sendMessage).toHaveBeenCalled();
 
-    // Test mousedown outside
-    const outsideEvent = new MouseEvent('mousedown', { bubbles: true });
-    document.body.dispatchEvent(outsideEvent);
-  });
-
-  it('removes tooltip when selection is empty or collapsed', () => {
-    window.getSelection = () => ({
-      isCollapsed: true,
-      toString: () => '',
-    } as any);
-
-    handleSelection();
+    // Advance timer to trigger timeout removal
+    vi.advanceTimersByTime(1500);
     expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
-  });
-  it('removes explicit ielts-slayer-tooltip-root from DOM', () => {
-    const div = document.createElement('div');
-    div.id = 'ielts-slayer-tooltip-root';
-    document.body.appendChild(div);
 
-    expect(document.getElementById('ielts-slayer-tooltip-root')).not.toBeNull();
-
-    removeTooltip();
-
-    expect(document.getElementById('ielts-slayer-tooltip-root')).toBeNull();
+    delete (globalThis as any).browser;
   });
 
-  it('removes active tooltip correctly when removeTooltip is called', () => {
+  it('removes tooltip on outside mousedown', () => {
     const div = document.createElement('div');
     div.textContent = 'mitigate';
     document.body.appendChild(div);
@@ -101,8 +94,37 @@ describe('contentScript Suite', () => {
     handleSelection();
     expect(document.querySelector('.ielts-slayer-tooltip')).not.toBeNull();
 
-    removeTooltip();
+    // Dispatch mousedown on body
+    const outsideEvent = new MouseEvent('mousedown', { bubbles: true });
+    document.body.dispatchEvent(outsideEvent);
     expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
+  });
+
+  it('triggers mouseup document listener', () => {
+    const mouseupEvent = new MouseEvent('mouseup', { bubbles: true });
+    document.dispatchEvent(mouseupEvent);
+  });
+
+  it('removes tooltip when selection is empty or collapsed', () => {
+    window.getSelection = () => ({
+      isCollapsed: true,
+      toString: () => '',
+    } as any);
+
+    handleSelection();
+    expect(document.querySelector('.ielts-slayer-tooltip')).toBeNull();
+  });
+
+  it('removes explicit ielts-slayer-tooltip-root from DOM', () => {
+    const div = document.createElement('div');
+    div.id = 'ielts-slayer-tooltip-root';
+    document.body.appendChild(div);
+
+    expect(document.getElementById('ielts-slayer-tooltip-root')).not.toBeNull();
+
+    removeTooltip();
+
+    expect(document.getElementById('ielts-slayer-tooltip-root')).toBeNull();
   });
 
   it('removes tooltip and returns early when word is not found in dictionary', () => {

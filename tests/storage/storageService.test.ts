@@ -17,6 +17,54 @@ describe('StorageService Suite', () => {
     expect(data.testHistory).toEqual([]);
   });
 
+  it('retrieves data from localStorage when populated', async () => {
+    localStorage.setItem(
+      'ielts_slayer_v1_data',
+      JSON.stringify({
+        settings: { targetBand: 8.5 },
+        srsCards: [{ wordId: 'w1' }],
+        customVocabulary: [{ id: 'c1', word: 'ubiquitous' }],
+        testHistory: [{ id: 't1' }],
+        bookmarks: [{ id: 'b1' }],
+        notes: [{ id: 'n1' }],
+      })
+    );
+    const populatedService = new StorageService();
+    const data = await populatedService.getData();
+    expect(data.settings.targetBand).toBe(8.5);
+    expect(data.customVocabulary.length).toBe(1);
+    expect(data.bookmarks.length).toBe(1);
+  });
+
+  it('handles corrupted localStorage JSON gracefully', async () => {
+    localStorage.setItem('ielts_slayer_v1_data', 'corrupted-json-data{{{');
+    const corruptedService = new StorageService();
+    const data = await corruptedService.getData();
+    expect(data.settings).toEqual(DEFAULT_SETTINGS);
+  });
+
+  it('handles write and remove errors gracefully', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const failingService = new StorageService();
+
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceeded');
+    });
+    const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+      throw new Error('RemoveFailed');
+    });
+
+    await failingService.saveData({ customVocabulary: [] });
+    expect(errorSpy).toHaveBeenCalled();
+
+    await failingService.resetAll();
+    expect(errorSpy).toHaveBeenCalled();
+
+    setItemSpy.mockRestore();
+    removeItemSpy.mockRestore();
+    errorSpy.mockRestore();
+  });
+
   it('saves and retrieves updated settings', async () => {
     const updated = await service.updateSettings({ targetBand: 8.5, language: 'vi' });
     expect(updated.targetBand).toBe(8.5);
@@ -130,18 +178,30 @@ describe('StorageService Suite', () => {
   });
 
   it('works with browser.storage.local mock', async () => {
-    const mockStorage: Record<string, any> = {};
+    const mockStorage: Record<string, any> = {
+      ielts_slayer_v1_data: {
+        settings: { targetBand: 7.0 },
+        srsCards: [],
+        customVocabulary: [],
+        testHistory: [],
+        bookmarks: [],
+        notes: [],
+      },
+    };
     (globalThis as any).browser = {
       storage: {
         local: {
           get: vi.fn(async (key: string) => ({ [key]: mockStorage[key] })),
           set: vi.fn(async (obj: any) => Object.assign(mockStorage, obj)),
           remove: vi.fn(async (key: string) => delete mockStorage[key]),
-        }
-      }
+        },
+      },
     };
 
     const browserService = new StorageService();
+    const initData = await browserService.getData();
+    expect(initData.settings.targetBand).toBe(7.0);
+
     await browserService.updateSettings({ targetBand: 8.0 });
     const s = await browserService.getSettings();
     expect(s.targetBand).toBe(8.0);

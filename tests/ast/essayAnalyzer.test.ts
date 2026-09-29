@@ -93,17 +93,32 @@ In conclusion, while cutting-edge digital platforms serve as powerful auxiliary 
     });
     expect(lrReport.weaknesses.length).toBeGreaterThan(0);
 
-    // Grammatical with simple sentences only
-    const graReport = evaluateGrammaticalRange({
+    // Grammatical with high complex ratio and advanced structures
+    const graHighReport = evaluateGrammaticalRange({
       sentenceCount: 10,
-      averageSentenceLength: 10,
-      sentenceTypeCounts: { simple: 10, compound: 0, complex: 0, 'compound-complex': 0 },
-      passiveVoiceCount: 0,
+      averageSentenceLength: 18,
+      sentenceTypeCounts: { simple: 2, compound: 2, complex: 4, 'compound-complex': 2 },
+      passiveVoiceCount: 3,
+      conditionalCount: 2,
+      relativeClauseCount: 3,
+      complexSentenceRatio: 0.6,
+      nominalizationCount: 4,
+    });
+    expect(graHighReport.band).toBeGreaterThanOrEqual(8.0);
+    expect(graHighReport.strengths.length).toBeGreaterThanOrEqual(3);
+
+    // Grammatical with moderate complex ratio
+    const graModReport = evaluateGrammaticalRange({
+      sentenceCount: 6,
+      averageSentenceLength: 14,
+      sentenceTypeCounts: { simple: 3, compound: 1, complex: 2, 'compound-complex': 0 },
+      passiveVoiceCount: 1,
       conditionalCount: 0,
       relativeClauseCount: 0,
-      complexSentenceRatio: 0,
-      nominalizationCount: 0,
+      complexSentenceRatio: 0.35,
+      nominalizationCount: 1,
     });
-    expect(graReport.band).toBeLessThanOrEqual(5.5);
+    expect(graModReport.band).toBeGreaterThanOrEqual(6.0);
+    expect(graModReport.recommendations.length).toBeGreaterThan(0);
   });
 });

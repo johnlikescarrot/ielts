@@ -1,10 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PopupApp } from '../../src/popup/PopupApp';
 
 describe('PopupApp Suite', () => {
   it('renders PopupApp with Word of the Day, audio trigger and launch buttons', async () => {
+    (globalThis as any).browser = {
+      runtime: {
+        getURL: (path: string) => `moz-extension://test/${path}`,
+      },
+      tabs: {
+        create: vi.fn(),
+      },
+    };
+
     render(<PopupApp />);
 
     expect(screen.getByText(/Word of the Day/i)).toBeInTheDocument();
@@ -24,9 +33,12 @@ describe('PopupApp Suite', () => {
     // Launch dashboard
     const openBtn = screen.getByText(/Open Full Dashboard/i);
     await userEvent.click(openBtn);
+    expect((globalThis as any).browser.tabs.create).toHaveBeenCalled();
 
     // Reading quick button
     const readingBtn = screen.getByText('Reading');
     await userEvent.click(readingBtn);
+
+    delete (globalThis as any).browser;
   });
 });
