@@ -37,10 +37,10 @@ export function cleanSubtitleText(raw: string): string {
     .replace(/\{\\[^}]+\}/g, '') // remove ASS/SSA override tags like {\an8}
     .replace(/\[\/?(?:b|i|u|color|font)[^\]]*\]/gi, '') // remove BBCode style tags
     .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ')
     .trim();
 }
