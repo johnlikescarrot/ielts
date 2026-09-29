@@ -259,6 +259,17 @@ export function formatTimestamp(totalSeconds: number): string {
     : `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
+/** Navigation helpers keep the guided shadowing loop deterministic and keyboard-friendly. */
+export function nextShadowingCue(currentIndex: number, cueCount: number, direction: 1 | -1 = 1): number {
+  if (cueCount <= 0) return 0;
+  return Math.min(cueCount - 1, Math.max(0, currentIndex + direction));
+}
+
+export function shadowingProgress(currentIndex: number, cueCount: number): number {
+  if (cueCount <= 0) return 0;
+  return Math.round(((currentIndex + 1) / cueCount) * 100);
+}
+
 export function getYouTubeVideoId(value: string): string | null {
   const trimmed = value.trim();
   if (/^[\w-]{11}$/.test(trimmed)) return trimmed;

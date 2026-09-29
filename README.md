@@ -10,6 +10,10 @@
 
 ## ✨ What makes it different
 
+### New in 1.2 — Guided Shadowing Coach
+
+The Video Lab now includes a focused shadowing loop, informed by the reference [`shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player): split a transcript into short chunks, replay each cue with the browser voice, adjust speed from 0.7× to 1.2×, hide the transcript for active recall, auto-advance hands-free, and move backward or forward with keyboard-friendly controls. It preserves the extension’s no-login, local-only promise and works without a server or API key.
+
 ### New in 1.1 — Private Video IELTS Lab
 
 Turn the captions from almost any English video into active IELTS practice:

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
+import { BookOpenCheck, ChevronLeft, ChevronRight, ExternalLink, Headphones, Lightbulb, Pause, Play, RotateCcw, Sparkles, Video, Volume2 } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { useI18n } from '../../i18n/i18nContext';
 import {
@@ -7,7 +7,9 @@ import {
   formatTimestamp,
   getYouTubeVideoId,
   MAX_TRANSCRIPT_CHARACTERS,
+  nextShadowingCue,
   scoreLesson,
+  shadowingProgress,
   VideoLesson,
 } from '../../video/videoLesson';
 
@@ -31,6 +33,12 @@ export const VideoLabView: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
+  const [shadowing, setShadowing] = useState(false);
+  const [shadowIndex, setShadowIndex] = useState(0);
+  const [shadowRate, setShadowRate] = useState(0.9);
+  const [showShadowText, setShowShadowText] = useState(true);
+  const [autoAdvance, setAutoAdvance] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const videoId = useMemo(() => getYouTubeVideoId(sourceUrl), [sourceUrl]);
   const score = lesson ? scoreLesson(lesson.questions, answers) : 0;
@@ -45,16 +53,35 @@ export const VideoLabView: React.FC = () => {
     setAnswers({});
     setSubmitted(false);
     setShowHints({});
+    setShadowIndex(0);
+    setShadowing(false);
     setError('');
     setStep('practice');
   };
 
-  const speakCue = (text: string) => {
+  const speakCue = (text: string, onEnd?: () => void) => {
     window.speechSynthesis?.cancel();
+    if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') return;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-GB';
-    utterance.rate = 0.9;
-    window.speechSynthesis?.speak(utterance);
+    utterance.rate = shadowRate;
+    utterance.onend = () => { setIsSpeaking(false); onEnd?.(); };
+    utterance.onerror = () => setIsSpeaking(false);
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const playShadowCue = () => {
+    if (!lesson || lesson.cues.length === 0) return;
+    const cue = lesson.cues[shadowIndex];
+    speakCue(cue.text, autoAdvance && shadowIndex < lesson.cues.length - 1
+      ? () => setShadowIndex(index => nextShadowingCue(index, lesson.cues.length))
+      : undefined);
+  };
+
+  const stopShadowCue = () => {
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
   };
 
   const reset = () => {
@@ -174,7 +201,46 @@ export const VideoLabView: React.FC = () => {
 
       {step === 'practice' && lesson && (
         <section>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-3 dark:border-indigo-900 dark:bg-indigo-950/40">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-300">{t('video.practiceMode')}</p>
+              <p className="text-sm text-indigo-950 dark:text-indigo-100">{shadowing ? t('video.shadowingHelp') : t('video.challengeHelp')}</p>
+            </div>
+            <div className="flex gap-2" role="group" aria-label={t('video.practiceMode')}>
+              <button type="button" aria-pressed={!shadowing} onClick={() => { stopShadowCue(); setShadowing(false); }} className={`rounded-lg px-3 py-2 text-sm font-semibold ${!shadowing ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-700 dark:bg-slate-800 dark:text-indigo-200'}`}>{t('video.clozeMode')}</button>
+              <button type="button" aria-pressed={shadowing} onClick={() => setShadowing(true)} className={`rounded-lg px-3 py-2 text-sm font-semibold ${shadowing ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-700 dark:bg-slate-800 dark:text-indigo-200'}`}>{t('video.shadowingMode')}</button>
+            </div>
+          </div>
+
+          {shadowing ? (
+            <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800" aria-labelledby="shadowing-heading">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"><Volume2 className="h-3.5 w-3.5" /> {t('video.shadowingBadge')}</div>
+                  <h2 id="shadowing-heading" className="text-2xl font-black">{t('video.shadowingTitle')}</h2>
+                  <p className="mt-1 max-w-2xl text-sm text-slate-500">{t('video.shadowingHelp')}</p>
+                </div>
+                <div className="min-w-40 text-right"><span className="text-2xl font-black text-indigo-700 dark:text-indigo-300">{shadowingProgress(shadowIndex, lesson.cues.length)}%</span><p className="text-xs text-slate-500">{shadowIndex + 1} / {lesson.cues.length} {t('video.chunks')}</p></div>
+              </div>
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700"><div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${shadowingProgress(shadowIndex, lesson.cues.length)}%` }} /></div>
+              <article className="mt-6 rounded-2xl bg-slate-950 p-6 text-white shadow-inner">
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-emerald-300">{t('video.listenRepeat')}</p>
+                <p className="min-h-20 text-xl font-semibold leading-relaxed">{showShadowText ? lesson.cues[shadowIndex].text : '•••'}</p>
+                <p className="mt-4 text-xs text-slate-400">{formatTimestamp(lesson.cues[shadowIndex].startSeconds)} · {t('video.shadowingTip')}</p>
+              </article>
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <Button label={isSpeaking ? t('video.stopCue') : t('video.playCue')} variant="primary" icon={isSpeaking ? <Pause size={16} /> : <Play size={16} />} onClick={isSpeaking ? stopShadowCue : playShadowCue} />
+                <Button label={t('video.previousChunk')} variant="secondary" icon={<ChevronLeft size={16} />} isDisabled={shadowIndex === 0} onClick={() => { stopShadowCue(); setShadowIndex(index => nextShadowingCue(index, lesson.cues.length, -1)); }} />
+                <Button label={t('video.nextChunk')} variant="secondary" icon={<ChevronRight size={16} />} isDisabled={shadowIndex === lesson.cues.length - 1} onClick={() => { stopShadowCue(); setShadowIndex(index => nextShadowingCue(index, lesson.cues.length)); }} />
+                <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><input type="checkbox" checked={showShadowText} onChange={event => setShowShadowText(event.target.checked)} /> {t('video.showTranscript')}</label>
+                <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><input type="checkbox" checked={autoAdvance} onChange={event => setAutoAdvance(event.target.checked)} /> {t('video.autoAdvance')}</label>
+                <label className="ml-auto flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">{t('video.voiceSpeed')} <select value={shadowRate} onChange={event => setShadowRate(Number(event.target.value))} className="rounded-lg border border-slate-300 bg-white px-2 py-1 dark:border-slate-600 dark:bg-slate-900"><option value="0.7">0.7×</option><option value="0.9">0.9×</option><option value="1">1×</option><option value="1.2">1.2×</option></select></label>
+              </div>
+              <p className="mt-5 rounded-xl bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">💡 {t('video.shadowingInstruction')}</p>
+            </section>
+          ) : null}
+
+          {!shadowing && <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
               [lesson.wordCount, t('video.transcriptWords')],
               [lesson.cues.length, t('video.captionCues')],
@@ -186,9 +252,9 @@ export const VideoLabView: React.FC = () => {
                 <div className="text-xs text-slate-500 mt-1">{label}</div>
               </div>
             ))}
-          </div>
+          </div>}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          {!shadowing && <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-sm dark:border-slate-700 dark:bg-slate-800">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-xl font-bold flex items-center gap-2"><Headphones className="h-5 w-5 text-indigo-600" />{t('video.listeningChallenge')}</h2>
@@ -245,7 +311,7 @@ export const VideoLabView: React.FC = () => {
               <Button label={t('video.viewVocabulary')} variant="ghost" onClick={() => setStep('vocabulary')} />
               <Button label={t('video.newLesson')} variant="ghost" onClick={reset} />
             </div>
-          </div>
+          </div>}
         </section>
       )}
 

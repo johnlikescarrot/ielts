@@ -4,9 +4,11 @@ import {
   createVideoLesson,
   formatTimestamp,
   getYouTubeVideoId,
+  nextShadowingCue,
   normalizeAnswer,
   parseTranscript,
   scoreLesson,
+  shadowingProgress,
   timestampToSeconds,
 } from '../../src/video/videoLesson';
 
@@ -95,6 +97,15 @@ An untimed final caption {\\an8}`);
     expect(normalizeAnswer("  Learner's! ")).toBe("learner's");
     expect(scoreLesson(questions, answers)).toBe(1);
     expect(scoreLesson(questions, {})).toBe(0);
+  });
+
+  it('navigates shadowing chunks safely', () => {
+    expect(nextShadowingCue(1, 4)).toBe(2);
+    expect(nextShadowingCue(0, 4, -1)).toBe(0);
+    expect(nextShadowingCue(3, 4)).toBe(3);
+    expect(nextShadowingCue(0, 0)).toBe(0);
+    expect(shadowingProgress(1, 4)).toBe(50);
+    expect(shadowingProgress(0, 0)).toBe(0);
   });
 
   it('formats timestamps safely', () => {

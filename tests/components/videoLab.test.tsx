@@ -26,6 +26,11 @@ describe('VideoLabView', () => {
     await user.click(screen.getByRole('button', { name: 'Create listening lesson' }));
 
     expect(screen.getByRole('heading', { name: 'Active listening challenge' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Shadowing coach' }));
+    expect(screen.getByRole('heading', { name: 'Shadow one chunk at a time' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Next chunk' }));
+    expect(screen.getByText(/2 \/ 7 chunks/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Cloze recall' }));
     const answerInputs = screen.getAllByLabelText(/Answer for question/i);
     await user.type(answerInputs[0], 'analyze');
     const firstHint = screen.getAllByRole('button', { name: 'Show spelling hint' })[0];
