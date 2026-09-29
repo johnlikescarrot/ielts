@@ -13,6 +13,7 @@ import { FullMockExamView } from '../components/mockTest/FullMockExamView';
 import { AnalyticsView } from '../components/analytics/AnalyticsView';
 import { SettingsView } from '../components/settings/SettingsView';
 import { VideoLabView } from '../components/video/VideoLabView';
+import { ShadowingStudioView } from '../components/shadowing/ShadowingStudioView';
 import { Theme } from '@astryxdesign/core/theme';
 import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 
@@ -42,6 +43,7 @@ export const DashboardApp: React.FC = () => {
           {activeTab === 'speaking' && <SpeakingLabView />}
           {activeTab === 'vocabulary' && <VocabularySRSView />}
           {activeTab === 'video-lab' && <VideoLabView />}
+          {activeTab === 'shadowing' && <ShadowingStudioView />}
           {activeTab === 'mock-test' && <FullMockExamView />}
           {activeTab === 'analytics' && <AnalyticsView />}
           {activeTab === 'settings' && <SettingsView />}
