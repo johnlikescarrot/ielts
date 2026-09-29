@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { useI18n } from '../../i18n/i18nContext';
+import { ShadowingPlayer } from './ShadowingPlayer';
 import {
   createVideoLesson,
   formatTimestamp,
@@ -201,7 +202,9 @@ export const VideoLabView: React.FC = () => {
               )}
             </div>
 
-            <div className="space-y-4">
+            <ShadowingPlayer cues={lesson.cues} />
+
+            <div className="mt-6 space-y-4">
               {lesson.questions.map((question, index) => {
                 const isCorrect = submitted && scoreLesson([question], answers) === 1;
                 return (

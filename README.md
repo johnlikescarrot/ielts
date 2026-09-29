@@ -16,9 +16,10 @@ Turn the captions from almost any English video into active IELTS practice:
 
 1. Paste a YouTube transcript, SRT caption file, timestamped text, or plain text.
 2. Generate a deterministic listening cloze entirely on-device.
-3. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
-4. Retrieve the missing words and receive immediate answer feedback.
-5. Review detected Academic Word List terms with English and Vietnamese definitions.
+3. Load a local audio/video file into the shadowing player, then replay caption-sized chunks with adjustable speed and keyboard shortcuts.
+4. Replay each cue with browser speech, or open a YouTube source at its exact timestamp.
+5. Retrieve the missing words and receive immediate answer feedback.
+6. Review detected Academic Word List terms with English and Vietnamese definitions.
 
 No transcript is uploaded. No generative-AI output is presented as an official IELTS question. The parser accepts common caption formats, strips caption markup, caps lesson size safely, and produces the same lesson from the same input.
 
