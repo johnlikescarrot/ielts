@@ -164,30 +164,52 @@ function replaceWord(text: string, answer: string): string {
 
 export function createVideoLesson(input: string, questionLimit = 8): VideoLesson {
   const cues = parseTranscript(input);
-  const allWords = cues.flatMap(cue => wordsIn(cue.text));
   const vocabulary: VideoVocabulary[] = [];
   const seenVocabulary = new Set<string>();
+  const candidates: { cue: TranscriptCue; answer: string }[] = [];
+  let wordCount = 0;
 
-  for (const word of allWords) {
-    if (seenVocabulary.has(word)) continue;
-    const entry = lookupVocabulary(word);
-    if (entry) {
-      vocabulary.push(entry);
-      seenVocabulary.add(word);
+  for (const cue of cues) {
+    const words = wordsIn(cue.text);
+    wordCount += words.length;
+
+    let bestAnswer = '';
+    let hasBestAcademic = false;
+    let bestLength = 0;
+    const seenInCue = new Set<string>();
+
+    for (const word of words) {
+      if (!seenInCue.has(word)) {
+        seenInCue.add(word);
+
+        if (vocabulary.length < 10 && !seenVocabulary.has(word)) {
+          const entry = lookupVocabulary(word);
+          if (entry) {
+            vocabulary.push(entry);
+            seenVocabulary.add(word);
+          }
+        }
+
+        if (word.length >= 6 && !STOP_WORDS.has(word)) {
+          const isAcademic = Boolean(lookupVocabulary(word));
+          if (isAcademic && !hasBestAcademic) {
+            bestAnswer = word;
+            hasBestAcademic = true;
+            bestLength = word.length;
+          } else if (isAcademic === hasBestAcademic) {
+            if (word.length > bestLength) {
+              bestAnswer = word;
+              bestLength = word.length;
+            }
+          }
+        }
+      }
     }
-    if (vocabulary.length === 10) break;
-  }
 
-  const candidates = cues.flatMap(cue => {
-    const uniqueWords = [...new Set(wordsIn(cue.text))];
-    const ranked = uniqueWords
-      .filter(word => word.length >= 6 && !STOP_WORDS.has(word))
-      .sort((a, b) => {
-        const academicDifference = Number(Boolean(lookupVocabulary(b))) - Number(Boolean(lookupVocabulary(a)));
-        return academicDifference || b.length - a.length;
-      });
-    return ranked.length > 0 ? [{ cue, answer: ranked[0] }] : [];
-  });
+    if (bestAnswer) {
+      candidates.push({ cue, answer: bestAnswer });
+    }
+  }
 
   const requestedLimit = Number.isFinite(questionLimit) ? Math.floor(questionLimit) : 8;
   const safeLimit = Math.max(1, Math.min(12, requestedLimit));
@@ -211,7 +233,7 @@ export function createVideoLesson(input: string, questionLimit = 8): VideoLesson
     cues,
     questions,
     vocabulary,
-    wordCount: allWords.length,
+    wordCount,
     durationSeconds: cues.length > 0 ? cues[cues.length - 1].startSeconds : 0,
   };
 }
