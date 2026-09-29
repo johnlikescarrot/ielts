@@ -76,5 +76,6 @@ describe('exportImport', () => {
 
   it('triggers download without crashing in DOM environment', () => {
     expect(() => triggerDownload('{}', 'test.json')).not.toThrow();
+    expect(() => triggerDownload('{}')).not.toThrow();
   });
 });
