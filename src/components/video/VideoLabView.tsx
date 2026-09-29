@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { BookOpenCheck, ExternalLink, Headphones, Lightbulb, Play, RotateCcw, Sparkles, Video } from 'lucide-react';
 import { Button } from '@astryxdesign/core/Button';
 import { useI18n } from '../../i18n/i18nContext';
+import { ShadowingPlayer } from './ShadowingPlayer';
 import {
   createVideoLesson,
   formatTimestamp,
@@ -19,7 +20,7 @@ const SAMPLE_TRANSCRIPT = `[00:00] Researchers analyze how cities can create sus
 [00:40] Citizens increasingly support environmental measures when the economic benefits are clear.
 [00:48] In conclusion, effective urban planning requires cooperation, investment, and careful assessment.`;
 
-type LabStep = 'source' | 'practice' | 'vocabulary';
+type LabStep = 'source' | 'practice' | 'shadowing' | 'vocabulary';
 
 export const VideoLabView: React.FC = () => {
   const { language, t } = useI18n();
@@ -87,8 +88,8 @@ export const VideoLabView: React.FC = () => {
         </div>
       </section>
 
-      <div className="mb-7 grid grid-cols-3 gap-2" role="tablist" aria-label={t('video.workflow')}>
-        {(['source', 'practice', 'vocabulary'] as const).map((item, index) => {
+      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={t('video.workflow')}>
+        {(['source', 'practice', 'shadowing', 'vocabulary'] as const).map((item, index) => {
           const active = step === item;
           const disabled = item !== 'source' && !lesson;
           return (
@@ -247,6 +248,10 @@ export const VideoLabView: React.FC = () => {
             </div>
           </div>
         </section>
+      )}
+
+      {step === 'shadowing' && lesson && (
+        <ShadowingPlayer cues={lesson.cues} videoId={videoId} language={language} />
       )}
 
       {step === 'vocabulary' && lesson && (

@@ -188,6 +188,7 @@ export const vi: Record<string, string> = {
   'video.step': 'Bước',
   'video.source': 'Thêm transcript',
   'video.practice': 'Luyện nghe',
+  'video.shadowing': 'Luyện Shadowing',
   'video.vocabulary': 'Từ vựng',
   'video.addSource': 'Tạo bài học video riêng tư',
   'video.addSourceHelp': 'Chọn video tiếng Anh có phụ đề phù hợp trình độ. Dữ liệu không được tải lên.',

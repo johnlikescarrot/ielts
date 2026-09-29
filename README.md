@@ -10,6 +10,18 @@
 
 ## ✨ What makes it different
 
+### New in 1.2 — Private Shadowing Studio
+
+Every generated Video Lab lesson now includes a focused shadowing workflow, inspired by the interaction model of [`Hossein-Mosaffa/shadowing-player`](https://github.com/Hossein-Mosaffa/shadowing-player):
+
+- Move through short, caption-aligned speaking cues instead of passively watching a full video.
+- Replay each cue with private browser speech at 0.75×, 0.9×, 1×, or 1.25× speed.
+- Turn on auto-advance for uninterrupted drills and track repetitions as immediate practice feedback.
+- Practice hands-free with Space, arrow-key, and R shortcuts.
+- Open a validated YouTube source at the exact cue timestamp when authentic audio is available.
+
+The studio is bilingual, keyboard accessible, fully on-device, and needs no account, upload, subscription, or API key. The complete Video Lab—including this update—is enforced at 100% statement, branch, function, and line coverage.
+
 ### New in 1.1 — Private Video IELTS Lab
 
 Turn the captions from almost any English video into active IELTS practice:

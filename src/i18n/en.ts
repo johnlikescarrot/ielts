@@ -188,6 +188,7 @@ export const en: Record<string, string> = {
   'video.step': 'Step',
   'video.source': 'Add transcript',
   'video.practice': 'Listening practice',
+  'video.shadowing': 'Shadowing studio',
   'video.vocabulary': 'Vocabulary',
   'video.addSource': 'Create your private video lesson',
   'video.addSourceHelp': 'Use a captioned English video appropriate for your level. Nothing is uploaded.',
